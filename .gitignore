@@ -1,0 +1,10 @@
+# Pastas geradas automaticamente pelo Visual Studio - nunca devem ir pro Git
+bin/
+obj/
+.vs/
+*.user
+
+# Outros arquivos comuns que não precisam ser versionados
+*.suo
+*.cache
+*.log
