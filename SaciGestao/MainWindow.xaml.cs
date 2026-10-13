@@ -1,4 +1,4 @@
-﻿using System.Windows;
+using System.Windows;
 using System.Windows.Controls;
 using SaciGestao.Models;
 using SaciGestao.Views;
@@ -18,7 +18,7 @@ namespace SaciGestao
             // Mostra o nome de quem está logado na barra superior
             runNomeUsuario.Text = _usuarioLogado.NomeCompleto;
 
-            // Abre direto em Imóveis (sua parte) enquanto o Dashboard não fica pronto
+            // Abre direto em Imóveis enquanto o Dashboard não fica pronto
             Loaded += (s, e) => rbImoveis.IsChecked = true;
         }
 
@@ -34,8 +34,11 @@ namespace SaciGestao
                     AreaConteudo.Content = new ImoveisView();
                     break;
 
+                case "rbClientes":
+                    AreaConteudo.Content = new ClientesView();
+                    break;
+
                 // Quando os colegas terminarem as telas deles, é só trocar aqui:
-                // case "rbClientes":  AreaConteudo.Content = new ClientesView();  break;
                 // case "rbContratos": AreaConteudo.Content = new ContratosView(); break;
 
                 default:
