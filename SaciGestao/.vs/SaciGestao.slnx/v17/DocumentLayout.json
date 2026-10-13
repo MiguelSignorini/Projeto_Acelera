@@ -1,0 +1,54 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "E:\\ProjetoAcelera\\SaciGestao 3\\SaciGestao\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|e:\\projetoacelera\\sacigestao 3\\sacigestao\\service\\imovelservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|solutionrelative:service\\imovelservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|e:\\projetoacelera\\sacigestao 3\\sacigestao\\viewmodels\\imoveisviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|solutionrelative:viewmodels\\imoveisviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "ImoveisViewModel.cs",
+              "DocumentMoniker": "E:\\ProjetoAcelera\\SaciGestao 3\\SaciGestao\\ViewModels\\ImoveisViewModel.cs",
+              "RelativeDocumentMoniker": "ViewModels\\ImoveisViewModel.cs",
+              "ToolTip": "E:\\ProjetoAcelera\\SaciGestao 3\\SaciGestao\\ViewModels\\ImoveisViewModel.cs",
+              "RelativeToolTip": "ViewModels\\ImoveisViewModel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-09T12:14:04.909Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "ImovelService.cs",
+              "DocumentMoniker": "E:\\ProjetoAcelera\\SaciGestao 3\\SaciGestao\\Service\\ImovelService.cs",
+              "RelativeDocumentMoniker": "Service\\ImovelService.cs",
+              "ToolTip": "E:\\ProjetoAcelera\\SaciGestao 3\\SaciGestao\\Service\\ImovelService.cs",
+              "RelativeToolTip": "Service\\ImovelService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAADQAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-09T12:08:11.316Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

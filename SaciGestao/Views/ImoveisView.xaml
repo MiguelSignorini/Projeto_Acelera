@@ -1,0 +1,814 @@
+﻿<UserControl x:Class="SaciGestao.Views.ImoveisView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             FontFamily="Segoe UI">
+
+    <UserControl.Resources>
+
+        <BooleanToVisibilityConverter x:Key="BoolParaVisibilidade"/>
+
+        <SolidColorBrush x:Key="Vermelho" Color="#D32F2F"/>
+        <SolidColorBrush x:Key="VermelhoClaro" Color="#FDEDED"/>
+        <SolidColorBrush x:Key="Texto" Color="#1F2933"/>
+        <SolidColorBrush x:Key="TextoSuave" Color="#5B6570"/>
+        <SolidColorBrush x:Key="Borda" Color="#C9CFD8"/>
+
+        <Style x:Key="Cartao" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="BorderBrush" Value="#E6E9EE"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+
+        <Style x:Key="Rotulo" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="{StaticResource Texto}"/>
+            <Setter Property="Margin" Value="0,0,0,6"/>
+        </Style>
+
+        <Style x:Key="RotuloForm" TargetType="TextBlock" BasedOn="{StaticResource Rotulo}">
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,16,0,6"/>
+        </Style>
+
+        <Style x:Key="CampoForm" TargetType="TextBox">
+            <Setter Property="Height" Value="38"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="10,0"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Borda}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+
+        <!-- ComboBox arredondado, usado nos filtros e no formulário -->
+        <Style x:Key="ComboArredondado" TargetType="ComboBox">
+            <Setter Property="Height" Value="38"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="{StaticResource Texto}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <ToggleButton x:Name="toggle" Focusable="False" ClickMode="Press"
+                                          IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
+                                <ToggleButton.Template>
+                                    <ControlTemplate TargetType="ToggleButton">
+                                        <Border Background="White" BorderBrush="{StaticResource Borda}"
+                                                BorderThickness="1" CornerRadius="8">
+                                            <TextBlock Text="&#xE70D;" FontFamily="Segoe MDL2 Assets"
+                                                       FontSize="11" Foreground="{StaticResource TextoSuave}"
+                                                       HorizontalAlignment="Right" VerticalAlignment="Center"
+                                                       Margin="0,0,12,0"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                            </ToggleButton>
+                            <ContentPresenter IsHitTestVisible="False" Margin="12,0,32,0"
+                                              VerticalAlignment="Center" HorizontalAlignment="Left"
+                                              Content="{TemplateBinding SelectionBoxItem}"
+                                              ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"/>
+                            <Popup IsOpen="{TemplateBinding IsDropDownOpen}" Placement="Bottom"
+                                   AllowsTransparency="True" Focusable="False" PopupAnimation="Slide">
+                                <Border MinWidth="{Binding ActualWidth, RelativeSource={RelativeSource TemplatedParent}}"
+                                        MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                                        Margin="0,4,0,0" Background="White"
+                                        BorderBrush="{StaticResource Borda}" BorderThickness="1"
+                                        CornerRadius="8">
+                                    <ScrollViewer>
+                                        <StackPanel IsItemsHost="True"
+                                                    KeyboardNavigation.DirectionalNavigation="Contained"/>
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="BotaoPrimario" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource Vermelho}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="Height" Value="42"/>
+            <Setter Property="Padding" Value="20,0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="fundo" Background="{TemplateBinding Background}"
+                                CornerRadius="8" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="fundo" Property="Background" Value="#B71C1C"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="BotaoContorno" TargetType="Button">
+            <Setter Property="Foreground" Value="{StaticResource Texto}"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Height" Value="42"/>
+            <Setter Property="Padding" Value="18,0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="fundo" Background="White" BorderBrush="{StaticResource Borda}"
+                                BorderThickness="1" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="fundo" Property="Background" Value="#F1F3F6"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Botão de texto discreto (Excluir dentro do formulário) -->
+        <Style x:Key="BotaoTextoPerigo" TargetType="Button">
+            <Setter Property="Foreground" Value="{StaticResource Vermelho}"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Height" Value="42"/>
+            <Setter Property="Padding" Value="14,0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="fundo" Background="Transparent" CornerRadius="8"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="fundo" Property="Background" Value="{StaticResource VermelhoClaro}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="BotaoAcao" TargetType="Button">
+            <Setter Property="Width" Value="34"/>
+            <Setter Property="Height" Value="34"/>
+            <Setter Property="Margin" Value="0,0,6,0"/>
+            <Setter Property="Background" Value="#E4E8EE"/>
+            <Setter Property="Foreground" Value="{StaticResource Texto}"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="6">
+                            <TextBlock Text="{TemplateBinding Content}"
+                                       FontFamily="Segoe MDL2 Assets" FontSize="15"
+                                       Foreground="{TemplateBinding Foreground}"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Opacity" Value="0.75"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="BotaoAcaoPerigo" TargetType="Button" BasedOn="{StaticResource BotaoAcao}">
+            <Setter Property="Background" Value="#F8D7D7"/>
+            <Setter Property="Foreground" Value="{StaticResource Vermelho}"/>
+        </Style>
+
+        <Style x:Key="CabecalhoColuna" TargetType="DataGridColumnHeader">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="DataGridColumnHeader">
+                        <Border Background="White" BorderBrush="{StaticResource Vermelho}"
+                                BorderThickness="0,0,0,2" Padding="8,10">
+                            <ContentPresenter VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="{StaticResource Texto}"/>
+        </Style>
+
+        <Style x:Key="CelulaGrid" TargetType="DataGridCell">
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="DataGridCell">
+                        <Border Background="Transparent" BorderBrush="#E3E6EB" BorderThickness="0,0,0,1">
+                            <ContentPresenter VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="LinhaGrid" TargetType="DataGridRow">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="{StaticResource Texto}"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#F7F8FA"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="TextoCelula" TargetType="TextBlock">
+            <Setter Property="Margin" Value="8,0"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+        </Style>
+
+        <Style x:Key="EtiquetaStatus" TargetType="Border">
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Padding" Value="12,3"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="Background" Value="#E4E7EC"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Status}" Value="Disponível">
+                    <Setter Property="Background" Value="#8FCB91"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Status}" Value="Reservado">
+                    <Setter Property="Background" Value="#F5C542"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Status}" Value="Alugado">
+                    <Setter Property="Background" Value="#2F7DD1"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Status}" Value="Vendido">
+                    <Setter Property="Background" Value="#D32F2F"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="TextoStatus" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Foreground" Value="#1F2933"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Status}" Value="Alugado">
+                    <Setter Property="Foreground" Value="White"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Status}" Value="Vendido">
+                    <Setter Property="Foreground" Value="White"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Linha de detalhe (rótulo + valor) usada na tela de Detalhes -->
+        <Style x:Key="RotuloDetalhe" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Foreground" Value="{StaticResource TextoSuave}"/>
+            <Setter Property="Margin" Value="0,0,0,2"/>
+        </Style>
+
+        <Style x:Key="ValorDetalhe" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Foreground" Value="{StaticResource Texto}"/>
+        </Style>
+
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- TÍTULO -->
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel>
+                <TextBlock FontSize="28" FontWeight="Bold" Foreground="{StaticResource Texto}">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Text" Value="IMÓVEIS"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding MostrandoFormulario}" Value="True">
+                                    <Setter Property="Text" Value="{Binding TituloFormulario}"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding MostrandoDetalhes}" Value="True">
+                                    <Setter Property="Text" Value="Detalhes do imóvel"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+                <TextBlock Text="Gerencie os imóveis cadastrados na imobiliária."
+                           FontSize="14" Foreground="{StaticResource TextoSuave}"
+                           Visibility="{Binding MostrandoLista, Converter={StaticResource BoolParaVisibilidade}}"/>
+            </StackPanel>
+
+            <Button Grid.Column="1" Style="{StaticResource BotaoPrimario}"
+                    Command="{Binding NovoCommand}" VerticalAlignment="Top"
+                    Visibility="{Binding MostrandoLista, Converter={StaticResource BoolParaVisibilidade}}">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="&#xE710;" FontFamily="Segoe MDL2 Assets" FontSize="14"
+                               Margin="0,0,10,0" VerticalAlignment="Center"/>
+                    <TextBlock Text="Novo Imóvel" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Button>
+        </Grid>
+
+        <!-- FILTROS: só na lista -->
+        <Border Grid.Row="1" Style="{StaticResource Cartao}" Margin="0,18,0,0" Padding="20,16"
+                Visibility="{Binding MostrandoLista, Converter={StaticResource BoolParaVisibilidade}}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,14,0">
+                    <TextBlock Text="Busca" Style="{StaticResource Rotulo}"/>
+                    <Border Height="38" CornerRadius="8" Background="#E9ECF0">
+                        <Grid Margin="12,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="&#xE721;" FontFamily="Segoe MDL2 Assets" FontSize="15"
+                                       Foreground="{StaticResource TextoSuave}" VerticalAlignment="Center"/>
+                            <Grid Grid.Column="1" Margin="10,0,0,0">
+                                <TextBox x:Name="txtBusca" BorderThickness="0" Background="Transparent"
+                                         FontSize="14" VerticalContentAlignment="Center"
+                                         Text="{Binding Busca, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBlock Text="Buscar por código, endereço ou bairro"
+                                           Foreground="#8A939E" FontSize="14" IsHitTestVisible="False"
+                                           VerticalAlignment="Center" Margin="2,0,0,0">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Text, ElementName=txtBusca}" Value="">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </Grid>
+                        </Grid>
+                    </Border>
+                </StackPanel>
+
+                <StackPanel Grid.Row="0" Grid.Column="1" Margin="0,0,14,0">
+                    <TextBlock Text="Tipo de imóvel" Style="{StaticResource Rotulo}"/>
+                    <ComboBox Style="{StaticResource ComboArredondado}"
+                              ItemsSource="{Binding Tipos}"
+                              SelectedItem="{Binding TipoSelecionado, Mode=TwoWay}"/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="0" Grid.Column="2" Margin="0,0,14,0">
+                    <TextBlock Text="Finalidade" Style="{StaticResource Rotulo}"/>
+                    <ComboBox Style="{StaticResource ComboArredondado}"
+                              ItemsSource="{Binding Finalidades}"
+                              SelectedItem="{Binding FinalidadeSelecionada, Mode=TwoWay}"/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="0" Grid.Column="3">
+                    <TextBlock Text="Status" Style="{StaticResource Rotulo}"/>
+                    <ComboBox Style="{StaticResource ComboArredondado}"
+                              ItemsSource="{Binding Statuses}"
+                              SelectedItem="{Binding StatusSelecionado, Mode=TwoWay}"/>
+                </StackPanel>
+
+                <Grid Grid.Row="1" Grid.Column="0" Margin="0,14,14,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Margin="0,0,14,0">
+                        <TextBlock Text="Faixa de preço" Style="{StaticResource Rotulo}"/>
+                        <ComboBox Style="{StaticResource ComboArredondado}"
+                                  ItemsSource="{Binding Faixas}"
+                                  SelectedItem="{Binding FaixaSelecionada, Mode=TwoWay}"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="Bairro" Style="{StaticResource Rotulo}"/>
+                        <ComboBox Style="{StaticResource ComboArredondado}"
+                                  ItemsSource="{Binding Bairros}"
+                                  SelectedItem="{Binding BairroSelecionado, Mode=TwoWay}"/>
+                    </StackPanel>
+                </Grid>
+
+                <Button Grid.Row="1" Grid.Column="3" Content="Limpar filtros"
+                        Style="{StaticResource BotaoContorno}"
+                        Command="{Binding LimparFiltrosCommand}"
+                        HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
+            </Grid>
+        </Border>
+
+        <!-- CONTEÚDO: lista OU formulário OU detalhes -->
+        <Grid Grid.Row="2" Margin="0,18,0,0">
+
+            <!-- LISTA -->
+            <Border Style="{StaticResource Cartao}" Padding="20,8"
+                    Visibility="{Binding MostrandoLista, Converter={StaticResource BoolParaVisibilidade}}">
+                <Grid>
+                    <DataGrid ItemsSource="{Binding Imoveis}"
+                              AutoGenerateColumns="False" IsReadOnly="True"
+                              CanUserAddRows="False" CanUserDeleteRows="False"
+                              CanUserResizeColumns="False" CanUserReorderColumns="False"
+                              CanUserSortColumns="False"
+                              HeadersVisibility="Column" GridLinesVisibility="None"
+                              RowHeaderWidth="0" RowHeight="58"
+                              SelectionMode="Single" SelectionUnit="FullRow"
+                              Background="Transparent" BorderThickness="0"
+                              ColumnHeaderStyle="{StaticResource CabecalhoColuna}"
+                              CellStyle="{StaticResource CelulaGrid}"
+                              RowStyle="{StaticResource LinhaGrid}">
+                        <DataGrid.Columns>
+
+                            <DataGridTextColumn Header="Código" Binding="{Binding Codigo}" Width="90"
+                                                ElementStyle="{StaticResource TextoCelula}"/>
+
+                            <DataGridTemplateColumn Header="Imóvel" Width="1.5*" MinWidth="170">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal" Margin="8,0" VerticalAlignment="Center">
+                                            <Border Width="44" Height="44" CornerRadius="6" Background="#E9ECF0"
+                                                    BorderBrush="#CBD1D9" BorderThickness="1">
+                                                <TextBlock Text="&#xEB9F;" FontFamily="Segoe MDL2 Assets"
+                                                           FontSize="18" Foreground="#8A939E"
+                                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <TextBlock Text="{Binding Titulo}" FontSize="14" Margin="10,0,0,0"
+                                                       VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <DataGridTextColumn Header="Endereço" Binding="{Binding Endereco}" Width="1.4*" MinWidth="140"
+                                                ElementStyle="{StaticResource TextoCelula}"/>
+
+                            <DataGridTextColumn Header="Bairro" Binding="{Binding Bairro}" Width="*" MinWidth="100"
+                                                ElementStyle="{StaticResource TextoCelula}"/>
+
+                            <DataGridTextColumn Header="Valor" Width="110"
+                                                Binding="{Binding Valor, StringFormat=C0, ConverterCulture=pt-BR}"
+                                                ElementStyle="{StaticResource TextoCelula}"/>
+
+                            <DataGridTextColumn Header="Finalidade" Binding="{Binding Finalidade}" Width="100"
+                                                ElementStyle="{StaticResource TextoCelula}"/>
+
+                            <DataGridTemplateColumn Header="Status" Width="120">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Border Style="{StaticResource EtiquetaStatus}" Margin="8,0">
+                                            <TextBlock Text="{Binding Status}" Style="{StaticResource TextoStatus}"/>
+                                        </Border>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <DataGridTemplateColumn Header="Ações" Width="140">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal" Margin="8,0" VerticalAlignment="Center">
+                                            <Button Content="&#xE721;" ToolTip="Visualizar"
+                                                    Style="{StaticResource BotaoAcao}"
+                                                    Command="{Binding DataContext.VisualizarCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                    CommandParameter="{Binding}"/>
+                                            <Button Content="&#xE70F;" ToolTip="Editar"
+                                                    Style="{StaticResource BotaoAcao}"
+                                                    Command="{Binding DataContext.EditarCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                    CommandParameter="{Binding}"/>
+                                            <Button Content="&#xE74D;" ToolTip="Excluir"
+                                                    Style="{StaticResource BotaoAcaoPerigo}"
+                                                    Command="{Binding DataContext.ExcluirCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                    CommandParameter="{Binding}"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <TextBlock Text="Nenhum imóvel encontrado com esses filtros."
+                               Foreground="{StaticResource TextoSuave}" FontSize="15"
+                               HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Imoveis.Count}" Value="0">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                </Grid>
+            </Border>
+
+            <!-- FORMULÁRIO (novo ou editar) -->
+            <Border Style="{StaticResource Cartao}" MaxWidth="820" HorizontalAlignment="Stretch"
+                    Visibility="{Binding MostrandoFormulario, Converter={StaticResource BoolParaVisibilidade}}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Cabeçalho do cartão: ícone + título + excluir (só ao editar) -->
+                    <Border Grid.Row="0" Background="#F7F8FA" CornerRadius="12,12,0,0"
+                            BorderBrush="#E6E9EE" BorderThickness="0,0,0,1" Padding="24,18">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Orientation="Horizontal">
+                                <Border Width="42" Height="42" CornerRadius="8" Background="{StaticResource VermelhoClaro}">
+                                    <TextBlock Text="&#xE80F;" FontFamily="Segoe MDL2 Assets" FontSize="18"
+                                               Foreground="{StaticResource Vermelho}"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel Margin="12,0,0,0" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding TituloFormulario}" FontSize="17" FontWeight="Bold"
+                                               Foreground="{StaticResource Texto}"/>
+                                    <TextBlock Text="{Binding SubtituloFormulario}" FontSize="12"
+                                               Foreground="{StaticResource TextoSuave}"/>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <Button Grid.Column="1" Style="{StaticResource BotaoTextoPerigo}"
+                                    Command="{Binding ExcluirDoFormCommand}"
+                                    Visibility="{Binding EditandoExistente, Converter={StaticResource BoolParaVisibilidade}}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="14"
+                                               Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Excluir" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+                    </Border>
+
+                    <!-- Campos -->
+                    <StackPanel Grid.Row="1" Margin="24,4,24,24">
+
+                        <TextBlock Text="Título" Style="{StaticResource RotuloForm}"/>
+                        <TextBox Style="{StaticResource CampoForm}"
+                                 Text="{Binding TituloForm, UpdateSourceTrigger=PropertyChanged}"/>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="16"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Tipo" Style="{StaticResource RotuloForm}"/>
+                                <ComboBox Style="{StaticResource ComboArredondado}"
+                                          ItemsSource="{Binding TiposEnum}"
+                                          SelectedItem="{Binding TipoForm, Mode=TwoWay}"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Finalidade" Style="{StaticResource RotuloForm}"/>
+                                <ComboBox Style="{StaticResource ComboArredondado}"
+                                          ItemsSource="{Binding FinalidadesEnum}"
+                                          SelectedItem="{Binding FinalidadeForm, Mode=TwoWay}"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <TextBlock Text="Endereço" Style="{StaticResource RotuloForm}"/>
+                        <TextBox Style="{StaticResource CampoForm}"
+                                 Text="{Binding EnderecoForm, UpdateSourceTrigger=PropertyChanged}"/>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="16"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Bairro" Style="{StaticResource RotuloForm}"/>
+                                <TextBox Style="{StaticResource CampoForm}"
+                                         Text="{Binding BairroForm, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Valor (R$)" Style="{StaticResource RotuloForm}"/>
+                                <TextBox Style="{StaticResource CampoForm}"
+                                         Text="{Binding ValorForm, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="14"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="14"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Status" Style="{StaticResource RotuloForm}"/>
+                                <ComboBox Style="{StaticResource ComboArredondado}"
+                                          ItemsSource="{Binding StatusesEnum}"
+                                          SelectedItem="{Binding StatusForm, Mode=TwoWay}"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Quartos" Style="{StaticResource RotuloForm}"/>
+                                <TextBox Style="{StaticResource CampoForm}"
+                                         Text="{Binding QuartosForm, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="4">
+                                <TextBlock Text="Vagas" Style="{StaticResource RotuloForm}"/>
+                                <TextBox Style="{StaticResource CampoForm}"
+                                         Text="{Binding VagasForm, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <TextBlock Text="{Binding ErroForm}" Foreground="{StaticResource Vermelho}"
+                                   FontSize="13" TextWrapping="Wrap" Margin="0,16,0,0">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ErroForm}" Value="">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+
+                        <!-- Rodapé: Voltar no canto esquerdo, Salvar no direito -->
+                        <Grid Margin="0,24,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Button Grid.Column="0" Style="{StaticResource BotaoContorno}"
+                                    Command="{Binding CancelarFormCommand}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="&#xE72B;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                               Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Voltar" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+
+                            <Button Grid.Column="2" Content="Salvar" Style="{StaticResource BotaoPrimario}"
+                                    Command="{Binding SalvarFormCommand}"/>
+                        </Grid>
+
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- DETALHES -->
+            <Border Style="{StaticResource Cartao}" MaxWidth="820" HorizontalAlignment="Stretch"
+                    Visibility="{Binding MostrandoDetalhes, Converter={StaticResource BoolParaVisibilidade}}">
+                <!-- DataContext do imóvel fica só no Grid interno, para não quebrar o Visibility acima -->
+                <Grid DataContext="{Binding ImovelDetalhe}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Cabeçalho: ícone + imóvel + código + status em destaque -->
+                    <Border Grid.Row="0" Background="#F7F8FA" CornerRadius="12,12,0,0"
+                            BorderBrush="#E6E9EE" BorderThickness="0,0,0,1" Padding="24,18">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Orientation="Horizontal">
+                                <Border Width="52" Height="52" CornerRadius="8" Background="#E9ECF0"
+                                        BorderBrush="#CBD1D9" BorderThickness="1">
+                                    <TextBlock Text="&#xEB9F;" FontFamily="Segoe MDL2 Assets" FontSize="22"
+                                               Foreground="#8A939E"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel Margin="14,0,0,0" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding Titulo}" FontSize="18" FontWeight="Bold"
+                                               Foreground="{StaticResource Texto}"/>
+                                    <TextBlock Text="{Binding Codigo}" FontSize="12"
+                                               Foreground="{StaticResource TextoSuave}"/>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <Border Grid.Column="1" Style="{StaticResource EtiquetaStatus}" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding Status}" Style="{StaticResource TextoStatus}"/>
+                            </Border>
+                        </Grid>
+                    </Border>
+
+                    <!-- Campos em pares rótulo/valor -->
+                    <StackPanel Grid.Row="1" Margin="24,20,24,24">
+
+                        <Grid Margin="0,0,0,18">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="TIPO" Style="{StaticResource RotuloDetalhe}"/>
+                                <TextBlock Text="{Binding Tipo}" Style="{StaticResource ValorDetalhe}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="FINALIDADE" Style="{StaticResource RotuloDetalhe}"/>
+                                <TextBlock Text="{Binding Finalidade}" Style="{StaticResource ValorDetalhe}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="VALOR" Style="{StaticResource RotuloDetalhe}"/>
+                                <TextBlock Text="{Binding Valor, StringFormat=C0, ConverterCulture=pt-BR}"
+                                           FontSize="18" FontWeight="Bold" Foreground="{StaticResource Vermelho}"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <StackPanel Margin="0,0,0,18">
+                            <TextBlock Text="ENDEREÇO" Style="{StaticResource RotuloDetalhe}"/>
+                            <TextBlock Style="{StaticResource ValorDetalhe}">
+                                <Run Text="{Binding Endereco}"/><Run Text=" - "/><Run Text="{Binding Bairro}"/>
+                            </TextBlock>
+                        </StackPanel>
+
+                        <Grid Margin="0,0,0,18">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="QUARTOS" Style="{StaticResource RotuloDetalhe}"/>
+                                <TextBlock Text="{Binding Quartos}" Style="{StaticResource ValorDetalhe}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="VAGAS" Style="{StaticResource RotuloDetalhe}"/>
+                                <TextBlock Text="{Binding Vagas}" Style="{StaticResource ValorDetalhe}"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- Rodapé: Voltar no canto esquerdo, Editar no direito -->
+                        <Grid Margin="0,10,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Button Grid.Column="0" Style="{StaticResource BotaoContorno}"
+                                    Command="{Binding DataContext.FecharDetalhesCommand, RelativeSource={RelativeSource AncestorType=UserControl}}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="&#xE72B;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                               Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Voltar" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+
+                            <Button Grid.Column="2" Content="Editar imóvel" Style="{StaticResource BotaoPrimario}"
+                                    Command="{Binding DataContext.EditarDosDetalhesCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                        </Grid>
+
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+        </Grid>
+    </Grid>
+</UserControl>
