@@ -38,8 +38,9 @@ namespace SaciGestao
                     AreaConteudo.Content = new ClientesView();
                     break;
 
-                // Quando os colegas terminarem as telas deles, é só trocar aqui:
-                // case "rbContratos": AreaConteudo.Content = new ContratosView(); break;
+                case "rbContratos":
+                    AreaConteudo.Content = new ContratosView();
+                    break;
 
                 default:
                     AreaConteudo.Content = new TextBlock
