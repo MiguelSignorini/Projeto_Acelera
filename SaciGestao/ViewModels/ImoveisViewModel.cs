@@ -120,8 +120,20 @@ namespace SaciGestao.ViewModels
         private string _enderecoForm = string.Empty;
         public string EnderecoForm { get => _enderecoForm; set => SetProperty(ref _enderecoForm, value); }
 
+        private string _numeroForm = string.Empty;
+        public string NumeroForm { get => _numeroForm; set => SetProperty(ref _numeroForm, value); }
+
         private string _bairroForm = string.Empty;
         public string BairroForm { get => _bairroForm; set => SetProperty(ref _bairroForm, value); }
+
+        private string _cidadeForm = string.Empty;
+        public string CidadeForm { get => _cidadeForm; set => SetProperty(ref _cidadeForm, value); }
+
+        private string _estadoForm = string.Empty;
+        public string EstadoForm { get => _estadoForm; set => SetProperty(ref _estadoForm, value); }
+
+        private string _cepForm = string.Empty;
+        public string CepForm { get => _cepForm; set => SetProperty(ref _cepForm, value); }
 
         private string _valorForm = string.Empty;
         public string ValorForm { get => _valorForm; set => SetProperty(ref _valorForm, value); }
@@ -131,6 +143,15 @@ namespace SaciGestao.ViewModels
 
         private string _vagasForm = "0";
         public string VagasForm { get => _vagasForm; set => SetProperty(ref _vagasForm, value); }
+
+        private string _descricaoForm = string.Empty;
+        public string DescricaoForm { get => _descricaoForm; set => SetProperty(ref _descricaoForm, value); }
+
+        private string _matriculaEdpForm = string.Empty;
+        public string MatriculaEdpForm { get => _matriculaEdpForm; set => SetProperty(ref _matriculaEdpForm, value); }
+
+        private string _matriculaSabespForm = string.Empty;
+        public string MatriculaSabespForm { get => _matriculaSabespForm; set => SetProperty(ref _matriculaSabespForm, value); }
 
         private TipoImovel _tipoForm;
         public TipoImovel TipoForm { get => _tipoForm; set => SetProperty(ref _tipoForm, value); }
@@ -207,10 +228,17 @@ namespace SaciGestao.ViewModels
             SubtituloFormulario = "Preencha os dados do imóvel";
             TituloForm = string.Empty;
             EnderecoForm = string.Empty;
+            NumeroForm = string.Empty;
             BairroForm = string.Empty;
+            CidadeForm = string.Empty;
+            EstadoForm = string.Empty;
+            CepForm = string.Empty;
             ValorForm = string.Empty;
             QuartosForm = "0";
             VagasForm = "0";
+            DescricaoForm = string.Empty;
+            MatriculaEdpForm = string.Empty;
+            MatriculaSabespForm = string.Empty;
             TipoForm = TipoImovel.Casa;
             FinalidadeForm = FinalidadeImovel.Venda;
             StatusForm = StatusImovel.Disponível;
@@ -229,10 +257,17 @@ namespace SaciGestao.ViewModels
             SubtituloFormulario = imovel.Codigo;
             TituloForm = imovel.Titulo;
             EnderecoForm = imovel.Endereco;
+            NumeroForm = imovel.Numero;
             BairroForm = imovel.Bairro;
+            CidadeForm = imovel.Cidade;
+            EstadoForm = imovel.Estado;
+            CepForm = imovel.Cep;
             ValorForm = imovel.Valor > 0 ? imovel.Valor.ToString("N2", PtBr) : string.Empty;
             QuartosForm = imovel.Quartos.ToString();
             VagasForm = imovel.Vagas.ToString();
+            DescricaoForm = imovel.Descricao;
+            MatriculaEdpForm = imovel.MatriculaEdp;
+            MatriculaSabespForm = imovel.MatriculaSabesp;
             TipoForm = imovel.Tipo;
             FinalidadeForm = imovel.Finalidade;
             StatusForm = imovel.Status;
@@ -269,13 +304,20 @@ namespace SaciGestao.ViewModels
                 Id = _idEmEdicao,
                 Titulo = TituloForm.Trim(),
                 Endereco = EnderecoForm.Trim(),
+                Numero = NumeroForm.Trim(),
                 Bairro = BairroForm.Trim(),
+                Cidade = CidadeForm.Trim(),
+                Estado = EstadoForm.Trim().ToUpperInvariant(),
+                Cep = CepForm.Trim(),
                 Tipo = TipoForm,
                 Finalidade = FinalidadeForm,
                 Status = StatusForm,
                 Valor = valor,
                 Quartos = quartos,
-                Vagas = vagas
+                Vagas = vagas,
+                Descricao = DescricaoForm.Trim(),
+                MatriculaEdp = MatriculaEdpForm.Trim(),
+                MatriculaSabesp = MatriculaSabespForm.Trim()
             };
 
             if (_idEmEdicao == 0)
@@ -383,7 +425,7 @@ namespace SaciGestao.ViewModels
                 string t = _busca.Trim();
                 consulta = consulta.Where(i =>
                     Contem(i.Codigo, t) || Contem(i.Titulo, t) ||
-                    Contem(i.Endereco, t) || Contem(i.Bairro, t));
+                    Contem(i.Endereco, t) || Contem(i.Bairro, t) || Contem(i.Cidade, t));
             }
 
             if (_tipo != Todos)
