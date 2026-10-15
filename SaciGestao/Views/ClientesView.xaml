@@ -650,7 +650,8 @@
                     </Border>
 
                     <!-- Campos: Dados Pessoais / Contato / Informações Adicionais (igual à Tela 5) -->
-                    <StackPanel Grid.Row="1" Margin="24,4,24,24">
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="24,4,24,24">
 
                         <TextBlock Text="DADOS PESSOAIS" Style="{StaticResource TituloSecaoForm}"/>
                         <Grid>
@@ -680,9 +681,37 @@
                                          Text="{Binding RgForm, UpdateSourceTrigger=PropertyChanged}"/>
                             </StackPanel>
                             <StackPanel Grid.Column="6">
+                                <TextBlock Text="Órgão Emissor do RG" Style="{StaticResource Rotulo}"/>
+                                <TextBox Style="{StaticResource CampoForm}"
+                                         Text="{Binding OrgaoEmissorRgForm, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+                        </Grid>
+                        <Grid Margin="0,14,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="12"/>
+                                <ColumnDefinition Width="1.3*"/>
+                                <ColumnDefinition Width="12"/>
+                                <ColumnDefinition Width="1*"/>
+                                <ColumnDefinition Width="12"/>
+                                <ColumnDefinition Width="1.3*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
                                 <TextBlock Text="Data de Nascimento" Style="{StaticResource Rotulo}"/>
                                 <DatePicker Style="{StaticResource DataPickerForm}"
                                             SelectedDate="{Binding DataNascimentoForm, Mode=TwoWay}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Nacionalidade" Style="{StaticResource Rotulo}"/>
+                                <TextBox Style="{StaticResource CampoForm}"
+                                         Text="{Binding NacionalidadeForm, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="4" Grid.ColumnSpan="3">
+                                <TextBlock Text="Estado Civil" Style="{StaticResource Rotulo}"/>
+                                <ComboBox Style="{StaticResource ComboArredondado}"
+                                          ItemsSource="{Binding EstadosCivis}"
+                                          SelectedItem="{Binding EstadoCivilForm, Mode=TwoWay}"/>
                             </StackPanel>
                         </Grid>
 
@@ -710,6 +739,53 @@
                                 <TextBlock Text="E-mail" Style="{StaticResource Rotulo}"/>
                                 <TextBox Style="{StaticResource CampoForm}"
                                          Text="{Binding EmailForm, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <TextBlock Text="ENDEREÇO DE DOMICÍLIO" Style="{StaticResource TituloSecaoForm}"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="3*"/>
+                                <ColumnDefinition Width="12"/>
+                                <ColumnDefinition Width="1*"/>
+                                <ColumnDefinition Width="12"/>
+                                <ColumnDefinition Width="2*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Rua" Style="{StaticResource Rotulo}"/>
+                                <TextBox Style="{StaticResource CampoForm}"
+                                         Text="{Binding RuaForm, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Número" Style="{StaticResource Rotulo}"/>
+                                <TextBox Style="{StaticResource CampoForm}"
+                                         Text="{Binding NumeroForm, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="4">
+                                <TextBlock Text="Bairro" Style="{StaticResource Rotulo}"/>
+                                <TextBox Style="{StaticResource CampoForm}"
+                                         Text="{Binding BairroForm, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+                        </Grid>
+                        <Grid Margin="0,14,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="3*"/>
+                                <ColumnDefinition Width="12"/>
+                                <ColumnDefinition Width="1*"/>
+                                <ColumnDefinition Width="12"/>
+                                <ColumnDefinition Width="2*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="CEP" Style="{StaticResource Rotulo}"/>
+                                <TextBox Style="{StaticResource CampoForm}"
+                                         Text="{Binding CepForm, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2" Grid.ColumnSpan="3">
+                                <TextBlock Text="Cidade" Style="{StaticResource Rotulo}"/>
+                                <TextBox Style="{StaticResource CampoForm}"
+                                         Text="{Binding CidadeForm, UpdateSourceTrigger=PropertyChanged}"/>
                             </StackPanel>
                         </Grid>
 
@@ -790,6 +866,7 @@
                         </Grid>
 
                     </StackPanel>
+                    </ScrollViewer>
                 </Grid>
             </Border>
 
@@ -847,33 +924,58 @@
                                     <TextBlock Text="DADOS PESSOAIS" Style="{StaticResource TituloSecaoDetalhe}"/>
                                 </StackPanel>
                                 <Border Style="{StaticResource CaixaDetalhe}">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="2*"/>
-                                    <ColumnDefinition Width="16"/>
-                                    <ColumnDefinition Width="1.3*"/>
-                                    <ColumnDefinition Width="16"/>
-                                    <ColumnDefinition Width="1*"/>
-                                    <ColumnDefinition Width="16"/>
-                                    <ColumnDefinition Width="1.4*"/>
-                                        </Grid.ColumnDefinitions>
-                                <StackPanel Grid.Column="0">
-                                    <TextBlock Text="Nome Completo" Style="{StaticResource RotuloDetalhe}"/>
-                                    <TextBlock Text="{Binding Nome}" Style="{StaticResource ValorDetalhe}"/>
-                                </StackPanel>
-                                <StackPanel Grid.Column="2">
-                                    <TextBlock Text="CPF" Style="{StaticResource RotuloDetalhe}"/>
-                                    <TextBlock Text="{Binding Cpf}" Style="{StaticResource ValorDetalhe}"/>
-                                </StackPanel>
-                                <StackPanel Grid.Column="4">
-                                    <TextBlock Text="RG" Style="{StaticResource RotuloDetalhe}"/>
-                                    <TextBlock Text="{Binding RgTexto}" Style="{StaticResource ValorDetalhe}"/>
-                                </StackPanel>
-                                <StackPanel Grid.Column="6">
-                                    <TextBlock Text="Data de Nascimento" Style="{StaticResource RotuloDetalhe}"/>
-                                    <TextBlock Text="{Binding NascimentoTexto}" Style="{StaticResource ValorDetalhe}"/>
-                                </StackPanel>
-                                    </Grid>
+                                    <StackPanel>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="16"/>
+                                        <ColumnDefinition Width="1.3*"/>
+                                        <ColumnDefinition Width="16"/>
+                                        <ColumnDefinition Width="1*"/>
+                                        <ColumnDefinition Width="16"/>
+                                        <ColumnDefinition Width="1.3*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="Nome Completo" Style="{StaticResource RotuloDetalhe}"/>
+                                        <TextBlock Text="{Binding Nome}" Style="{StaticResource ValorDetalhe}"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2">
+                                        <TextBlock Text="CPF" Style="{StaticResource RotuloDetalhe}"/>
+                                        <TextBlock Text="{Binding Cpf}" Style="{StaticResource ValorDetalhe}"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="4">
+                                        <TextBlock Text="RG" Style="{StaticResource RotuloDetalhe}"/>
+                                        <TextBlock Text="{Binding RgTexto}" Style="{StaticResource ValorDetalhe}"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="6">
+                                        <TextBlock Text="Órgão Emissor do RG" Style="{StaticResource RotuloDetalhe}"/>
+                                        <TextBlock Text="{Binding OrgaoEmissorRgTexto}" Style="{StaticResource ValorDetalhe}"/>
+                                    </StackPanel>
+                                </Grid>
+                                <Grid Margin="0,16,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="16"/>
+                                        <ColumnDefinition Width="1.3*"/>
+                                        <ColumnDefinition Width="16"/>
+                                        <ColumnDefinition Width="1*"/>
+                                        <ColumnDefinition Width="16"/>
+                                        <ColumnDefinition Width="1.3*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="Data de Nascimento" Style="{StaticResource RotuloDetalhe}"/>
+                                        <TextBlock Text="{Binding NascimentoTexto}" Style="{StaticResource ValorDetalhe}"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2">
+                                        <TextBlock Text="Nacionalidade" Style="{StaticResource RotuloDetalhe}"/>
+                                        <TextBlock Text="{Binding NacionalidadeTexto}" Style="{StaticResource ValorDetalhe}"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="4" Grid.ColumnSpan="3">
+                                        <TextBlock Text="Estado Civil" Style="{StaticResource RotuloDetalhe}"/>
+                                        <TextBlock Text="{Binding EstadoCivilTexto}" Style="{StaticResource ValorDetalhe}"/>
+                                    </StackPanel>
+                                </Grid>
+                                    </StackPanel>
                                 </Border>
                             </StackPanel>
                             <StackPanel Margin="0,0,0,22">
@@ -886,27 +988,81 @@
                                     <TextBlock Text="CONTATO" Style="{StaticResource TituloSecaoDetalhe}"/>
                                 </StackPanel>
                                 <Border Style="{StaticResource CaixaDetalhe}">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="16"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="16"/>
-                                    <ColumnDefinition Width="1.4*"/>
-                                        </Grid.ColumnDefinitions>
-                                <StackPanel Grid.Column="0">
-                                    <TextBlock Text="Telefone Principal" Style="{StaticResource RotuloDetalhe}"/>
-                                    <TextBlock Text="{Binding TelefonePrincipalTexto}" Style="{StaticResource ValorDetalhe}"/>
+                                    <StackPanel>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="16"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="16"/>
+                                        <ColumnDefinition Width="1.4*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="Telefone Principal" Style="{StaticResource RotuloDetalhe}"/>
+                                        <TextBlock Text="{Binding TelefonePrincipalTexto}" Style="{StaticResource ValorDetalhe}"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2">
+                                        <TextBlock Text="Telefone Secundário" Style="{StaticResource RotuloDetalhe}"/>
+                                        <TextBlock Text="{Binding TelefoneSecundarioTexto}" Style="{StaticResource ValorDetalhe}"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="4">
+                                        <TextBlock Text="E-mail" Style="{StaticResource RotuloDetalhe}"/>
+                                        <TextBlock Text="{Binding Email}" Style="{StaticResource ValorDetalhe}"/>
+                                    </StackPanel>
+                                </Grid>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+                            <StackPanel Margin="0,0,0,22">
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                                    <Border Style="{StaticResource IconeSecaoDetalhe}">
+                                        <TextBlock Text="&#xE80F;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                                   Foreground="{StaticResource Vermelho}"
+                                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <TextBlock Text="ENDEREÇO DE DOMICÍLIO" Style="{StaticResource TituloSecaoDetalhe}"/>
                                 </StackPanel>
-                                <StackPanel Grid.Column="2">
-                                    <TextBlock Text="Telefone Secundário" Style="{StaticResource RotuloDetalhe}"/>
-                                    <TextBlock Text="{Binding TelefoneSecundarioTexto}" Style="{StaticResource ValorDetalhe}"/>
-                                </StackPanel>
-                                <StackPanel Grid.Column="4">
-                                    <TextBlock Text="E-mail" Style="{StaticResource RotuloDetalhe}"/>
-                                    <TextBlock Text="{Binding Email}" Style="{StaticResource ValorDetalhe}"/>
-                                </StackPanel>
-                                    </Grid>
+                                <Border Style="{StaticResource CaixaDetalhe}">
+                                    <StackPanel>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="3*"/>
+                                        <ColumnDefinition Width="16"/>
+                                        <ColumnDefinition Width="1*"/>
+                                        <ColumnDefinition Width="16"/>
+                                        <ColumnDefinition Width="2*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="Rua" Style="{StaticResource RotuloDetalhe}"/>
+                                        <TextBlock Text="{Binding RuaTexto}" Style="{StaticResource ValorDetalhe}"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2">
+                                        <TextBlock Text="Número" Style="{StaticResource RotuloDetalhe}"/>
+                                        <TextBlock Text="{Binding NumeroTexto}" Style="{StaticResource ValorDetalhe}"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="4">
+                                        <TextBlock Text="Bairro" Style="{StaticResource RotuloDetalhe}"/>
+                                        <TextBlock Text="{Binding BairroTexto}" Style="{StaticResource ValorDetalhe}"/>
+                                    </StackPanel>
+                                </Grid>
+                                <Grid Margin="0,16,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="3*"/>
+                                        <ColumnDefinition Width="16"/>
+                                        <ColumnDefinition Width="1*"/>
+                                        <ColumnDefinition Width="16"/>
+                                        <ColumnDefinition Width="2*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="CEP" Style="{StaticResource RotuloDetalhe}"/>
+                                        <TextBlock Text="{Binding CepTexto}" Style="{StaticResource ValorDetalhe}"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2" Grid.ColumnSpan="3">
+                                        <TextBlock Text="Cidade" Style="{StaticResource RotuloDetalhe}"/>
+                                        <TextBlock Text="{Binding CidadeTexto}" Style="{StaticResource ValorDetalhe}"/>
+                                    </StackPanel>
+                                </Grid>
+                                    </StackPanel>
                                 </Border>
                             </StackPanel>
                             <StackPanel Margin="0">
@@ -919,37 +1075,39 @@
                                     <TextBlock Text="INFORMAÇÕES ADICIONAIS" Style="{StaticResource TituloSecaoDetalhe}"/>
                                 </StackPanel>
                                 <Border Style="{StaticResource CaixaDetalhe}">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="16"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="16"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="16"/>
-                                    <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
-                                <StackPanel Grid.Column="0">
-                                    <TextBlock Text="Tipo de Cliente" Style="{StaticResource RotuloDetalhe}"/>
-                                    <TextBlock Text="{Binding Tipo}" Style="{StaticResource ValorDetalhe}"/>
-                                </StackPanel>
-                                <StackPanel Grid.Column="2">
-                                    <TextBlock Text="Status" Style="{StaticResource RotuloDetalhe}"/>
-                                    <StackPanel Orientation="Horizontal">
-                                        <Ellipse Style="{StaticResource PontoStatus}" VerticalAlignment="Center"/>
-                                        <TextBlock Text="{Binding StatusTexto}" FontSize="15"
-                                                   Style="{StaticResource TextoStatusCliente}"/>
+                                    <StackPanel>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="16"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="16"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="16"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="Tipo de Cliente" Style="{StaticResource RotuloDetalhe}"/>
+                                        <TextBlock Text="{Binding Tipo}" Style="{StaticResource ValorDetalhe}"/>
                                     </StackPanel>
-                                </StackPanel>
-                                <StackPanel Grid.Column="4">
-                                    <TextBlock Text="Cargo / Profissão" Style="{StaticResource RotuloDetalhe}"/>
-                                    <TextBlock Text="{Binding ProfissaoTexto}" Style="{StaticResource ValorDetalhe}"/>
-                                </StackPanel>
-                                <StackPanel Grid.Column="6">
-                                    <TextBlock Text="Empresa" Style="{StaticResource RotuloDetalhe}"/>
-                                    <TextBlock Text="{Binding EmpresaTexto}" Style="{StaticResource ValorDetalhe}"/>
-                                </StackPanel>
-                                    </Grid>
+                                    <StackPanel Grid.Column="2">
+                                        <TextBlock Text="Status" Style="{StaticResource RotuloDetalhe}"/>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Ellipse Style="{StaticResource PontoStatus}" VerticalAlignment="Center"/>
+                                            <TextBlock Text="{Binding StatusTexto}" FontSize="15"
+                                                       Style="{StaticResource TextoStatusCliente}"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="4">
+                                        <TextBlock Text="Cargo / Profissão" Style="{StaticResource RotuloDetalhe}"/>
+                                        <TextBlock Text="{Binding ProfissaoTexto}" Style="{StaticResource ValorDetalhe}"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="6">
+                                        <TextBlock Text="Empresa" Style="{StaticResource RotuloDetalhe}"/>
+                                        <TextBlock Text="{Binding EmpresaTexto}" Style="{StaticResource ValorDetalhe}"/>
+                                    </StackPanel>
+                                </Grid>
+                                    </StackPanel>
                                 </Border>
                             </StackPanel>
                         </StackPanel>
