@@ -37,6 +37,18 @@ namespace SaciGestao.Models
         public string Profissao { get; set; } = string.Empty;
         public string Empresa { get; set; } = string.Empty;
 
+        // Documentos e dados civis
+        public string OrgaoEmissorRg { get; set; } = string.Empty;
+        public string Nacionalidade { get; set; } = string.Empty;
+        public string EstadoCivil { get; set; } = string.Empty;
+
+        // Endereço de domicílio
+        public string Rua { get; set; } = string.Empty;
+        public string Numero { get; set; } = string.Empty;
+        public string Bairro { get; set; } = string.Empty;
+        public string Cep { get; set; } = string.Empty;
+        public string Cidade { get; set; } = string.Empty;
+
         // O enum não aceita espaço no nome, então "Em Atendimento" vem daqui pra mostrar na tela
         public string StatusTexto => Status switch
         {
@@ -85,6 +97,14 @@ namespace SaciGestao.Models
         public string TelefoneSecundarioTexto => OuNaoInformado(TelefoneSecundario);
         public string ProfissaoTexto => OuNaoInformado(Profissao);
         public string EmpresaTexto => OuNaoInformado(Empresa);
+        public string OrgaoEmissorRgTexto => OuNaoInformado(OrgaoEmissorRg);
+        public string NacionalidadeTexto => OuNaoInformado(Nacionalidade);
+        public string EstadoCivilTexto => OuNaoInformado(EstadoCivil);
+        public string RuaTexto => OuNaoInformado(Rua);
+        public string NumeroTexto => OuNaoInformado(Numero);
+        public string BairroTexto => OuNaoInformado(Bairro);
+        public string CepTexto => OuNaoInformado(Cep);
+        public string CidadeTexto => OuNaoInformado(Cidade);
 
         // Cria uma cópia, usada na edição (só grava se o usuário salvar)
         public Cliente Clonar()
@@ -136,6 +156,14 @@ namespace SaciGestao.Service
             existente.Status = editado.Status;
             existente.Profissao = editado.Profissao;
             existente.Empresa = editado.Empresa;
+            existente.OrgaoEmissorRg = editado.OrgaoEmissorRg;
+            existente.Nacionalidade = editado.Nacionalidade;
+            existente.EstadoCivil = editado.EstadoCivil;
+            existente.Rua = editado.Rua;
+            existente.Numero = editado.Numero;
+            existente.Bairro = editado.Bairro;
+            existente.Cep = editado.Cep;
+            existente.Cidade = editado.Cidade;
         }
 
         public void Excluir(int id)
@@ -145,8 +173,8 @@ namespace SaciGestao.Service
 
         private void CarregarExemplos()
         {
-            Adicionar(new Cliente { Nome = "João Silva", Cpf = "123.456.789-10", TelefonePrincipal = "(11) 98765-4321", Email = "joao.silva@email.com", Tipo = TipoCliente.Proprietário, Status = StatusCliente.Ativo, Profissao = "Engenheiro" });
-            Adicionar(new Cliente { Nome = "Maria Oliveira", Cpf = "234.567.891-02", TelefonePrincipal = "(11) 98765-1122", Email = "maria.oliveira@email.com", Tipo = TipoCliente.Comprador, Status = StatusCliente.EmAtendimento, Profissao = "Professora" });
+            Adicionar(new Cliente { Nome = "João Silva", Cpf = "123.456.789-10", TelefonePrincipal = "(11) 98765-4321", Email = "joao.silva@email.com", Tipo = TipoCliente.Proprietário, Status = StatusCliente.Ativo, Profissao = "Engenheiro", Rg = "12.345.678-9", OrgaoEmissorRg = "SSP/SP", Nacionalidade = "Brasileira", EstadoCivil = "Casado(a)", Rua = "Rua das Flores", Numero = "120", Bairro = "Centro", Cep = "01001-000", Cidade = "São Paulo" });
+            Adicionar(new Cliente { Nome = "Maria Oliveira", Cpf = "234.567.891-02", TelefonePrincipal = "(11) 98765-1122", Email = "maria.oliveira@email.com", Tipo = TipoCliente.Comprador, Status = StatusCliente.EmAtendimento, Profissao = "Professora", Rg = "23.456.789-0", OrgaoEmissorRg = "SSP/SP", Nacionalidade = "Brasileira", EstadoCivil = "Solteiro(a)", Rua = "Av. Paulista", Numero = "1500", Bairro = "Bela Vista", Cep = "01310-200", Cidade = "São Paulo" });
             Adicionar(new Cliente { Nome = "Carlos Souza", Cpf = "345.678.912-03", TelefonePrincipal = "(11) 97654-3311", Email = "carlos.souza@email.com", Tipo = TipoCliente.Inquilino, Status = StatusCliente.Ativo, Profissao = "Autônomo" });
             Adicionar(new Cliente { Nome = "Fernanda Lima", Cpf = "456.789.123-04", TelefonePrincipal = "(11) 96543-2210", Email = "fernanda.lima@email.com", Tipo = TipoCliente.Proprietário, Status = StatusCliente.EmAtendimento, Empresa = "Lima Comércio" });
             Adicionar(new Cliente { Nome = "Roberto Alves", Cpf = "567.891.234-05", TelefonePrincipal = "(11) 95432-1109", Email = "roberto.alves@email.com", Tipo = TipoCliente.Comprador, Status = StatusCliente.Inativo, Profissao = "Contador" });
