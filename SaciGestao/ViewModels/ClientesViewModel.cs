@@ -13,6 +13,7 @@ namespace SaciGestao.ViewModels
     {
         private const string Todos = "Todos";
         private static readonly string[] StatusTextos = { "Ativo", "Em Atendimento", "Inativo" };
+        private static readonly string[] EstadosCivisTextos = { "Solteiro(a)", "Casado(a)", "Separado(a)", "Divorciado(a)", "Viúvo(a)", "União Estável" };
 
         private readonly ClienteService _service = ClienteService.Instancia;
 
@@ -112,6 +113,14 @@ namespace SaciGestao.ViewModels
         private string _statusForm = "Ativo";
         private string _profissaoForm = string.Empty;
         private string _empresaForm = string.Empty;
+        private string _orgaoEmissorRgForm = string.Empty;
+        private string _nacionalidadeForm = string.Empty;
+        private string _estadoCivilForm = string.Empty;
+        private string _ruaForm = string.Empty;
+        private string _numeroForm = string.Empty;
+        private string _bairroForm = string.Empty;
+        private string _cepForm = string.Empty;
+        private string _cidadeForm = string.Empty;
 
         public string NomeForm { get => _nomeForm; set => SetProperty(ref _nomeForm, value); }
         public string CpfForm { get => _cpfForm; set => SetProperty(ref _cpfForm, value); }
@@ -124,9 +133,18 @@ namespace SaciGestao.ViewModels
         public string StatusForm { get => _statusForm; set => SetProperty(ref _statusForm, value); }
         public string ProfissaoForm { get => _profissaoForm; set => SetProperty(ref _profissaoForm, value); }
         public string EmpresaForm { get => _empresaForm; set => SetProperty(ref _empresaForm, value); }
+        public string OrgaoEmissorRgForm { get => _orgaoEmissorRgForm; set => SetProperty(ref _orgaoEmissorRgForm, value); }
+        public string NacionalidadeForm { get => _nacionalidadeForm; set => SetProperty(ref _nacionalidadeForm, value); }
+        public string EstadoCivilForm { get => _estadoCivilForm; set => SetProperty(ref _estadoCivilForm, value); }
+        public string RuaForm { get => _ruaForm; set => SetProperty(ref _ruaForm, value); }
+        public string NumeroForm { get => _numeroForm; set => SetProperty(ref _numeroForm, value); }
+        public string BairroForm { get => _bairroForm; set => SetProperty(ref _bairroForm, value); }
+        public string CepForm { get => _cepForm; set => SetProperty(ref _cepForm, value); }
+        public string CidadeForm { get => _cidadeForm; set => SetProperty(ref _cidadeForm, value); }
 
         public List<TipoCliente> TiposEnum { get; } = Enum.GetValues(typeof(TipoCliente)).Cast<TipoCliente>().ToList();
         public List<string> StatusesForm { get; } = StatusTextos.ToList();
+        public List<string> EstadosCivis { get; } = EstadosCivisTextos.ToList();
 
         // ---------- Comandos ----------
         public ICommand NovoCommand { get; }
@@ -243,6 +261,14 @@ namespace SaciGestao.ViewModels
             StatusForm = c.StatusTexto;
             ProfissaoForm = c.Profissao;
             EmpresaForm = c.Empresa;
+            OrgaoEmissorRgForm = c.OrgaoEmissorRg;
+            NacionalidadeForm = c.Nacionalidade;
+            EstadoCivilForm = c.EstadoCivil;
+            RuaForm = c.Rua;
+            NumeroForm = c.Numero;
+            BairroForm = c.Bairro;
+            CepForm = c.Cep;
+            CidadeForm = c.Cidade;
         }
 
         private void SalvarForm()
@@ -274,6 +300,14 @@ namespace SaciGestao.ViewModels
             _clienteEmEdicao.Status = StatusDeTexto(StatusForm);
             _clienteEmEdicao.Profissao = ProfissaoForm.Trim();
             _clienteEmEdicao.Empresa = EmpresaForm.Trim();
+            _clienteEmEdicao.OrgaoEmissorRg = (OrgaoEmissorRgForm ?? string.Empty).Trim();
+            _clienteEmEdicao.Nacionalidade = (NacionalidadeForm ?? string.Empty).Trim();
+            _clienteEmEdicao.EstadoCivil = (EstadoCivilForm ?? string.Empty).Trim();
+            _clienteEmEdicao.Rua = (RuaForm ?? string.Empty).Trim();
+            _clienteEmEdicao.Numero = (NumeroForm ?? string.Empty).Trim();
+            _clienteEmEdicao.Bairro = (BairroForm ?? string.Empty).Trim();
+            _clienteEmEdicao.Cep = (CepForm ?? string.Empty).Trim();
+            _clienteEmEdicao.Cidade = (CidadeForm ?? string.Empty).Trim();
 
             if (EditandoExistente)
                 _service.Atualizar(_clienteEmEdicao);
