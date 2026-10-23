@@ -30,18 +30,22 @@ namespace SaciGestao.Service
             _contratos.Add(contrato);
 
             // Regra RF12: Atualizar automaticamente o status do imóvel para Alugado ou Vendido
-            var imovel = ImovelService.Instancia.ObterAtivos().FirstOrDefault(i => i.Id == contrato.ImovelId);
-            if (imovel != null)
-            {
-                imovel.Status = contrato.Tipo == TipoContrato.Locacao ? StatusImovel.Alugado : StatusImovel.Vendido;
-                ImovelService.Instancia.Atualizar(imovel);
-            }
+            AtualizarStatusImovel(contrato.ImovelId, contrato.Tipo == TipoContrato.Locacao
+                ? StatusImovel.Alugado
+                : StatusImovel.Vendido);
         }
 
         public void Atualizar(Contrato editado)
         {
             var existente = _contratos.FirstOrDefault(c => c.Id == editado.Id);
             if (existente == null) return;
+
+            // Se o contrato mudou de imóvel, devolve o imóvel antigo para Disponível
+            // antes de marcar o novo como Alugado/Vendido
+            if (existente.ImovelId != editado.ImovelId)
+            {
+                DevolverImovelSeNaoTiverOutroContrato(existente.ImovelId, existente.Id);
+            }
 
             existente.ImovelId = editado.ImovelId;
             existente.LocatarioId = editado.LocatarioId;
@@ -60,11 +64,46 @@ namespace SaciGestao.Service
             existente.UC_Energia = editado.UC_Energia;
             existente.UC_Agua = editado.UC_Agua;
             existente.Observacoes = editado.Observacoes;
+
+            AtualizarStatusImovel(existente.ImovelId, existente.Tipo == TipoContrato.Locacao
+                ? StatusImovel.Alugado
+                : StatusImovel.Vendido);
         }
 
         public void Excluir(int id)
         {
+            var contrato = _contratos.FirstOrDefault(c => c.Id == id);
+            if (contrato == null) return;
+
             _contratos.RemoveAll(c => c.Id == id);
+
+            // Devolve o imóvel para Disponível, a menos que outro contrato ativo ainda o use
+            DevolverImovelSeNaoTiverOutroContrato(contrato.ImovelId, contrato.Id);
+        }
+
+        // ---------- Helpers ----------
+        private void AtualizarStatusImovel(int imovelId, StatusImovel novoStatus)
+        {
+            var imovel = ImovelService.Instancia.ObterAtivos().FirstOrDefault(i => i.Id == imovelId);
+            if (imovel == null) return;
+
+            imovel.Status = novoStatus;
+            ImovelService.Instancia.Atualizar(imovel);
+        }
+
+        // Só volta o imóvel para Disponível se não houver outro contrato ativo usando ele
+        // (ignorando o próprio contrato que está sendo excluído/alterado, identificado por contratoIdIgnorado)
+        private void DevolverImovelSeNaoTiverOutroContrato(int imovelId, int contratoIdIgnorado)
+        {
+            bool temOutroContratoAtivo = _contratos.Any(c =>
+                c.Id != contratoIdIgnorado &&
+                c.Ativo &&
+                c.ImovelId == imovelId &&
+                c.Status == StatusContrato.Ativo);
+
+            if (temOutroContratoAtivo) return;
+
+            AtualizarStatusImovel(imovelId, StatusImovel.Disponível);
         }
 
         private void CarregarExemplos()

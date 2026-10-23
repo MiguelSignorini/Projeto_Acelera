@@ -53,6 +53,7 @@ namespace SaciGestao.Service
             if (existente == null) return;
 
             existente.Titulo = editado.Titulo;
+            existente.ProprietarioNome = editado.ProprietarioNome; // Novo campo
             existente.Endereco = editado.Endereco;
             existente.Numero = editado.Numero;
             existente.Bairro = editado.Bairro;
@@ -64,6 +65,10 @@ namespace SaciGestao.Service
             existente.Status = editado.Status;
             existente.Valor = editado.Valor;
             existente.Quartos = editado.Quartos;
+            existente.Suites = editado.Suites;       // Novo campo
+            existente.Banheiros = editado.Banheiros; // Novo campo
+            existente.Cozinhas = editado.Cozinhas;   // Novo campo
+            existente.Salas = editado.Salas;         // Novo campo
             existente.Vagas = editado.Vagas;
             existente.Descricao = editado.Descricao;
             existente.MatriculaEdp = editado.MatriculaEdp;

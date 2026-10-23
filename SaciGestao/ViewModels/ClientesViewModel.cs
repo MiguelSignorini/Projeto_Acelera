@@ -2,376 +2,317 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows;
 using System.Windows.Input;
 using SaciGestao.Models;
 using SaciGestao.Service;
 
 namespace SaciGestao.ViewModels
 {
-    public class ClientesViewModel : ViewModelBase
+    public class ContratosViewModel : ViewModelBase
     {
-        private const string Todos = "Todos";
-        private static readonly string[] StatusTextos = { "Ativo", "Em Atendimento", "Inativo" };
-        private static readonly string[] EstadosCivisTextos = { "Solteiro(a)", "Casado(a)", "Separado(a)", "Divorciado(a)", "Viúvo(a)", "União Estável" };
+        private ObservableCollection<Contrato> _contratos = new ObservableCollection<Contrato>();
+        public ObservableCollection<Contrato> Contratos
+        {
+            get => _contratos;
+            set => SetProperty(ref _contratos, value);
+        }
 
-        private readonly ClienteService _service = ClienteService.Instancia;
+        private Contrato _contratoForm = new Contrato();
+        public Contrato ContratoForm
+        {
+            get => _contratoForm;
+            set => SetProperty(ref _contratoForm, value);
+        }
+
+        private Contrato? _contratoDetalhe;
+        public Contrato? ContratoDetalhe
+        {
+            get => _contratoDetalhe;
+            set => SetProperty(ref _contratoDetalhe, value);
+        }
+
+        public int ImovelIdSelecionado
+        {
+            get => ContratoForm?.ImovelId ?? 0;
+            set
+            {
+                if (ContratoForm != null && ContratoForm.ImovelId != value)
+                {
+                    ContratoForm.ImovelId = value;
+                    OnPropertyChanged(nameof(ImovelIdSelecionado));
+
+                    AoSelecionarImovel(value);
+                }
+            }
+        }
+
+        public List<Imovel> ListaImoveis
+        {
+            get
+            {
+                var imovelAtualId = ContratoForm?.ImovelId ?? 0;
+                return ImovelService.Instancia.ObterAtivos()
+                    .Where(i => i.Status == StatusImovel.Disponível || i.Id == imovelAtualId)
+                    .ToList();
+            }
+        }
+
+        // --- FILTRO 1: Inquilinos e Compradores ---
+        public List<Cliente> ListaLocatarios
+        {
+            get
+            {
+                var locatarioAtualId = ContratoForm?.LocatarioId ?? 0;
+                return ClienteService.Instancia.ObterTodos()
+                    .Where(c => (c.Status != StatusCliente.Inativo &&
+                                (c.Tipo == TipoCliente.Inquilino || c.Tipo == TipoCliente.Comprador))
+                                || c.Id == locatarioAtualId)
+                    .ToList();
+            }
+        }
+
+        // --- FILTRO 2: Proprietários / Locadores ---
+        public List<Cliente> ListaLocadores
+        {
+            get
+            {
+                var locadorAtualId = ContratoForm?.LocadorId ?? 0;
+                return ClienteService.Instancia.ObterTodos()
+                    .Where(c => (c.Status != StatusCliente.Inativo && c.Tipo == TipoCliente.Proprietário)
+                                || c.Id == locadorAtualId)
+                    .ToList();
+            }
+        }
 
         private string _busca = string.Empty;
-        private string _filtroTipo = Todos;
-
-        private int _totalTodos;
-        private int _totalProprietarios;
-        private int _totalCompradores;
-        private int _totalInquilinos;
-
-        // ---------- Dados mostrados na lista ----------
-        public ObservableCollection<Cliente> Clientes { get; } = new ObservableCollection<Cliente>();
-
-        public int TotalTodos { get => _totalTodos; private set => SetProperty(ref _totalTodos, value); }
-        public int TotalProprietarios { get => _totalProprietarios; private set => SetProperty(ref _totalProprietarios, value); }
-        public int TotalCompradores { get => _totalCompradores; private set => SetProperty(ref _totalCompradores, value); }
-        public int TotalInquilinos { get => _totalInquilinos; private set => SetProperty(ref _totalInquilinos, value); }
-
-        // ---------- Filtros (cada um refiltra a lista ao mudar) ----------
         public string Busca
         {
             get => _busca;
-            set { if (SetProperty(ref _busca, value)) Filtrar(); }
+            set
+            {
+                if (SetProperty(ref _busca, value))
+                    Filtrar();
+            }
         }
 
+        private string _filtroTipo = "Todos";
         public string FiltroTipo
         {
             get => _filtroTipo;
-            set { if (value != null && SetProperty(ref _filtroTipo, value)) Filtrar(); }
+            set
+            {
+                if (SetProperty(ref _filtroTipo, value))
+                    Filtrar();
+            }
         }
 
-        // ---------- Controle de qual "tela" aparece: lista, detalhes ou formulário ----------
-        // (igual ao padrão usado em Imóveis: nada de popup, troca o conteúdo na mesma tela)
-        private bool _mostrandoFormulario;
-        private bool _mostrandoDetalhes;
-        public bool MostrandoLista => !_mostrandoFormulario && !_mostrandoDetalhes;
-        public bool MostrandoFormulario => _mostrandoFormulario;
-        public bool MostrandoDetalhes => _mostrandoDetalhes;
+        public int TotalLocacao => ContratoService.Instancia.ObterAtivos().Count(c => c.Tipo == TipoContrato.Locacao);
+        public int TotalVenda => ContratoService.Instancia.ObterAtivos().Count(c => c.Tipo == TipoContrato.Venda);
 
-        private void AtualizarTela()
+        private bool _mostrandoLista = true;
+        public bool MostrandoLista
         {
-            OnPropertyChanged(nameof(MostrandoLista));
-            OnPropertyChanged(nameof(MostrandoFormulario));
-            OnPropertyChanged(nameof(MostrandoDetalhes));
+            get => _mostrandoLista;
+            set => SetProperty(ref _mostrandoLista, value);
         }
 
-        private void AbrirFormulario()
+        private bool _mostrandoFormulario = false;
+        public bool MostrandoFormulario
         {
-            _mostrandoFormulario = true;
-            _mostrandoDetalhes = false;
-            AtualizarTela();
+            get => _mostrandoFormulario;
+            set => SetProperty(ref _mostrandoFormulario, value);
         }
 
-        private void FecharFormulario()
+        private bool _mostrandoDetalhes = false;
+        public bool MostrandoDetalhes
         {
-            _mostrandoFormulario = false;
-            AtualizarTela();
+            get => _mostrandoDetalhes;
+            set => SetProperty(ref _mostrandoDetalhes, value);
         }
 
-        private void AbrirDetalhes()
+        private string _tituloFormulario = "NOVO CONTRATO";
+        public string TituloFormulario
         {
-            _mostrandoDetalhes = true;
-            _mostrandoFormulario = false;
-            AtualizarTela();
+            get => _tituloFormulario;
+            set => SetProperty(ref _tituloFormulario, value);
         }
 
-        private void FecharDetalhes()
+        private bool _editandoExistente = false;
+        public bool EditandoExistente
         {
-            _mostrandoDetalhes = false;
-            AtualizarTela();
+            get => _editandoExistente;
+            set => SetProperty(ref _editandoExistente, value);
         }
 
-        // ---------- Cliente mostrado na tela de detalhes ----------
-        private Cliente? _clienteDetalhe;
-        public Cliente? ClienteDetalhe { get => _clienteDetalhe; private set => SetProperty(ref _clienteDetalhe, value); }
+        public Array TiposContratoEnum => Enum.GetValues(typeof(TipoContrato));
+        public Array StatusesContratoEnum => Enum.GetValues(typeof(StatusContrato));
 
-        // ---------- Dados do formulário (Novo / Editar) ----------
-        private Cliente? _clienteEmEdicao;
-        private string _tituloFormulario = "Novo cliente";
-        private string _subtituloFormulario = "Preencha os dados do novo cliente.";
-        private string _erroForm = string.Empty;
-
-        public string TituloFormulario { get => _tituloFormulario; private set => SetProperty(ref _tituloFormulario, value); }
-        public string SubtituloFormulario { get => _subtituloFormulario; private set => SetProperty(ref _subtituloFormulario, value); }
-        public bool EditandoExistente => _clienteEmEdicao != null && _clienteEmEdicao.Id != 0;
-        public string ErroForm { get => _erroForm; private set => SetProperty(ref _erroForm, value); }
-
-        private string _nomeForm = string.Empty;
-        private string _cpfForm = string.Empty;
-        private string _rgForm = string.Empty;
-        private DateTime? _dataNascimentoForm;
-        private string _telefonePrincipalForm = string.Empty;
-        private string _telefoneSecundarioForm = string.Empty;
-        private string _emailForm = string.Empty;
-        private TipoCliente _tipoForm = TipoCliente.Proprietário;
-        private string _statusForm = "Ativo";
-        private string _profissaoForm = string.Empty;
-        private string _empresaForm = string.Empty;
-        private string _orgaoEmissorRgForm = string.Empty;
-        private string _nacionalidadeForm = string.Empty;
-        private string _estadoCivilForm = string.Empty;
-        private string _ruaForm = string.Empty;
-        private string _numeroForm = string.Empty;
-        private string _bairroForm = string.Empty;
-        private string _cepForm = string.Empty;
-        private string _cidadeForm = string.Empty;
-
-        public string NomeForm { get => _nomeForm; set => SetProperty(ref _nomeForm, value); }
-        public string CpfForm { get => _cpfForm; set => SetProperty(ref _cpfForm, value); }
-        public string RgForm { get => _rgForm; set => SetProperty(ref _rgForm, value); }
-        public DateTime? DataNascimentoForm { get => _dataNascimentoForm; set => SetProperty(ref _dataNascimentoForm, value); }
-        public string TelefonePrincipalForm { get => _telefonePrincipalForm; set => SetProperty(ref _telefonePrincipalForm, value); }
-        public string TelefoneSecundarioForm { get => _telefoneSecundarioForm; set => SetProperty(ref _telefoneSecundarioForm, value); }
-        public string EmailForm { get => _emailForm; set => SetProperty(ref _emailForm, value); }
-        public TipoCliente TipoForm { get => _tipoForm; set => SetProperty(ref _tipoForm, value); }
-        public string StatusForm { get => _statusForm; set => SetProperty(ref _statusForm, value); }
-        public string ProfissaoForm { get => _profissaoForm; set => SetProperty(ref _profissaoForm, value); }
-        public string EmpresaForm { get => _empresaForm; set => SetProperty(ref _empresaForm, value); }
-        public string OrgaoEmissorRgForm { get => _orgaoEmissorRgForm; set => SetProperty(ref _orgaoEmissorRgForm, value); }
-        public string NacionalidadeForm { get => _nacionalidadeForm; set => SetProperty(ref _nacionalidadeForm, value); }
-        public string EstadoCivilForm { get => _estadoCivilForm; set => SetProperty(ref _estadoCivilForm, value); }
-        public string RuaForm { get => _ruaForm; set => SetProperty(ref _ruaForm, value); }
-        public string NumeroForm { get => _numeroForm; set => SetProperty(ref _numeroForm, value); }
-        public string BairroForm { get => _bairroForm; set => SetProperty(ref _bairroForm, value); }
-        public string CepForm { get => _cepForm; set => SetProperty(ref _cepForm, value); }
-        public string CidadeForm { get => _cidadeForm; set => SetProperty(ref _cidadeForm, value); }
-
-        public List<TipoCliente> TiposEnum { get; } = Enum.GetValues(typeof(TipoCliente)).Cast<TipoCliente>().ToList();
-        public List<string> StatusesForm { get; } = StatusTextos.ToList();
-        public List<string> EstadosCivis { get; } = EstadosCivisTextos.ToList();
-
-        // ---------- Comandos ----------
         public ICommand NovoCommand { get; }
-        public ICommand VisualizarCommand { get; }
         public ICommand EditarCommand { get; }
+        public ICommand VisualizarCommand { get; }
         public ICommand ExcluirCommand { get; }
-
-        public ICommand FecharDetalhesCommand { get; }
-        public ICommand EditarDoDetalheCommand { get; }
-        public ICommand ExcluirDoDetalheCommand { get; }
-
         public ICommand SalvarFormCommand { get; }
         public ICommand CancelarFormCommand { get; }
-        public ICommand ExcluirDoFormCommand { get; }
+        public ICommand FecharDetalhesCommand { get; }
+        public ICommand GerarPdfCommand { get; }
 
-        public ClientesViewModel()
+        public ContratosViewModel()
         {
             NovoCommand = new RelayCommand(_ => Novo());
-            VisualizarCommand = new RelayCommand(p => Visualizar(p as Cliente));
-            EditarCommand = new RelayCommand(p => Editar(p as Cliente));
-            ExcluirCommand = new RelayCommand(p => Excluir(p as Cliente));
-
-            FecharDetalhesCommand = new RelayCommand(_ => FecharDetalhes());
-            EditarDoDetalheCommand = new RelayCommand(_ => EditarDoDetalhe());
-            ExcluirDoDetalheCommand = new RelayCommand(_ => ExcluirDoDetalhe());
-
-            SalvarFormCommand = new RelayCommand(_ => SalvarForm());
-            CancelarFormCommand = new RelayCommand(_ => FecharFormulario());
-            ExcluirDoFormCommand = new RelayCommand(_ => ExcluirDoForm());
-
-            Recarregar();
-        }
-
-        // ---------- Ações da lista ----------
-        private void Novo()
-        {
-            _clienteEmEdicao = new Cliente();
-            CarregarFormulario(_clienteEmEdicao);
-            TituloFormulario = "Novo cliente";
-            SubtituloFormulario = "Preencha os dados do novo cliente.";
-            ErroForm = string.Empty;
-            OnPropertyChanged(nameof(EditandoExistente));
-            AbrirFormulario();
-        }
-
-        private void Editar(Cliente? cliente)
-        {
-            if (cliente == null) return;
-
-            _clienteEmEdicao = cliente.Clonar();   // edita a cópia; só grava se salvar
-            CarregarFormulario(_clienteEmEdicao);
-            TituloFormulario = "Editar cliente";
-            SubtituloFormulario = "Atualize os dados do cliente.";
-            ErroForm = string.Empty;
-            OnPropertyChanged(nameof(EditandoExistente));
-            AbrirFormulario();
-        }
-
-        private void Visualizar(Cliente? c)
-        {
-            if (c == null) return;
-
-            ClienteDetalhe = c;
-            AbrirDetalhes();
-        }
-
-        // ---------- Ações da tela de detalhes ----------
-        private void EditarDoDetalhe()
-        {
-            var cliente = ClienteDetalhe;
-            FecharDetalhes();
-            Editar(cliente);
-        }
-
-        private void ExcluirDoDetalhe()
-        {
-            var cliente = ClienteDetalhe;
-            if (cliente == null || !ConfirmarExclusao(cliente)) return;
-
-            _service.Excluir(cliente.Id);
-            Recarregar();
-            FecharDetalhes();
-        }
-
-        // Qualquer cliente pode ser excluído, independente do status
-        private static bool ConfirmarExclusao(Cliente c)
-        {
-            var resposta = MessageBox.Show(
-                "Excluir definitivamente o cliente " + c.Nome + "?",
-                "Confirmar exclusão", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-
-            return resposta == MessageBoxResult.Yes;
-        }
-
-        private void Excluir(Cliente? c)
-        {
-            if (c == null || !ConfirmarExclusao(c)) return;
-
-            _service.Excluir(c.Id);
-            Recarregar();
-        }
-
-        // ---------- Ações do formulário ----------
-        private void CarregarFormulario(Cliente c)
-        {
-            NomeForm = c.Nome;
-            CpfForm = c.Cpf;
-            RgForm = c.Rg;
-            DataNascimentoForm = c.DataNascimento;
-            TelefonePrincipalForm = c.TelefonePrincipal;
-            TelefoneSecundarioForm = c.TelefoneSecundario;
-            EmailForm = c.Email;
-            TipoForm = c.Tipo;
-            StatusForm = c.StatusTexto;
-            ProfissaoForm = c.Profissao;
-            EmpresaForm = c.Empresa;
-            OrgaoEmissorRgForm = c.OrgaoEmissorRg;
-            NacionalidadeForm = c.Nacionalidade;
-            EstadoCivilForm = c.EstadoCivil;
-            RuaForm = c.Rua;
-            NumeroForm = c.Numero;
-            BairroForm = c.Bairro;
-            CepForm = c.Cep;
-            CidadeForm = c.Cidade;
-        }
-
-        private void SalvarForm()
-        {
-            if (string.IsNullOrWhiteSpace(NomeForm) ||
-                string.IsNullOrWhiteSpace(CpfForm) ||
-                string.IsNullOrWhiteSpace(EmailForm))
-            {
-                ErroForm = "Preencha nome, CPF e e-mail.";
-                return;
-            }
-
-            if (!EmailForm.Contains('@'))
-            {
-                ErroForm = "Informe um e-mail válido.";
-                return;
-            }
-
-            if (_clienteEmEdicao == null) return;
-
-            _clienteEmEdicao.Nome = NomeForm.Trim();
-            _clienteEmEdicao.Cpf = CpfForm.Trim();
-            _clienteEmEdicao.Rg = RgForm.Trim();
-            _clienteEmEdicao.DataNascimento = DataNascimentoForm;
-            _clienteEmEdicao.TelefonePrincipal = TelefonePrincipalForm.Trim();
-            _clienteEmEdicao.TelefoneSecundario = TelefoneSecundarioForm.Trim();
-            _clienteEmEdicao.Email = EmailForm.Trim();
-            _clienteEmEdicao.Tipo = TipoForm;
-            _clienteEmEdicao.Status = StatusDeTexto(StatusForm);
-            _clienteEmEdicao.Profissao = ProfissaoForm.Trim();
-            _clienteEmEdicao.Empresa = EmpresaForm.Trim();
-            _clienteEmEdicao.OrgaoEmissorRg = (OrgaoEmissorRgForm ?? string.Empty).Trim();
-            _clienteEmEdicao.Nacionalidade = (NacionalidadeForm ?? string.Empty).Trim();
-            _clienteEmEdicao.EstadoCivil = (EstadoCivilForm ?? string.Empty).Trim();
-            _clienteEmEdicao.Rua = (RuaForm ?? string.Empty).Trim();
-            _clienteEmEdicao.Numero = (NumeroForm ?? string.Empty).Trim();
-            _clienteEmEdicao.Bairro = (BairroForm ?? string.Empty).Trim();
-            _clienteEmEdicao.Cep = (CepForm ?? string.Empty).Trim();
-            _clienteEmEdicao.Cidade = (CidadeForm ?? string.Empty).Trim();
-
-            if (EditandoExistente)
-                _service.Atualizar(_clienteEmEdicao);
-            else
-                _service.Adicionar(_clienteEmEdicao);
-
-            Recarregar();
-            FecharFormulario();
-        }
-
-        private void ExcluirDoForm()
-        {
-            if (_clienteEmEdicao == null || !EditandoExistente) return;
-
-            if (!ConfirmarExclusao(_clienteEmEdicao)) return;
-
-            _service.Excluir(_clienteEmEdicao.Id);
-            Recarregar();
-            FecharFormulario();
-        }
-
-        private static StatusCliente StatusDeTexto(string? texto)
-        {
-            return texto switch
-            {
-                "Em Atendimento" => StatusCliente.EmAtendimento,
-                "Inativo" => StatusCliente.Inativo,
-                _ => StatusCliente.Ativo
-            };
-        }
-
-        // ---------- Lista e filtros ----------
-        private void Recarregar()
-        {
-            var todos = _service.ObterTodos();
-
-            TotalTodos = todos.Count;
-            TotalProprietarios = todos.Count(c => c.Tipo == TipoCliente.Proprietário);
-            TotalCompradores = todos.Count(c => c.Tipo == TipoCliente.Comprador);
-            TotalInquilinos = todos.Count(c => c.Tipo == TipoCliente.Inquilino);
+            EditarCommand = new RelayCommand(param => Editar(param as Contrato));
+            VisualizarCommand = new RelayCommand(param => Visualizar(param as Contrato));
+            ExcluirCommand = new RelayCommand(param => Excluir(param as Contrato));
+            SalvarFormCommand = new RelayCommand(_ => Salvar());
+            CancelarFormCommand = new RelayCommand(_ => VoltarParaLista());
+            FecharDetalhesCommand = new RelayCommand(_ => VoltarParaLista());
+            GerarPdfCommand = new RelayCommand(_ => GerarPdf());
 
             Filtrar();
         }
 
-        private void Filtrar()
+        private void AoSelecionarImovel(int imovelId)
         {
-            IEnumerable<Cliente> consulta = _service.ObterTodos();
+            if (imovelId <= 0) return;
 
-            if (!string.IsNullOrWhiteSpace(_busca))
+            var imovel = ImovelService.Instancia.ObterAtivos().FirstOrDefault(i => i.Id == imovelId);
+            if (imovel == null) return;
+
+            ContratoForm.ImovelTitulo = imovel.Titulo;
+            if (ContratoForm.ValorMensal == 0)
             {
-                string t = _busca.Trim();
-                consulta = consulta.Where(c => Contem(c.Nome, t) || Contem(c.Cpf, t));
+                ContratoForm.ValorMensal = imovel.Valor;
             }
 
-            if (_filtroTipo != Todos)
-                consulta = consulta.Where(c => c.Tipo.ToString() == _filtroTipo);
+            if (!string.IsNullOrWhiteSpace(imovel.ProprietarioNome))
+            {
+                var clienteProprietario = ListaLocadores.FirstOrDefault(c =>
+                    string.Equals(c.Nome, imovel.ProprietarioNome, StringComparison.OrdinalIgnoreCase));
 
-            Clientes.Clear();
-            foreach (var cliente in consulta) Clientes.Add(cliente);
+                if (clienteProprietario != null)
+                {
+                    ContratoForm.LocadorId = clienteProprietario.Id;
+                    ContratoForm.LocadorNome = clienteProprietario.Nome;
+                }
+                else
+                {
+                    ContratoForm.LocadorNome = imovel.ProprietarioNome;
+                    ContratoForm.LocadorId = 0;
+                }
+            }
+
+            OnPropertyChanged(nameof(ContratoForm));
+            OnPropertyChanged(nameof(ContratoForm.LocadorId));
+            OnPropertyChanged(nameof(ContratoForm.LocadorNome));
+            OnPropertyChanged(nameof(ContratoForm.ValorMensal));
         }
 
-        private static bool Contem(string texto, string trecho)
+        private void GerarPdf()
         {
-            return (texto ?? string.Empty).IndexOf(trecho, StringComparison.OrdinalIgnoreCase) >= 0;
+            if (ContratoDetalhe != null)
+            {
+                PdfContratoService.GerarECompletar(ContratoDetalhe);
+            }
+        }
+
+        private void Filtrar()
+        {
+            var lista = ContratoService.Instancia.ObterAtivos();
+
+            if (FiltroTipo == "Locacao")
+                lista = lista.Where(c => c.Tipo == TipoContrato.Locacao).ToList();
+            else if (FiltroTipo == "Venda")
+                lista = lista.Where(c => c.Tipo == TipoContrato.Venda).ToList();
+
+            if (!string.IsNullOrWhiteSpace(Busca))
+            {
+                var termo = Busca.ToLower();
+                lista = lista.Where(c => c.Codigo.ToLower().Contains(termo) ||
+                                         c.ImovelTitulo.ToLower().Contains(termo) ||
+                                         c.LocatarioNome.ToLower().Contains(termo) ||
+                                         c.LocadorNome.ToLower().Contains(termo)).ToList();
+            }
+
+            Contratos = new ObservableCollection<Contrato>(lista);
+            OnPropertyChanged(nameof(TotalLocacao));
+            OnPropertyChanged(nameof(TotalVenda));
+        }
+
+        private void Novo()
+        {
+            ContratoForm = new Contrato();
+            TituloFormulario = "NOVO CONTRATO";
+            EditandoExistente = false;
+
+            OnPropertyChanged(nameof(ListaImoveis));
+            OnPropertyChanged(nameof(ListaLocatarios));
+            OnPropertyChanged(nameof(ListaLocadores));
+            OnPropertyChanged(nameof(ImovelIdSelecionado));
+
+            MostrandoLista = false;
+            MostrandoDetalhes = false;
+            MostrandoFormulario = true;
+        }
+
+        private void Editar(Contrato? contrato)
+        {
+            if (contrato == null) return;
+            ContratoForm = contrato.Clonar();
+            TituloFormulario = "EDITAR CONTRATO";
+            EditandoExistente = true;
+
+            OnPropertyChanged(nameof(ListaImoveis));
+            OnPropertyChanged(nameof(ListaLocatarios));
+            OnPropertyChanged(nameof(ListaLocadores));
+            OnPropertyChanged(nameof(ImovelIdSelecionado));
+
+            MostrandoLista = false;
+            MostrandoDetalhes = false;
+            MostrandoFormulario = true;
+        }
+
+        private void Visualizar(Contrato? contrato)
+        {
+            if (contrato == null) return;
+            ContratoDetalhe = contrato;
+            MostrandoLista = false;
+            MostrandoFormulario = false;
+            MostrandoDetalhes = true;
+        }
+
+        private void Excluir(Contrato? contrato)
+        {
+            if (contrato == null) return;
+            ContratoService.Instancia.Excluir(contrato.Id);
+            Filtrar();
+        }
+
+        private void Salvar()
+        {
+            if (ContratoForm == null) return;
+
+            var imovel = ListaImoveis.FirstOrDefault(i => i.Id == ContratoForm.ImovelId);
+            if (imovel != null) ContratoForm.ImovelTitulo = imovel.Titulo;
+
+            var locatario = ListaLocatarios.FirstOrDefault(c => c.Id == ContratoForm.LocatarioId);
+            if (locatario != null) ContratoForm.LocatarioNome = locatario.Nome;
+
+            var locador = ListaLocadores.FirstOrDefault(c => c.Id == ContratoForm.LocadorId);
+            if (locador != null) ContratoForm.LocadorNome = locador.Nome;
+
+            if (ContratoForm.Id == 0)
+                ContratoService.Instancia.Adicionar(ContratoForm);
+            else
+                ContratoService.Instancia.Atualizar(ContratoForm);
+
+            VoltarParaLista();
+        }
+
+        private void VoltarParaLista()
+        {
+            MostrandoFormulario = false;
+            MostrandoDetalhes = false;
+            MostrandoLista = true;
+            Filtrar();
         }
     }
 }

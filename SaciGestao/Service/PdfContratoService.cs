@@ -26,23 +26,18 @@ namespace SaciGestao.Service
 
                 // 1. LOGOTIPO E CABEÇALHO OFICIAL
                 var pLogo = new Paragraph { TextAlignment = TextAlignment.Center, Margin = new Thickness(0, 0, 0, 5) };
-                try
+                var logo = CarregarLogo();
+                if (logo != null)
                 {
-                    // Certifique-se de adicionar a imagem em sua pasta de recursos ou projeto
-                    string caminhoLogo = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "logo.png");
-                    if (File.Exists(caminhoLogo))
+                    var imagem = new Image
                     {
-                        var imagem = new Image
-                        {
-                            Source = new BitmapImage(new Uri(caminhoLogo)),
-                            Width = 140,
-                            Height = 70
-                        };
-                        pLogo.Inlines.Add(imagem);
-                    }
+                        Source = logo,
+                        Width = 140,
+                        Height = 70
+                    };
+                    pLogo.Inlines.Add(imagem);
                 }
-                catch { /* Ignora caso o arquivo de imagem não esteja na pasta exata ainda */ }
-                
+
                 doc.Blocks.Add(pLogo);
 
                 var pCabecalho = new Paragraph() { TextAlignment = TextAlignment.Center, Margin = new Thickness(0, 0, 0, 10) };
@@ -161,6 +156,25 @@ namespace SaciGestao.Service
             catch (Exception ex)
             {
                 MessageBox.Show($"Erro ao gerar PDF: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        // Carrega o logo do jeito que o MainWindow já usa (Resources/logo.png como Resource do projeto).
+        // Se não existir ou der qualquer problema, o PDF é gerado sem logo, sem travar.
+        private static BitmapImage? CarregarLogo()
+        {
+            try
+            {
+                var imagem = new BitmapImage();
+                imagem.BeginInit();
+                imagem.UriSource = new Uri("pack://application:,,,/Resources/logo.png", UriKind.Absolute);
+                imagem.CacheOption = BitmapCacheOption.OnLoad;
+                imagem.EndInit();
+                return imagem;
+            }
+            catch
+            {
+                return null;
             }
         }
 

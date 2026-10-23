@@ -169,7 +169,7 @@
 
         <!-- CONTEÚDO PRINCIPAL -->
         <Grid Grid.Row="2" Margin="0,18,0,0">
-            
+
             <!-- LISTA / TABELA DE CONTRATOS -->
             <Border Style="{StaticResource Cartao}" Padding="20" Visibility="{Binding MostrandoLista, Converter={StaticResource BoolParaVisibilidade}}">
                 <DataGrid ItemsSource="{Binding Contratos}" AutoGenerateColumns="False" IsReadOnly="True" HeadersVisibility="Column" GridLinesVisibility="None" RowHeight="52" Background="Transparent" BorderThickness="0">
@@ -263,17 +263,17 @@
                                 <ColumnDefinition Width="12"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            
+
                             <StackPanel Grid.Column="0">
                                 <TextBlock Text="Código do Contrato" Style="{StaticResource Rotulo}"/>
                                 <TextBox Style="{StaticResource CampoForm}" Text="{Binding ContratoForm.Codigo, UpdateSourceTrigger=PropertyChanged}"/>
                             </StackPanel>
-                            
+
                             <StackPanel Grid.Column="2">
                                 <TextBlock Text="Data de Início" Style="{StaticResource Rotulo}"/>
                                 <DatePicker SelectedDate="{Binding ContratoForm.DataInicio, Mode=TwoWay}" Height="38" VerticalContentAlignment="Center"/>
                             </StackPanel>
-                            
+
                             <!-- ComboBox de Índice de Reajuste -->
                             <StackPanel Grid.Column="4">
                                 <TextBlock Text="Índice de Reajuste" Style="{StaticResource Rotulo}"/>
@@ -283,7 +283,7 @@
                                     <ComboBoxItem Content="INPC"/>
                                 </ComboBox>
                             </StackPanel>
-                            
+
                             <StackPanel Grid.Column="6">
                                 <TextBlock Text="Multa por Atraso (%)" Style="{StaticResource Rotulo}"/>
                                 <TextBox Style="{StaticResource CampoForm}" Text="{Binding ContratoForm.PercentualMultaAtraso, UpdateSourceTrigger=PropertyChanged}"/>
