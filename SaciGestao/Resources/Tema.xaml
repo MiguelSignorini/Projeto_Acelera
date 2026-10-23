@@ -1,0 +1,36 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--
+        Paleta única do sistema (todas as telas usam estas cores).
+        Critérios WCAG 2.1 (W3C): texto com contraste mínimo de 4,5:1 e
+        bordas de campos / ícones com no mínimo 3:1 contra o fundo branco.
+
+        Azul   = ação principal (confiança, calma)
+        Verde  = positivo / disponível / ativo
+        Âmbar  = atenção moderada / reservado
+        Vermelho = SOMENTE perigo: excluir, erro, cancelado
+    -->
+
+    <!-- Ação principal -->
+    <SolidColorBrush x:Key="Primaria" Color="#1E5BB8"/>            <!-- branco sobre ela: 6,6:1 -->
+    <SolidColorBrush x:Key="PrimariaEscura" Color="#174A96"/>      <!-- hover -->
+    <SolidColorBrush x:Key="PrimariaClara" Color="#E8F0FB"/>       <!-- fundos suaves -->
+
+    <!-- Estados -->
+    <SolidColorBrush x:Key="Sucesso" Color="#1E7B3A"/>
+    <SolidColorBrush x:Key="SucessoClaro" Color="#E4F4E8"/>
+    <SolidColorBrush x:Key="Atencao" Color="#8A5300"/>
+    <SolidColorBrush x:Key="AtencaoClara" Color="#FFF4D6"/>
+    <SolidColorBrush x:Key="Perigo" Color="#C62828"/>              <!-- vermelho só para perigo/erro -->
+    <SolidColorBrush x:Key="PerigoClaro" Color="#FDECEC"/>
+
+    <!-- Texto e bordas -->
+    <SolidColorBrush x:Key="Texto" Color="#1F2933"/>
+    <SolidColorBrush x:Key="TextoSuave" Color="#4B5563"/>          <!-- 7,5:1 no branco -->
+    <SolidColorBrush x:Key="Borda" Color="#8591A1"/>               <!-- bordas de campos: 3,4:1 -->
+
+    <!-- Menu lateral / identidade -->
+    <SolidColorBrush x:Key="CorMenu" Color="#222B33"/>
+
+</ResourceDictionary>

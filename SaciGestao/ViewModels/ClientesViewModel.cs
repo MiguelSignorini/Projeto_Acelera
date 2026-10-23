@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
@@ -8,80 +7,27 @@ using SaciGestao.Service;
 
 namespace SaciGestao.ViewModels
 {
-    public class ContratosViewModel : ViewModelBase
+    public class ClientesViewModel : ViewModelBase
     {
-        private ObservableCollection<Contrato> _contratos = new ObservableCollection<Contrato>();
-        public ObservableCollection<Contrato> Contratos
+        private ObservableCollection<Cliente> _clientes = [];
+        public ObservableCollection<Cliente> Clientes
         {
-            get => _contratos;
-            set => SetProperty(ref _contratos, value);
+            get => _clientes;
+            set => SetProperty(ref _clientes, value);
         }
 
-        private Contrato _contratoForm = new Contrato();
-        public Contrato ContratoForm
+        private Cliente _clienteForm = new();
+        public Cliente ClienteForm
         {
-            get => _contratoForm;
-            set => SetProperty(ref _contratoForm, value);
+            get => _clienteForm;
+            set => SetProperty(ref _clienteForm, value);
         }
 
-        private Contrato? _contratoDetalhe;
-        public Contrato? ContratoDetalhe
+        private Cliente? _clienteDetalhe;
+        public Cliente? ClienteDetalhe
         {
-            get => _contratoDetalhe;
-            set => SetProperty(ref _contratoDetalhe, value);
-        }
-
-        public int ImovelIdSelecionado
-        {
-            get => ContratoForm?.ImovelId ?? 0;
-            set
-            {
-                if (ContratoForm != null && ContratoForm.ImovelId != value)
-                {
-                    ContratoForm.ImovelId = value;
-                    OnPropertyChanged(nameof(ImovelIdSelecionado));
-
-                    AoSelecionarImovel(value);
-                }
-            }
-        }
-
-        public List<Imovel> ListaImoveis
-        {
-            get
-            {
-                var imovelAtualId = ContratoForm?.ImovelId ?? 0;
-                return ImovelService.Instancia.ObterAtivos()
-                    .Where(i => i.Status == StatusImovel.Disponível || i.Id == imovelAtualId)
-                    .ToList();
-            }
-        }
-
-        // --- FILTRO 1: Inquilinos e Compradores ---
-        public List<Cliente> ListaLocatarios
-        {
-            get
-            {
-                var locatarioAtualId = ContratoForm?.LocatarioId ?? 0;
-                return ClienteService.Instancia.ObterTodos()
-                    .Where(c => (c.Status != StatusCliente.Inativo &&
-                                (c.Tipo == TipoCliente.Inquilino || c.Tipo == TipoCliente.Comprador))
-                                || c.Id == locatarioAtualId)
-                    .ToList();
-            }
-        }
-
-        // --- FILTRO 2: Proprietários / Locadores ---
-        public List<Cliente> ListaLocadores
-        {
-            get
-            {
-                var locadorAtualId = ContratoForm?.LocadorId ?? 0;
-                return ClienteService.Instancia.ObterTodos()
-                    .Where(c => (c.Status != StatusCliente.Inativo && c.Tipo == TipoCliente.Proprietário)
-                                || c.Id == locadorAtualId)
-                    .ToList();
-            }
+            get => _clienteDetalhe;
+            set => SetProperty(ref _clienteDetalhe, value);
         }
 
         private string _busca = string.Empty;
@@ -91,7 +37,7 @@ namespace SaciGestao.ViewModels
             set
             {
                 if (SetProperty(ref _busca, value))
-                    Filtrar();
+                    FiltrarClientes();
             }
         }
 
@@ -102,12 +48,13 @@ namespace SaciGestao.ViewModels
             set
             {
                 if (SetProperty(ref _filtroTipo, value))
-                    Filtrar();
+                    FiltrarClientes();
             }
         }
 
-        public int TotalLocacao => ContratoService.Instancia.ObterAtivos().Count(c => c.Tipo == TipoContrato.Locacao);
-        public int TotalVenda => ContratoService.Instancia.ObterAtivos().Count(c => c.Tipo == TipoContrato.Venda);
+        public static int TotalProprietarios => ClienteService.Instancia.ObterTodos().Count(c => c.Tipo == TipoCliente.Proprietário && c.Status != StatusCliente.Inativo);
+        public static int TotalCompradores => ClienteService.Instancia.ObterTodos().Count(c => c.Tipo == TipoCliente.Comprador && c.Status != StatusCliente.Inativo);
+        public static int TotalInquilinos => ClienteService.Instancia.ObterTodos().Count(c => c.Tipo == TipoCliente.Inquilino && c.Status != StatusCliente.Inativo);
 
         private bool _mostrandoLista = true;
         public bool MostrandoLista
@@ -130,7 +77,7 @@ namespace SaciGestao.ViewModels
             set => SetProperty(ref _mostrandoDetalhes, value);
         }
 
-        private string _tituloFormulario = "NOVO CONTRATO";
+        private string _tituloFormulario = "NOVO CLIENTE";
         public string TituloFormulario
         {
             get => _tituloFormulario;
@@ -144,9 +91,6 @@ namespace SaciGestao.ViewModels
             set => SetProperty(ref _editandoExistente, value);
         }
 
-        public Array TiposContratoEnum => Enum.GetValues(typeof(TipoContrato));
-        public Array StatusesContratoEnum => Enum.GetValues(typeof(StatusContrato));
-
         public ICommand NovoCommand { get; }
         public ICommand EditarCommand { get; }
         public ICommand VisualizarCommand { get; }
@@ -154,155 +98,90 @@ namespace SaciGestao.ViewModels
         public ICommand SalvarFormCommand { get; }
         public ICommand CancelarFormCommand { get; }
         public ICommand FecharDetalhesCommand { get; }
-        public ICommand GerarPdfCommand { get; }
+        public ICommand EditarDoDetalheCommand { get; }
+        public ICommand ExcluirDoDetalheCommand { get; }
+        public ICommand ExcluirDoFormCommand { get; }
 
-        public ContratosViewModel()
+        public ClientesViewModel()
         {
-            NovoCommand = new RelayCommand(_ => Novo());
-            EditarCommand = new RelayCommand(param => Editar(param as Contrato));
-            VisualizarCommand = new RelayCommand(param => Visualizar(param as Contrato));
-            ExcluirCommand = new RelayCommand(param => Excluir(param as Contrato));
-            SalvarFormCommand = new RelayCommand(_ => Salvar());
+            NovoCommand = new RelayCommand(_ => AbrirNovo());
+            EditarCommand = new RelayCommand(param => AbrirEditar(param as Cliente));
+            VisualizarCommand = new RelayCommand(param => AbrirVisualizar(param as Cliente));
+            ExcluirCommand = new RelayCommand(param => ExcluirCliente(param as Cliente));
+            SalvarFormCommand = new RelayCommand(_ => SalvarCliente());
             CancelarFormCommand = new RelayCommand(_ => VoltarParaLista());
             FecharDetalhesCommand = new RelayCommand(_ => VoltarParaLista());
-            GerarPdfCommand = new RelayCommand(_ => GerarPdf());
+            EditarDoDetalheCommand = new RelayCommand(_ => AbrirEditar(ClienteDetalhe));
+            ExcluirDoDetalheCommand = new RelayCommand(_ => { ExcluirCliente(ClienteDetalhe); VoltarParaLista(); });
+            ExcluirDoFormCommand = new RelayCommand(_ => { ExcluirCliente(ClienteForm); VoltarParaLista(); });
 
-            Filtrar();
+            FiltrarClientes();
         }
 
-        private void AoSelecionarImovel(int imovelId)
+        private void FiltrarClientes()
         {
-            if (imovelId <= 0) return;
+            var lista = ClienteService.Instancia.ObterTodos();
 
-            var imovel = ImovelService.Instancia.ObterAtivos().FirstOrDefault(i => i.Id == imovelId);
-            if (imovel == null) return;
-
-            ContratoForm.ImovelTitulo = imovel.Titulo;
-            if (ContratoForm.ValorMensal == 0)
-            {
-                ContratoForm.ValorMensal = imovel.Valor;
-            }
-
-            if (!string.IsNullOrWhiteSpace(imovel.ProprietarioNome))
-            {
-                var clienteProprietario = ListaLocadores.FirstOrDefault(c =>
-                    string.Equals(c.Nome, imovel.ProprietarioNome, StringComparison.OrdinalIgnoreCase));
-
-                if (clienteProprietario != null)
-                {
-                    ContratoForm.LocadorId = clienteProprietario.Id;
-                    ContratoForm.LocadorNome = clienteProprietario.Nome;
-                }
-                else
-                {
-                    ContratoForm.LocadorNome = imovel.ProprietarioNome;
-                    ContratoForm.LocadorId = 0;
-                }
-            }
-
-            OnPropertyChanged(nameof(ContratoForm));
-            OnPropertyChanged(nameof(ContratoForm.LocadorId));
-            OnPropertyChanged(nameof(ContratoForm.LocadorNome));
-            OnPropertyChanged(nameof(ContratoForm.ValorMensal));
-        }
-
-        private void GerarPdf()
-        {
-            if (ContratoDetalhe != null)
-            {
-                PdfContratoService.GerarECompletar(ContratoDetalhe);
-            }
-        }
-
-        private void Filtrar()
-        {
-            var lista = ContratoService.Instancia.ObterAtivos();
-
-            if (FiltroTipo == "Locacao")
-                lista = lista.Where(c => c.Tipo == TipoContrato.Locacao).ToList();
-            else if (FiltroTipo == "Venda")
-                lista = lista.Where(c => c.Tipo == TipoContrato.Venda).ToList();
+            if (FiltroTipo == "Proprietário")
+                lista = [.. lista.Where(c => c.Tipo == TipoCliente.Proprietário)];
+            else if (FiltroTipo == "Comprador")
+                lista = [.. lista.Where(c => c.Tipo == TipoCliente.Comprador)];
+            else if (FiltroTipo == "Inquilino")
+                lista = [.. lista.Where(c => c.Tipo == TipoCliente.Inquilino)];
 
             if (!string.IsNullOrWhiteSpace(Busca))
             {
                 var termo = Busca.ToLower();
-                lista = lista.Where(c => c.Codigo.ToLower().Contains(termo) ||
-                                         c.ImovelTitulo.ToLower().Contains(termo) ||
-                                         c.LocatarioNome.ToLower().Contains(termo) ||
-                                         c.LocadorNome.ToLower().Contains(termo)).ToList();
+                lista = [.. lista.Where(c => c.Nome.Contains(termo, StringComparison.CurrentCultureIgnoreCase) ||
+                                         c.Cpf.Contains(termo, StringComparison.CurrentCultureIgnoreCase))];
             }
 
-            Contratos = new ObservableCollection<Contrato>(lista);
-            OnPropertyChanged(nameof(TotalLocacao));
-            OnPropertyChanged(nameof(TotalVenda));
+            Clientes = new ObservableCollection<Cliente>(lista);
         }
 
-        private void Novo()
+        private void AbrirNovo()
         {
-            ContratoForm = new Contrato();
-            TituloFormulario = "NOVO CONTRATO";
+            ClienteForm = new Cliente();
+            TituloFormulario = "NOVO CLIENTE";
             EditandoExistente = false;
-
-            OnPropertyChanged(nameof(ListaImoveis));
-            OnPropertyChanged(nameof(ListaLocatarios));
-            OnPropertyChanged(nameof(ListaLocadores));
-            OnPropertyChanged(nameof(ImovelIdSelecionado));
-
             MostrandoLista = false;
             MostrandoDetalhes = false;
             MostrandoFormulario = true;
         }
 
-        private void Editar(Contrato? contrato)
+        private void AbrirEditar(Cliente? cliente)
         {
-            if (contrato == null) return;
-            ContratoForm = contrato.Clonar();
-            TituloFormulario = "EDITAR CONTRATO";
+            if (cliente == null) return;
+            ClienteForm = cliente;
+            TituloFormulario = "EDITAR CLIENTE";
             EditandoExistente = true;
-
-            OnPropertyChanged(nameof(ListaImoveis));
-            OnPropertyChanged(nameof(ListaLocatarios));
-            OnPropertyChanged(nameof(ListaLocadores));
-            OnPropertyChanged(nameof(ImovelIdSelecionado));
-
             MostrandoLista = false;
             MostrandoDetalhes = false;
             MostrandoFormulario = true;
         }
 
-        private void Visualizar(Contrato? contrato)
+        private void AbrirVisualizar(Cliente? cliente)
         {
-            if (contrato == null) return;
-            ContratoDetalhe = contrato;
+            if (cliente == null) return;
+            ClienteDetalhe = cliente;
             MostrandoLista = false;
             MostrandoFormulario = false;
             MostrandoDetalhes = true;
         }
 
-        private void Excluir(Contrato? contrato)
+        private void ExcluirCliente(Cliente? cliente)
         {
-            if (contrato == null) return;
-            ContratoService.Instancia.Excluir(contrato.Id);
-            Filtrar();
+            if (cliente == null) return;
+            ClienteService.Instancia.Excluir(cliente.Id);
+            FiltrarClientes();
         }
 
-        private void Salvar()
+        private void SalvarCliente()
         {
-            if (ContratoForm == null) return;
-
-            var imovel = ListaImoveis.FirstOrDefault(i => i.Id == ContratoForm.ImovelId);
-            if (imovel != null) ContratoForm.ImovelTitulo = imovel.Titulo;
-
-            var locatario = ListaLocatarios.FirstOrDefault(c => c.Id == ContratoForm.LocatarioId);
-            if (locatario != null) ContratoForm.LocatarioNome = locatario.Nome;
-
-            var locador = ListaLocadores.FirstOrDefault(c => c.Id == ContratoForm.LocadorId);
-            if (locador != null) ContratoForm.LocadorNome = locador.Nome;
-
-            if (ContratoForm.Id == 0)
-                ContratoService.Instancia.Adicionar(ContratoForm);
+            if (ClienteForm.Id == 0)
+                ClienteService.Instancia.Adicionar(ClienteForm);
             else
-                ContratoService.Instancia.Atualizar(ContratoForm);
+                ClienteService.Instancia.Atualizar(ClienteForm);
 
             VoltarParaLista();
         }
@@ -312,7 +191,7 @@ namespace SaciGestao.ViewModels
             MostrandoFormulario = false;
             MostrandoDetalhes = false;
             MostrandoLista = true;
-            Filtrar();
+            FiltrarClientes();
         }
     }
 }

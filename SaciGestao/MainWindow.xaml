@@ -4,16 +4,16 @@
         Title="SaciGestao - Sacilotti Imóveis"
         Width="1280" Height="780" MinWidth="1000" MinHeight="600"
         WindowStartupLocation="CenterScreen"
+        xml:lang="pt-BR"
         FontFamily="Segoe UI">
 
     <Window.Resources>
 
         <!-- Cores do mockup -->
-        <SolidColorBrush x:Key="CorMenu" Color="#222B33"/>
         <SolidColorBrush x:Key="CorMenuHover" Color="#2C3742"/>
         <SolidColorBrush x:Key="CorMenuAtivo" Color="#161C22"/>
         <SolidColorBrush x:Key="CorTextoMenu" Color="#AEB7C2"/>
-        <SolidColorBrush x:Key="CorDestaque" Color="#D32F2F"/>
+        <SolidColorBrush x:Key="CorDestaque" Color="#8DBBF7"/>
         <SolidColorBrush x:Key="CorFundo" Color="#F1F3F6"/>
         <SolidColorBrush x:Key="CorTexto" Color="#1F2933"/>
 
@@ -199,7 +199,7 @@
                                     <TextBox x:Name="txtBusca" BorderThickness="0"
                                              Background="Transparent" FontSize="14"
                                              VerticalContentAlignment="Center"/>
-                                    <TextBlock Text="Buscar..." Foreground="#8A939E" FontSize="14"
+                                    <TextBlock Text="Buscar..." Foreground="#5F6B7A" FontSize="14"
                                                IsHitTestVisible="False" VerticalAlignment="Center"
                                                Margin="2,0,0,0">
                                         <TextBlock.Style>

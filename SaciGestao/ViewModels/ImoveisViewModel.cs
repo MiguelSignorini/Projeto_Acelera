@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using Microsoft.Win32;
 using System.Windows;
 using System.Windows.Input;
 using SaciGestao.Models;
@@ -153,6 +155,23 @@ namespace SaciGestao.ViewModels
         private string _matriculaSabespForm = string.Empty;
         public string MatriculaSabespForm { get => _matriculaSabespForm; set => SetProperty(ref _matriculaSabespForm, value); }
 
+        // Dono: o usuário escolhe entre os clientes do tipo Proprietário
+        private int _proprietarioIdForm;
+        public int ProprietarioIdForm { get => _proprietarioIdForm; set => SetProperty(ref _proprietarioIdForm, value); }
+
+        private List<Cliente> _listaProprietarios = new List<Cliente>();
+        public List<Cliente> ListaProprietarios { get => _listaProprietarios; private set => SetProperty(ref _listaProprietarios, value); }
+
+        // Só proprietários não inativos; mantém o dono atual na lista mesmo que tenha sido inativado
+        private void CarregarProprietarios(int proprietarioAtualId)
+        {
+            ListaProprietarios = ClienteService.Instancia.ObterTodos()
+                .Where(c => (c.Tipo == TipoCliente.Proprietário && c.Status != StatusCliente.Inativo)
+                            || (proprietarioAtualId > 0 && c.Id == proprietarioAtualId))
+                .OrderBy(c => c.Nome)
+                .ToList();
+        }
+
         private TipoImovel _tipoForm;
         public TipoImovel TipoForm { get => _tipoForm; set => SetProperty(ref _tipoForm, value); }
 
@@ -176,8 +195,122 @@ namespace SaciGestao.ViewModels
         public Imovel? ImovelDetalhe { get => _imovelDetalhe; private set => SetProperty(ref _imovelDetalhe, value); }
 
         // ============================================================
+        // FOTOS DO FORMULÁRIO
+        // ============================================================
+        public ObservableCollection<string> FotosForm { get; } = new ObservableCollection<string>();
+
+        // As fotos escolhidas são copiadas para a pasta Fotos do projeto, assim continuam
+        // existindo mesmo que o arquivo original seja movido ou apagado.
+
+        private void AdicionarFotos()
+        {
+            var dialogo = new OpenFileDialog
+            {
+                Title = "Selecione as fotos do imóvel",
+                Filter = "Imagens|*.jpg;*.jpeg;*.png;*.bmp;*.webp",
+                Multiselect = true
+            };
+
+            if (dialogo.ShowDialog() != true) return;
+
+            try
+            {
+                Directory.CreateDirectory(Persistencia.PastaFotos);
+
+                foreach (var origem in dialogo.FileNames)
+                {
+                    string destino = Path.Combine(Persistencia.PastaFotos, Guid.NewGuid().ToString("N") + Path.GetExtension(origem));
+                    File.Copy(origem, destino);
+                    FotosForm.Add(Path.GetFileName(destino)); // o JSON guarda só o nome do arquivo
+                }
+            }
+            catch (Exception ex)
+            {
+                ErroForm = "Não foi possível adicionar a foto: " + ex.Message;
+            }
+        }
+
+        private void RemoverFoto(string? caminho)
+        {
+            if (caminho != null) FotosForm.Remove(caminho);
+        }
+
+        // Faz a foto escolhida virar a capa (primeira da lista)
+        private void DefinirCapa(string? caminho)
+        {
+            if (caminho == null) return;
+            int indice = FotosForm.IndexOf(caminho);
+            if (indice > 0) FotosForm.Move(indice, 0);
+        }
+
+        // ============================================================
+        // GALERIA DOS DETALHES
+        // ============================================================
+        private int _fotoIndice;
+
+        public string? FotoAtual
+        {
+            get
+            {
+                var fotos = ImovelDetalhe?.Fotos;
+                if (fotos == null || fotos.Count == 0) return null;
+                return fotos[Math.Clamp(_fotoIndice, 0, fotos.Count - 1)];
+            }
+            set
+            {
+                var fotos = ImovelDetalhe?.Fotos;
+                if (value == null || fotos == null) return;
+                int i = fotos.IndexOf(value);
+                if (i >= 0) { _fotoIndice = i; AtualizarGaleria(); }
+            }
+        }
+
+        public bool TemFotoAtual => FotoAtual != null;
+        public bool VariasFotos => (ImovelDetalhe?.Fotos.Count ?? 0) > 1;
+        public string ContadorFotos => ImovelDetalhe == null || ImovelDetalhe.Fotos.Count == 0
+            ? string.Empty
+            : (_fotoIndice + 1) + " / " + ImovelDetalhe.Fotos.Count;
+
+        private void AtualizarGaleria()
+        {
+            OnPropertyChanged(nameof(FotoAtual));
+            OnPropertyChanged(nameof(ContadorFotos));
+            OnPropertyChanged(nameof(VariasFotos));
+            OnPropertyChanged(nameof(TemFotoAtual));
+        }
+
+        // Abre o popup com zoom; ao fechar, a galeria continua na foto em que o usuário parou
+        private void AmpliarFoto()
+        {
+            var fotos = ImovelDetalhe?.Fotos;
+            if (fotos == null || fotos.Count == 0) return;
+
+            var principal = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
+            var janela = new SaciGestao.Views.FotoZoomWindow(fotos, _fotoIndice) { Owner = principal };
+            if (principal?.FindName("AreaConteudo") is FrameworkElement areaConteudo) janela.AjustarA(areaConteudo);
+            janela.ShowDialog();
+
+            _fotoIndice = janela.IndiceAtual;
+            AtualizarGaleria();
+        }
+
+        private void MoverFoto(int passo)
+        {
+            int total = ImovelDetalhe?.Fotos.Count ?? 0;
+            if (total < 2) return;
+            _fotoIndice = (_fotoIndice + passo + total) % total;
+            AtualizarGaleria();
+        }
+
+        // ============================================================
         // COMANDOS
         // ============================================================
+        public ICommand AdicionarFotosCommand { get; }
+        public ICommand RemoverFotoCommand { get; }
+        public ICommand DefinirCapaCommand { get; }
+        public ICommand AmpliarFotoCommand { get; }
+        public ICommand FotoAnteriorCommand { get; }
+        public ICommand ProximaFotoCommand { get; }
         public ICommand NovoCommand { get; }
         public ICommand VisualizarCommand { get; }
         public ICommand EditarCommand { get; }
@@ -205,6 +338,12 @@ namespace SaciGestao.ViewModels
             };
             _faixa = Faixas[0];
 
+            AdicionarFotosCommand = new RelayCommand(_ => AdicionarFotos());
+            RemoverFotoCommand = new RelayCommand(p => RemoverFoto(p as string));
+            DefinirCapaCommand = new RelayCommand(p => DefinirCapa(p as string));
+            AmpliarFotoCommand = new RelayCommand(_ => AmpliarFoto());
+            FotoAnteriorCommand = new RelayCommand(_ => MoverFoto(-1));
+            ProximaFotoCommand = new RelayCommand(_ => MoverFoto(1));
             NovoCommand = new RelayCommand(_ => Novo());
             VisualizarCommand = new RelayCommand(p => Visualizar(p as Imovel));
             EditarCommand = new RelayCommand(p => Editar(p as Imovel));
@@ -239,6 +378,9 @@ namespace SaciGestao.ViewModels
             DescricaoForm = string.Empty;
             MatriculaEdpForm = string.Empty;
             MatriculaSabespForm = string.Empty;
+            FotosForm.Clear();
+            CarregarProprietarios(0);
+            ProprietarioIdForm = 0;
             TipoForm = TipoImovel.Casa;
             FinalidadeForm = FinalidadeImovel.Venda;
             StatusForm = StatusImovel.Disponível;
@@ -268,6 +410,17 @@ namespace SaciGestao.ViewModels
             DescricaoForm = imovel.Descricao;
             MatriculaEdpForm = imovel.MatriculaEdp;
             MatriculaSabespForm = imovel.MatriculaSabesp;
+            // Imóveis gravados antes do ProprietarioId existir: localiza o dono pelo nome
+            int donoId = imovel.ProprietarioId;
+            if (donoId == 0 && !string.IsNullOrWhiteSpace(imovel.ProprietarioNome))
+            {
+                donoId = ClienteService.Instancia.ObterTodos()
+                    .FirstOrDefault(c => string.Equals(c.Nome, imovel.ProprietarioNome, StringComparison.OrdinalIgnoreCase))?.Id ?? 0;
+            }
+            FotosForm.Clear();
+            foreach (var foto in imovel.Fotos) FotosForm.Add(foto);
+            CarregarProprietarios(donoId);
+            ProprietarioIdForm = donoId;
             TipoForm = imovel.Tipo;
             FinalidadeForm = imovel.Finalidade;
             StatusForm = imovel.Status;
@@ -299,9 +452,19 @@ namespace SaciGestao.ViewModels
                 return;
             }
 
+            var proprietario = ListaProprietarios.FirstOrDefault(c => c.Id == ProprietarioIdForm);
+            if (proprietario == null)
+            {
+                ErroForm = "Selecione o dono / proprietário do imóvel.";
+                return;
+            }
+
             var imovel = new Imovel
             {
                 Id = _idEmEdicao,
+                ProprietarioId = proprietario.Id,
+                ProprietarioNome = proprietario.Nome,
+                Fotos = FotosForm.ToList(),
                 Titulo = TituloForm.Trim(),
                 Endereco = EnderecoForm.Trim(),
                 Numero = NumeroForm.Trim(),
@@ -350,6 +513,8 @@ namespace SaciGestao.ViewModels
             if (i == null) return;
 
             ImovelDetalhe = i;
+            _fotoIndice = 0;
+            AtualizarGaleria();
             DefinirTela(false, true);
         }
 

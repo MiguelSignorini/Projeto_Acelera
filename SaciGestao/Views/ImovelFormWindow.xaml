@@ -84,14 +84,14 @@
             </StackPanel>
         </Grid>
 
-        <TextBlock x:Name="txtErro" Foreground="#D32F2F" FontSize="13"
+        <TextBlock x:Name="txtErro" Foreground="#1E5BB8" FontSize="13"
                    TextWrapping="Wrap" Margin="0,14,0,0" Visibility="Collapsed"/>
 
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
             <Button Content="Cancelar" Style="{StaticResource BotaoForm}"
                     IsCancel="True" Click="Cancelar_Click"/>
             <Button Content="Salvar" Style="{StaticResource BotaoForm}"
-                    Background="#D32F2F" Foreground="White" BorderBrush="#D32F2F"
+                    Background="#1E5BB8" Foreground="White" BorderBrush="#1E5BB8"
                     IsDefault="True" Click="Salvar_Click"/>
         </StackPanel>
 

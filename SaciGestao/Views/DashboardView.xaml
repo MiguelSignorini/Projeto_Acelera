@@ -1,0 +1,840 @@
+<UserControl x:Class="SaciGestao.Views.DashboardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:conv="clr-namespace:SaciGestao.Converters"
+             xml:lang="pt-BR"
+             FontFamily="Segoe UI">
+
+    <UserControl.Resources>
+
+        <BooleanToVisibilityConverter x:Key="BoolParaVisibilidade"/>
+
+
+        <Style x:Key="Cartao" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="BorderBrush" Value="#E6E9EE"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+
+        <Style x:Key="Rotulo" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="{StaticResource Texto}"/>
+            <Setter Property="Margin" Value="0,0,0,6"/>
+        </Style>
+
+        <Style x:Key="RotuloForm" TargetType="TextBlock" BasedOn="{StaticResource Rotulo}">
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,14,0,6"/>
+        </Style>
+
+        <Style x:Key="CampoForm" TargetType="TextBox">
+            <Setter Property="Height" Value="38"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="10,0"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Borda}"/>
+        </Style>
+
+        <Style x:Key="CampoFormMultilinha" TargetType="TextBox" BasedOn="{StaticResource CampoForm}">
+            <Setter Property="Height" Value="70"/>
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="AcceptsReturn" Value="True"/>
+            <Setter Property="VerticalContentAlignment" Value="Top"/>
+            <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
+        </Style>
+
+        <!-- ComboBox arredondado, usado nos filtros e no formulário -->
+        <Style x:Key="ComboArredondado" TargetType="ComboBox">
+            <Setter Property="Height" Value="38"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="{StaticResource Texto}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <ToggleButton x:Name="toggle" Focusable="False" ClickMode="Press"
+                                          IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
+                                <ToggleButton.Template>
+                                    <ControlTemplate TargetType="ToggleButton">
+                                        <Border Background="White" BorderBrush="{StaticResource Borda}"
+                                                BorderThickness="1" CornerRadius="8">
+                                            <TextBlock Text="&#xE70D;" FontFamily="Segoe MDL2 Assets"
+                                                       FontSize="11" Foreground="{StaticResource TextoSuave}"
+                                                       HorizontalAlignment="Right" VerticalAlignment="Center"
+                                                       Margin="0,0,12,0"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                            </ToggleButton>
+                            <ContentPresenter IsHitTestVisible="False" Margin="12,0,32,0"
+                                              VerticalAlignment="Center" HorizontalAlignment="Left"
+                                              Content="{TemplateBinding SelectionBoxItem}"
+                                              ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"/>
+                            <Popup IsOpen="{TemplateBinding IsDropDownOpen}" Placement="Bottom"
+                                   AllowsTransparency="True" Focusable="False" PopupAnimation="Slide">
+                                <Border MinWidth="{Binding ActualWidth, RelativeSource={RelativeSource TemplatedParent}}"
+                                        MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                                        Margin="0,4,0,0" Background="White"
+                                        BorderBrush="{StaticResource Borda}" BorderThickness="1"
+                                        CornerRadius="8">
+                                    <ScrollViewer>
+                                        <StackPanel IsItemsHost="True"
+                                                    KeyboardNavigation.DirectionalNavigation="Contained"/>
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="BotaoPrimario" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource Primaria}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="Height" Value="42"/>
+            <Setter Property="Padding" Value="20,0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="fundo" Background="{TemplateBinding Background}"
+                                CornerRadius="8" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="fundo" Property="Background" Value="#174A96"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="BotaoContorno" TargetType="Button">
+            <Setter Property="Foreground" Value="{StaticResource Texto}"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Height" Value="42"/>
+            <Setter Property="Padding" Value="18,0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="fundo" Background="White" BorderBrush="{StaticResource Borda}"
+                                BorderThickness="1" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="fundo" Property="Background" Value="#F1F3F6"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Botão de texto discreto (Excluir dentro do formulário) -->
+        <Style x:Key="BotaoTextoPerigo" TargetType="Button">
+            <Setter Property="Foreground" Value="{StaticResource Perigo}"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Height" Value="42"/>
+            <Setter Property="Padding" Value="14,0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="fundo" Background="Transparent" CornerRadius="8"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="fundo" Property="Background" Value="{StaticResource PerigoClaro}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="BotaoAcao" TargetType="Button">
+            <Setter Property="AutomationProperties.Name" Value="{Binding ToolTip, RelativeSource={RelativeSource Self}}"/>
+            <Setter Property="Width" Value="34"/>
+            <Setter Property="Height" Value="34"/>
+            <Setter Property="Margin" Value="0,0,6,0"/>
+            <Setter Property="Background" Value="#E4E8EE"/>
+            <Setter Property="Foreground" Value="{StaticResource Texto}"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="6">
+                            <TextBlock Text="{TemplateBinding Content}"
+                                       FontFamily="Segoe MDL2 Assets" FontSize="15"
+                                       Foreground="{TemplateBinding Foreground}"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Opacity" Value="0.75"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="BotaoAcaoPerigo" TargetType="Button" BasedOn="{StaticResource BotaoAcao}">
+            <Setter Property="Background" Value="#F8D7D7"/>
+            <Setter Property="Foreground" Value="{StaticResource Perigo}"/>
+        </Style>
+
+        <Style x:Key="CabecalhoColuna" TargetType="DataGridColumnHeader">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="DataGridColumnHeader">
+                        <Border Background="White" BorderBrush="{StaticResource Primaria}"
+                                BorderThickness="0,0,0,2" Padding="8,10">
+                            <ContentPresenter VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="{StaticResource Texto}"/>
+        </Style>
+
+        <Style x:Key="CelulaGrid" TargetType="DataGridCell">
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="DataGridCell">
+                        <Border Background="Transparent" BorderBrush="#E3E6EB" BorderThickness="0,0,0,1">
+                            <ContentPresenter VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="LinhaGrid" TargetType="DataGridRow">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="{StaticResource Texto}"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#F7F8FA"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="TextoCelula" TargetType="TextBlock">
+            <Setter Property="Margin" Value="8,0"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+        </Style>
+
+        <Style x:Key="EtiquetaStatus" TargetType="Border">
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Padding" Value="12,3"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="Background" Value="#E4E7EC"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Status}" Value="Disponível">
+                    <Setter Property="Background" Value="#8FCB91"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Status}" Value="Reservado">
+                    <Setter Property="Background" Value="#F5C542"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Status}" Value="Alugado">
+                    <Setter Property="Background" Value="#2F7DD1"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Status}" Value="Vendido">
+                    <Setter Property="Background" Value="#1E5BB8"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="TextoStatus" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Foreground" Value="#1F2933"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Status}" Value="Alugado">
+                    <Setter Property="Foreground" Value="White"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Status}" Value="Vendido">
+                    <Setter Property="Foreground" Value="White"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="RotuloDetalhe" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Foreground" Value="{StaticResource TextoSuave}"/>
+            <Setter Property="Margin" Value="0,0,0,2"/>
+        </Style>
+
+        <Style x:Key="ValorDetalhe" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Foreground" Value="{StaticResource Texto}"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+        </Style>
+
+        <!-- ===== Estilos do visual novo (cards, galeria, detalhes) ===== -->
+        <conv:CaminhoParaImagemConverter x:Key="CaminhoParaImagem"/>
+
+        <Style x:Key="CartaoImovel" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="BorderBrush" Value="#E6E9EE"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="BorderBrush" Value="#1E5BB8"/>
+                    <Setter Property="Effect">
+                        <Setter.Value>
+                            <DropShadowEffect BlurRadius="16" ShadowDepth="2" Opacity="0.18" Color="#000000"/>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="ChipImovel" TargetType="Border">
+            <Setter Property="Background" Value="#F3F5F8"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Padding" Value="8,3"/>
+            <Setter Property="Margin" Value="0,0,6,6"/>
+        </Style>
+
+        <Style x:Key="TextoChipImovel" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Foreground" Value="#3D4752"/>
+        </Style>
+
+        <Style x:Key="CaixaDetalhe" TargetType="Border">
+            <Setter Property="Background" Value="#F7F8FA"/>
+            <Setter Property="BorderBrush" Value="#E6E9EE"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Padding" Value="20,16"/>
+        </Style>
+
+        <Style x:Key="TituloSecaoDetalhe" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="{StaticResource TextoSuave}"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="10,0,0,0"/>
+        </Style>
+
+        <Style x:Key="IconeSecaoDetalhe" TargetType="Border">
+            <Setter Property="Width" Value="28"/>
+            <Setter Property="Height" Value="28"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Background" Value="{StaticResource PrimariaClara}"/>
+        </Style>
+
+        <Style x:Key="ChipDetalhe" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#D9DEE5"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="13"/>
+            <Setter Property="Padding" Value="12,4"/>
+            <Setter Property="Margin" Value="0,0,8,0"/>
+        </Style>
+
+        <!-- Botão redondo semitransparente das setas da galeria -->
+        <Style x:Key="BotaoSetaGaleria" TargetType="Button">
+            <Setter Property="AutomationProperties.Name" Value="{Binding ToolTip, RelativeSource={RelativeSource Self}}"/>
+            <Setter Property="Width" Value="42"/>
+            <Setter Property="Height" Value="42"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="fundo" Background="#99000000" CornerRadius="21">
+                            <TextBlock Text="{TemplateBinding Content}" FontFamily="Segoe MDL2 Assets"
+                                       FontSize="16" Foreground="White"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="fundo" Property="Background" Value="#1E5BB8"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Botãozinho sobre a miniatura (capa / remover) -->
+        <Style x:Key="BotaoMiniFoto" TargetType="Button">
+            <Setter Property="AutomationProperties.Name" Value="{Binding ToolTip, RelativeSource={RelativeSource Self}}"/>
+            <Setter Property="Width" Value="26"/>
+            <Setter Property="Height" Value="26"/>
+            <Setter Property="Margin" Value="0,0,4,0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="fundo" Background="#B3000000" CornerRadius="13">
+                            <TextBlock Text="{TemplateBinding Content}" FontFamily="Segoe MDL2 Assets"
+                                       FontSize="11" Foreground="White"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="fundo" Property="Background" Value="#1E5BB8"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Faixa de miniaturas da galeria -->
+        <Style x:Key="MiniaturaGaleria" TargetType="ListBoxItem">
+            <Setter Property="Margin" Value="0,0,8,0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border x:Name="moldura" BorderBrush="Transparent" BorderThickness="2"
+                                CornerRadius="8" Padding="1" Opacity="0.65">
+                            <ContentPresenter/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="moldura" Property="Opacity" Value="1"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="moldura" Property="BorderBrush" Value="#1E5BB8"/>
+                                <Setter TargetName="moldura" Property="Opacity" Value="1"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+
+        <!-- Barra de progresso arredondada -->
+        <Style x:Key="BarraProgresso" TargetType="ProgressBar">
+            <Setter Property="Height" Value="10"/>
+            <Setter Property="Background" Value="#E4E7EC"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ProgressBar">
+                        <Grid>
+                            <Border Background="{TemplateBinding Background}" CornerRadius="5"/>
+                            <Border x:Name="PART_Track"/>
+                            <Border x:Name="PART_Indicator" HorizontalAlignment="Left" CornerRadius="5"
+                                    Background="{TemplateBinding Foreground}"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="CartaoIndicador" TargetType="Border" BasedOn="{StaticResource Cartao}">
+            <Setter Property="Padding" Value="20,18"/>
+            <Setter Property="Margin" Value="0,0,16,0"/>
+        </Style>
+        <Style x:Key="RotuloIndicador" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12.5"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{StaticResource TextoSuave}"/>
+        </Style>
+        <Style x:Key="NumeroIndicador" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="28"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="{StaticResource Texto}"/>
+            <Setter Property="Margin" Value="0,4,0,0"/>
+        </Style>
+        <Style x:Key="DetalheIndicador" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12.5"/>
+            <Setter Property="Foreground" Value="{StaticResource TextoSuave}"/>
+            <Setter Property="Margin" Value="0,2,0,0"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+        </Style>
+        <Style x:Key="TituloCartao" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{StaticResource Texto}"/>
+        </Style>
+        <Style x:Key="SubtituloCartao" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12.5"/>
+            <Setter Property="Foreground" Value="{StaticResource TextoSuave}"/>
+            <Setter Property="Margin" Value="0,2,0,16"/>
+        </Style>
+        <Style x:Key="IconeIndicador" TargetType="Border">
+            <Setter Property="Width" Value="42"/>
+            <Setter Property="Height" Value="42"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Background" Value="{StaticResource PrimariaClara}"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+        </Style>
+        <Style x:Key="CabecalhoTabela" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{StaticResource TextoSuave}"/>
+        </Style>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="10,10,10,24">
+
+            <!-- ============ CABEÇALHO ============ -->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                    <TextBlock Text="{Binding Saudacao}" FontSize="28" FontWeight="Bold" Foreground="{StaticResource Texto}"/>
+                    <TextBlock Text="{Binding DataHoje}" FontSize="14" Foreground="{StaticResource TextoSuave}"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button Style="{StaticResource BotaoContorno}" Tag="rbClientes" Click="Atalho_Click" Margin="0,0,10,0">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE710;" FontFamily="Segoe MDL2 Assets" FontSize="13" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                            <TextBlock Text="Novo cliente" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Style="{StaticResource BotaoContorno}" Tag="rbImoveis" Click="Atalho_Click" Margin="0,0,10,0">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE710;" FontFamily="Segoe MDL2 Assets" FontSize="13" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                            <TextBlock Text="Novo imóvel" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Style="{StaticResource BotaoPrimario}" Tag="rbContratos" Click="Atalho_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE710;" FontFamily="Segoe MDL2 Assets" FontSize="13" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                            <TextBlock Text="Novo contrato" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Grid>
+
+            <!-- ============ INDICADORES DO NEGÓCIO ============ -->
+            <UniformGrid Columns="4" Margin="0,20,0,0">
+
+                <Border Style="{StaticResource CartaoIndicador}">
+                    <Grid>
+                        <StackPanel Margin="0,0,52,0">
+                            <TextBlock Text="Receita mensal" Style="{StaticResource RotuloIndicador}"/>
+                            <TextBlock Text="{Binding ReceitaMensal, StringFormat=C0}" Style="{StaticResource NumeroIndicador}"/>
+                            <TextBlock Text="{Binding ReceitaDetalhe}" Style="{StaticResource DetalheIndicador}"/>
+                        </StackPanel>
+                        <Border Style="{StaticResource IconeIndicador}">
+                            <TextBlock Text="&#xE825;" FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="{StaticResource Primaria}"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </Grid>
+                </Border>
+
+                <Border Style="{StaticResource CartaoIndicador}">
+                    <Grid>
+                        <StackPanel Margin="0,0,52,0">
+                            <TextBlock Text="Taxa de ocupação" Style="{StaticResource RotuloIndicador}"/>
+                            <TextBlock Text="{Binding OcupacaoPercentual, StringFormat='{}{0}%'}" Style="{StaticResource NumeroIndicador}"/>
+                            <TextBlock Text="{Binding OcupacaoDetalhe}" Style="{StaticResource DetalheIndicador}"/>
+                        </StackPanel>
+                        <Border Style="{StaticResource IconeIndicador}">
+                            <TextBlock Text="&#xE80F;" FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="{StaticResource Primaria}"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </Grid>
+                </Border>
+
+                <Border Style="{StaticResource CartaoIndicador}">
+                    <Grid>
+                        <StackPanel Margin="0,0,52,0">
+                            <TextBlock Text="Carteira à venda" Style="{StaticResource RotuloIndicador}"/>
+                            <TextBlock Text="{Binding ValorEmCarteira, StringFormat=C0}" Style="{StaticResource NumeroIndicador}"/>
+                            <TextBlock Text="{Binding CarteiraDetalhe}" Style="{StaticResource DetalheIndicador}"/>
+                        </StackPanel>
+                        <Border Style="{StaticResource IconeIndicador}">
+                            <TextBlock Text="&#xE8D4;" FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="{StaticResource Primaria}"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </Grid>
+                </Border>
+
+                <Border Style="{StaticResource CartaoIndicador}" Margin="0">
+                    <Grid>
+                        <StackPanel Margin="0,0,52,0">
+                            <TextBlock Text="Vendas concluídas" Style="{StaticResource RotuloIndicador}"/>
+                            <TextBlock Text="{Binding VendasFechadas, StringFormat=C0}" Style="{StaticResource NumeroIndicador}"/>
+                            <TextBlock Text="{Binding VendasDetalhe}" Style="{StaticResource DetalheIndicador}"/>
+                        </StackPanel>
+                        <Border Style="{StaticResource IconeIndicador}">
+                            <TextBlock Text="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="{StaticResource Primaria}"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </Grid>
+                </Border>
+            </UniformGrid>
+
+            <!-- ============ VENCIMENTOS + FUNIL ============ -->
+            <Grid Margin="0,16,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1.6*"/>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Contratos a vencer -->
+                <Border Grid.Column="0" Style="{StaticResource Cartao}" Padding="24,20">
+                    <StackPanel>
+                        <TextBlock Text="Contratos de locação a vencer" Style="{StaticResource TituloCartao}"/>
+                        <TextBlock Text="Os próximos vencimentos (até 120 dias) para planejar renovações."
+                                   Style="{StaticResource SubtituloCartao}"/>
+
+                        <Grid Margin="0,0,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="1.6*"/>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="130"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Imóvel" Style="{StaticResource CabecalhoTabela}"/>
+                            <TextBlock Grid.Column="1" Text="Inquilino" Style="{StaticResource CabecalhoTabela}"/>
+                            <TextBlock Grid.Column="2" Text="Término" Style="{StaticResource CabecalhoTabela}"/>
+                            <TextBlock Grid.Column="3" Text="Situação" Style="{StaticResource CabecalhoTabela}"/>
+                        </Grid>
+                        <Border BorderBrush="#E6E9EE" BorderThickness="0,1,0,0"/>
+
+                        <ItemsControl ItemsSource="{Binding ContratosAVencer}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BorderBrush="#EEF0F3" BorderThickness="0,0,0,1" Padding="0,11">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="2*"/>
+                                                <ColumnDefinition Width="1.6*"/>
+                                                <ColumnDefinition Width="100"/>
+                                                <ColumnDefinition Width="130"/>
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel Margin="0,0,10,0">
+                                                <TextBlock Text="{Binding Imovel}" FontSize="14" FontWeight="SemiBold"
+                                                           Foreground="{StaticResource Texto}" TextTrimming="CharacterEllipsis"/>
+                                                <TextBlock FontSize="12" Foreground="{StaticResource TextoSuave}">
+                                                    <Run Text="{Binding Codigo, Mode=OneWay}"/><Run Text=" • "/><Run Text="{Binding Valor, Mode=OneWay}"/><Run Text="/mês"/>
+                                                </TextBlock>
+                                            </StackPanel>
+                                            <TextBlock Grid.Column="1" Text="{Binding Inquilino}" FontSize="14" Foreground="{StaticResource Texto}"
+                                                       VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                                            <TextBlock Grid.Column="2" Text="{Binding Termino}" FontSize="14" Foreground="{StaticResource Texto}"
+                                                       VerticalAlignment="Center"/>
+                                            <Border Grid.Column="3" Background="{Binding CorFundo}" CornerRadius="10" Padding="10,3"
+                                                    HorizontalAlignment="Left" VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding Prazo}" FontSize="12.5" FontWeight="SemiBold"
+                                                           Foreground="{Binding CorTexto}"/>
+                                            </Border>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <TextBlock Text="Nenhum contrato vence nos próximos 120 dias." FontSize="13.5"
+                                   Foreground="{StaticResource TextoSuave}" Margin="0,16,0,0">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ContratosAVencer.Count}" Value="0">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
+
+                <!-- Funil comercial -->
+                <Border Grid.Column="2" Style="{StaticResource Cartao}" Padding="24,20">
+                    <StackPanel>
+                        <TextBlock Text="Funil comercial" Style="{StaticResource TituloCartao}"/>
+                        <TextBlock Text="Do interesse do cliente ao negócio fechado." Style="{StaticResource SubtituloCartao}"/>
+                        <ItemsControl ItemsSource="{Binding Funil}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Margin="0,0,0,16">
+                                        <Grid>
+                                            <TextBlock Text="{Binding Rotulo}" FontSize="13.5" Foreground="{StaticResource Texto}"/>
+                                            <TextBlock Text="{Binding Valor}" FontSize="15" FontWeight="Bold"
+                                                       Foreground="{StaticResource Texto}" HorizontalAlignment="Right"/>
+                                        </Grid>
+                                        <ProgressBar Style="{StaticResource BarraProgresso}" Margin="0,6,0,4"
+                                                     Maximum="{Binding Maximo}" Value="{Binding Valor, Mode=OneWay}"
+                                                     Foreground="{Binding Cor}"/>
+                                        <TextBlock Text="{Binding Detalhe}" FontSize="12" Foreground="{StaticResource TextoSuave}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- ============ STATUS DA CARTEIRA + ATENÇÃO ============ -->
+            <Grid Margin="0,16,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="1.4*"/>
+                </Grid.ColumnDefinitions>
+
+                <Border Grid.Column="0" Style="{StaticResource Cartao}" Padding="24,20">
+                    <StackPanel>
+                        <TextBlock Text="Situação da carteira" Style="{StaticResource TituloCartao}"/>
+                        <TextBlock Text="Todos os imóveis cadastrados por status." Style="{StaticResource SubtituloCartao}"/>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Grid Width="170" Height="170">
+                                <Viewbox Stretch="Uniform">
+                                    <Canvas Width="200" Height="200">
+                                        <Ellipse Canvas.Left="22" Canvas.Top="22" Width="156" Height="156"
+                                                 Stroke="#E4E7EC" StrokeThickness="26"/>
+                                        <ItemsControl ItemsSource="{Binding ImoveisPorStatus}">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <Canvas Width="200" Height="200"/>
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Path Data="{Binding Arco}" Stroke="{Binding Cor}" StrokeThickness="26"
+                                                          StrokeStartLineCap="Flat" StrokeEndLineCap="Flat"/>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </Canvas>
+                                </Viewbox>
+                                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                    <TextBlock Text="{Binding TotalGrafico}" FontSize="30" FontWeight="Bold"
+                                               Foreground="{StaticResource Texto}" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="imóveis" FontSize="12.5" Foreground="{StaticResource TextoSuave}"
+                                               HorizontalAlignment="Center"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <ItemsControl Grid.Column="1" ItemsSource="{Binding ImoveisPorStatus}"
+                                          VerticalAlignment="Center" Margin="24,0,0,0">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Margin="0,0,0,10">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Ellipse Width="11" Height="11" Fill="{Binding Cor}" VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding Rotulo}" FontSize="13.5" Margin="10,0,16,0"
+                                                       Foreground="{StaticResource Texto}"/>
+                                            <TextBlock Grid.Column="2" FontSize="13.5" Foreground="{StaticResource TextoSuave}">
+                                                <Run Text="{Binding Valor, Mode=OneWay}" FontWeight="Bold" Foreground="{StaticResource Texto}"/><Run Text="  "/><Run Text="{Binding Percentual, Mode=OneWay}"/>
+                                            </TextBlock>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Column="2" Style="{StaticResource Cartao}" Padding="24,20">
+                    <StackPanel>
+                        <TextBlock Text="Pendências" Style="{StaticResource TituloCartao}"/>
+                        <TextBlock Text="O que merece a sua atenção hoje." Style="{StaticResource SubtituloCartao}"/>
+                        <ItemsControl ItemsSource="{Binding Avisos}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="{Binding CorFundo}" CornerRadius="10" Padding="14,11" Margin="0,0,0,10">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding Icone}" FontFamily="Segoe MDL2 Assets" FontSize="17"
+                                                       Foreground="{Binding Cor}" VerticalAlignment="Center"/>
+                                            <TextBlock Text="{Binding Texto}" FontSize="13.5" FontWeight="SemiBold"
+                                                       Foreground="{Binding Cor}" Margin="14,0,0,0"
+                                                       VerticalAlignment="Center" TextWrapping="Wrap"/>
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- ============ VITRINE ============ -->
+            <Border Style="{StaticResource Cartao}" Padding="24,20" Margin="0,16,0,0">
+                <StackPanel>
+                    <TextBlock Text="Imóveis disponíveis para oferecer" Style="{StaticResource TituloCartao}"/>
+                    <TextBlock Text="Os cadastros mais recentes ainda sem negócio." Style="{StaticResource SubtituloCartao}"/>
+                    <ItemsControl ItemsSource="{Binding ImoveisParaOferecer}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Columns="5"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Margin="0,0,14,0">
+                                    <Grid Height="104">
+                                        <Border Background="#E9ECF0" CornerRadius="10">
+                                            <TextBlock Text="&#xEB9F;" FontFamily="Segoe MDL2 Assets" FontSize="28"
+                                                       Foreground="#B4BBC4" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                        <Border CornerRadius="10">
+                                            <Border.Background>
+                                                <ImageBrush Stretch="UniformToFill"
+                                                            ImageSource="{Binding FotoCapa, Converter={StaticResource CaminhoParaImagem}, ConverterParameter=360}"/>
+                                            </Border.Background>
+                                        </Border>
+                                    </Grid>
+                                    <TextBlock Text="{Binding Valor, StringFormat=C0, ConverterCulture=pt-BR}" FontSize="15" FontWeight="Bold"
+                                               Foreground="{StaticResource Primaria}" Margin="0,8,0,0"/>
+                                    <TextBlock Text="{Binding Titulo}" FontSize="13.5" FontWeight="SemiBold"
+                                               Foreground="{StaticResource Texto}" TextTrimming="CharacterEllipsis"/>
+                                    <TextBlock Text="{Binding LocalizacaoCurta}" FontSize="12"
+                                               Foreground="{StaticResource TextoSuave}" TextTrimming="CharacterEllipsis"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <TextBlock Text="Nenhum imóvel disponível no momento." FontSize="13.5" Foreground="{StaticResource TextoSuave}">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ImoveisParaOferecer.Count}" Value="0">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

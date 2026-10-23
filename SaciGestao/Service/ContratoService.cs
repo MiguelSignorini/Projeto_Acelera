@@ -14,7 +14,28 @@ namespace SaciGestao.Service
 
         private ContratoService()
         {
+            CarregarDoArquivo();
+        }
+
+        private const string Arquivo = "contratos.json";
+
+        // Lê Jsonntratos.json ao iniciar; só grava quando o sistema fecha (ver App.OnExit)
+        private void CarregarDoArquivo()
+        {
+            var lista = Persistencia.Carregar<Contrato>(Arquivo);
+            if (lista != null)
+            {
+                _contratos.AddRange(lista);
+                _proximoId = _contratos.Max(c => c.Id) + 1;
+                return;
+            }
+
             CarregarExemplos();
+        }
+
+        public void Salvar()
+        {
+            Persistencia.Salvar(Arquivo, _contratos);
         }
 
         public List<Contrato> ObterAtivos()
@@ -63,6 +84,9 @@ namespace SaciGestao.Service
             existente.DataAssinatura = editado.DataAssinatura;
             existente.UC_Energia = editado.UC_Energia;
             existente.UC_Agua = editado.UC_Agua;
+            existente.IndiceReajuste = editado.IndiceReajuste;
+            existente.PercentualMultaAtraso = editado.PercentualMultaAtraso;
+            existente.MesesIsencaoMultaRescisao = editado.MesesIsencaoMultaRescisao;
             existente.Observacoes = editado.Observacoes;
 
             AtualizarStatusImovel(existente.ImovelId, existente.Tipo == TipoContrato.Locacao

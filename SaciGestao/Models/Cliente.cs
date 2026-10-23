@@ -107,6 +107,9 @@ namespace SaciGestao.Models
         public string CidadeTexto => OuNaoInformado(Cidade);
 
         // Cria uma cópia, usada na edição (só grava se o usuário salvar)
+        // Usado pelas listas de seleção (ComboBox) para mostrar o nome
+        public override string ToString() => Nome;
+
         public Cliente Clonar()
         {
             return (Cliente)MemberwiseClone();
@@ -126,7 +129,28 @@ namespace SaciGestao.Service
 
         private ClienteService()
         {
+            CarregarDoArquivo();
+        }
+
+        private const string Arquivo = "clientes.json";
+
+        // Lê Jsonientes.json ao iniciar; só grava quando o sistema fecha (ver App.OnExit)
+        private void CarregarDoArquivo()
+        {
+            var lista = SaciGestao.Service.Persistencia.Carregar<Cliente>(Arquivo);
+            if (lista != null)
+            {
+                _clientes.AddRange(lista);
+                _proximoId = _clientes.Max(c => c.Id) + 1;
+                return;
+            }
+
             CarregarExemplos();
+        }
+
+        public void Salvar()
+        {
+            SaciGestao.Service.Persistencia.Salvar(Arquivo, _clientes);
         }
 
         public List<Cliente> ObterTodos()

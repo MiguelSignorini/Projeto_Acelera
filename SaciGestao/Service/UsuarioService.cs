@@ -16,9 +16,20 @@ namespace SaciGestao.Service
         // Usuário autenticado no momento (null = ninguém logado)
         public Usuario? UsuarioLogado { get; private set; }
 
+        private const string Arquivo = "usuarios.json";
+
         private UsuarioService()
         {
-            // Usuário de fábrica: sem banco de dados, alguém precisa existir para o primeiro login
+            // Lê Json\usuarios.json ao iniciar; só grava quando o sistema fecha (ver App.OnExit)
+            var lista = Persistencia.Carregar<Usuario>(Arquivo);
+            if (lista != null)
+            {
+                _usuarios.AddRange(lista);
+                _proximoId = _usuarios.Max(u => u.Id) + 1;
+                return;
+            }
+
+            // Usuário de fábrica: alguém precisa existir para o primeiro login
             _usuarios.Add(new Usuario
             {
                 Id = _proximoId++,
@@ -28,6 +39,11 @@ namespace SaciGestao.Service
                 PerguntaSecreta = "Qual o nome do seu primeiro animal de estimação?",
                 RespostaSecreta = "rex"
             });
+        }
+
+        public void Salvar()
+        {
+            Persistencia.Salvar(Arquivo, _usuarios);
         }
 
         public Usuario? ObterPorNomeUsuario(string nomeUsuario)

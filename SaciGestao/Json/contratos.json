@@ -1,0 +1,27 @@
+[
+  {
+    "Id": 1,
+    "Codigo": "CTR001",
+    "ImovelId": 3,
+    "LocatarioId": 0,
+    "LocadorId": 0,
+    "ImovelTitulo": "Apt. Vila Nova 1Q",
+    "LocatarioNome": "Carlos Eduardo Lima",
+    "LocadorNome": "Sacilotti Imóveis",
+    "Tipo": "Locacao",
+    "Status": "Ativo",
+    "ValorMensal": 950.00,
+    "PrazoMeses": 36,
+    "DiaVencimento": 20,
+    "DataInicio": "2026-08-10T00:00:00",
+    "DataFim": "2029-08-10T00:00:00",
+    "DataAssinatura": "2026-09-15T00:00:00",
+    "IndiceReajuste": "IGP-M/FGV",
+    "PercentualMultaAtraso": 10.0,
+    "MesesIsencaoMultaRescisao": 12,
+    "UC_Energia": "",
+    "UC_Agua": "",
+    "Observacoes": "",
+    "Ativo": true
+  }
+]

@@ -2,6 +2,7 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:conv="clr-namespace:SaciGestao.Converters"
+             xml:lang="pt-BR"
              FontFamily="Segoe UI">
 
     <UserControl.Resources>
@@ -9,11 +10,6 @@
         <conv:FiltroValorParaBoolConverter x:Key="FiltroValorParaBool"/>
         <BooleanToVisibilityConverter x:Key="BoolParaVisibilidade"/>
 
-        <SolidColorBrush x:Key="Vermelho" Color="#D32F2F"/>
-        <SolidColorBrush x:Key="VermelhoClaro" Color="#FDEDED"/>
-        <SolidColorBrush x:Key="Texto" Color="#1F2933"/>
-        <SolidColorBrush x:Key="TextoSuave" Color="#5B6570"/>
-        <SolidColorBrush x:Key="Borda" Color="#C9CFD8"/>
 
         <!-- Cartão branco -->
         <Style x:Key="Cartao" TargetType="Border">
@@ -102,7 +98,7 @@
 
         <!-- Botão vermelho (Novo Cliente / Salvar Cliente) -->
         <Style x:Key="BotaoPrimario" TargetType="Button">
-            <Setter Property="Background" Value="{StaticResource Vermelho}"/>
+            <Setter Property="Background" Value="{StaticResource Primaria}"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="FontSize" Value="15"/>
             <Setter Property="Height" Value="42"/>
@@ -117,7 +113,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="fundo" Property="Background" Value="#B71C1C"/>
+                                <Setter TargetName="fundo" Property="Background" Value="#174A96"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -151,7 +147,7 @@
 
         <!-- Botão de texto discreto (Excluir dentro do formulário) -->
         <Style x:Key="BotaoTextoPerigo" TargetType="Button">
-            <Setter Property="Foreground" Value="{StaticResource Vermelho}"/>
+            <Setter Property="Foreground" Value="{StaticResource Perigo}"/>
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="Height" Value="38"/>
             <Setter Property="Padding" Value="14,0"/>
@@ -165,7 +161,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="fundo" Property="Background" Value="{StaticResource VermelhoClaro}"/>
+                                <Setter TargetName="fundo" Property="Background" Value="{StaticResource PerigoClaro}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -193,8 +189,8 @@
                                 <Setter TargetName="fundo" Property="Background" Value="#F1F3F6"/>
                             </Trigger>
                             <Trigger Property="IsChecked" Value="True">
-                                <Setter TargetName="fundo" Property="BorderBrush" Value="{StaticResource Vermelho}"/>
-                                <Setter Property="Foreground" Value="{StaticResource Vermelho}"/>
+                                <Setter TargetName="fundo" Property="BorderBrush" Value="{StaticResource Primaria}"/>
+                                <Setter Property="Foreground" Value="{StaticResource Primaria}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -216,6 +212,7 @@
 
         <!-- Botões de ação da tabela -->
         <Style x:Key="BotaoAcao" TargetType="Button">
+            <Setter Property="AutomationProperties.Name" Value="{Binding ToolTip, RelativeSource={RelativeSource Self}}"/>
             <Setter Property="Width" Value="34"/>
             <Setter Property="Height" Value="34"/>
             <Setter Property="Margin" Value="0,0,6,0"/>
@@ -243,7 +240,7 @@
 
         <Style x:Key="BotaoAcaoPerigo" TargetType="Button" BasedOn="{StaticResource BotaoAcao}">
             <Setter Property="Background" Value="#F8D7D7"/>
-            <Setter Property="Foreground" Value="{StaticResource Vermelho}"/>
+            <Setter Property="Foreground" Value="{StaticResource Perigo}"/>
         </Style>
 
         <!-- Botão Excluir da linha: aparece para qualquer status -->
@@ -254,7 +251,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="DataGridColumnHeader">
-                        <Border Background="White" BorderBrush="{StaticResource Vermelho}"
+                        <Border Background="White" BorderBrush="{StaticResource Primaria}"
                                 BorderThickness="0,0,0,2" Padding="8,10">
                             <ContentPresenter VerticalAlignment="Center"/>
                         </Border>
@@ -301,7 +298,7 @@
             <Setter Property="Width" Value="8"/>
             <Setter Property="Height" Value="8"/>
             <Setter Property="Margin" Value="0,0,6,0"/>
-            <Setter Property="Fill" Value="#8A939E"/>
+            <Setter Property="Fill" Value="#5F6B7A"/>
             <Style.Triggers>
                 <DataTrigger Binding="{Binding Status}" Value="Ativo">
                     <Setter Property="Fill" Value="#3F9142"/>
@@ -310,7 +307,7 @@
                     <Setter Property="Fill" Value="#F5C542"/>
                 </DataTrigger>
                 <DataTrigger Binding="{Binding Status}" Value="Inativo">
-                    <Setter Property="Fill" Value="{StaticResource Vermelho}"/>
+                    <Setter Property="Fill" Value="{StaticResource Primaria}"/>
                 </DataTrigger>
             </Style.Triggers>
         </Style>
@@ -327,7 +324,7 @@
                     <Setter Property="Foreground" Value="#B8860B"/>
                 </DataTrigger>
                 <DataTrigger Binding="{Binding Status}" Value="Inativo">
-                    <Setter Property="Foreground" Value="{StaticResource Vermelho}"/>
+                    <Setter Property="Foreground" Value="{StaticResource Primaria}"/>
                 </DataTrigger>
             </Style.Triggers>
         </Style>
@@ -347,7 +344,7 @@
             <Setter Property="TextWrapping" Value="Wrap"/>
             <Style.Triggers>
                 <DataTrigger Binding="{Binding Text, RelativeSource={RelativeSource Self}}" Value="Não informado">
-                    <Setter Property="Foreground" Value="#8A939E"/>
+                    <Setter Property="Foreground" Value="#5F6B7A"/>
                     <Setter Property="FontStyle" Value="Italic"/>
                 </DataTrigger>
             </Style.Triggers>
@@ -373,7 +370,7 @@
             <Setter Property="Width" Value="28"/>
             <Setter Property="Height" Value="28"/>
             <Setter Property="CornerRadius" Value="6"/>
-            <Setter Property="Background" Value="{StaticResource VermelhoClaro}"/>
+            <Setter Property="Background" Value="{StaticResource PrimariaClara}"/>
         </Style>
 
         <Style x:Key="ChipDetalhe" TargetType="Border">
@@ -461,7 +458,7 @@
                                              FontSize="14" VerticalContentAlignment="Center"
                                              Text="{Binding Busca, UpdateSourceTrigger=PropertyChanged}"/>
                                     <TextBlock Text="Digite Nome ou CPF..."
-                                               Foreground="#8A939E" FontSize="14" IsHitTestVisible="False"
+                                               Foreground="#5F6B7A" FontSize="14" IsHitTestVisible="False"
                                                VerticalAlignment="Center" Margin="2,0,0,0">
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
@@ -529,7 +526,7 @@
                               CanUserResizeColumns="False" CanUserReorderColumns="False"
                               CanUserSortColumns="False"
                               HeadersVisibility="Column" GridLinesVisibility="None"
-                              RowHeaderWidth="0" RowHeight="54"
+                              RowHeaderWidth="0" RowHeight="62"
                               SelectionMode="Single" SelectionUnit="FullRow"
                               Background="Transparent" BorderThickness="0"
                               ColumnHeaderStyle="{StaticResource CabecalhoColuna}"
@@ -537,8 +534,27 @@
                               RowStyle="{StaticResource LinhaGrid}">
                         <DataGrid.Columns>
 
-                            <DataGridTextColumn Header="Nome" Binding="{Binding Nome}" Width="1.3*" MinWidth="150"
-                                                ElementStyle="{StaticResource TextoCelula}"/>
+                            <DataGridTemplateColumn Header="Nome" Width="1.5*" MinWidth="190">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal" Margin="8,0" VerticalAlignment="Center">
+                                            <Border Width="38" Height="38" CornerRadius="19"
+                                                    Background="{StaticResource PrimariaClara}"
+                                                    BorderBrush="{StaticResource Primaria}" BorderThickness="1.5">
+                                                <TextBlock Text="{Binding Iniciais}" FontSize="13" FontWeight="Bold"
+                                                           Foreground="{StaticResource Primaria}"
+                                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <StackPanel Margin="12,0,0,0" VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding Nome}" FontSize="14" FontWeight="SemiBold"
+                                                           Foreground="{StaticResource Texto}" TextTrimming="CharacterEllipsis"/>
+                                                <TextBlock Text="{Binding ProfissaoTexto}" FontSize="12"
+                                                           Foreground="{StaticResource TextoSuave}" TextTrimming="CharacterEllipsis"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
 
                             <DataGridTextColumn Header="CPF" Binding="{Binding Cpf}" Width="130"
                                                 ElementStyle="{StaticResource TextoCelula}"/>
@@ -549,8 +565,17 @@
                             <DataGridTextColumn Header="E-mail" Binding="{Binding Email}" Width="1.3*" MinWidth="150"
                                                 ElementStyle="{StaticResource TextoCelula}"/>
 
-                            <DataGridTextColumn Header="Tipo de Cliente" Binding="{Binding Tipo}" Width="140"
-                                                ElementStyle="{StaticResource TextoCelula}"/>
+                            <DataGridTemplateColumn Header="Tipo de Cliente" Width="150">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Border Background="#F3F5F8" BorderBrush="#D9DEE5" BorderThickness="1"
+                                                CornerRadius="12" Padding="12,3" Margin="8,0" HorizontalAlignment="Left">
+                                            <TextBlock Text="{Binding Tipo}" FontSize="13" FontWeight="SemiBold"
+                                                       Foreground="{StaticResource Texto}"/>
+                                        </Border>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
 
                             <DataGridTemplateColumn Header="Status" Width="130">
                                 <DataGridTemplateColumn.CellTemplate>
@@ -624,9 +649,9 @@
                             </Grid.ColumnDefinitions>
 
                             <StackPanel Orientation="Horizontal">
-                                <Border Width="42" Height="42" CornerRadius="8" Background="{StaticResource VermelhoClaro}">
+                                <Border Width="42" Height="42" CornerRadius="8" Background="{StaticResource PrimariaClara}">
                                     <TextBlock Text="&#xE716;" FontFamily="Segoe MDL2 Assets" FontSize="18"
-                                               Foreground="{StaticResource Vermelho}"
+                                               Foreground="{StaticResource Primaria}"
                                                HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 </Border>
                                 <StackPanel Margin="12,0,0,0" VerticalAlignment="Center">
@@ -830,7 +855,7 @@
                             </StackPanel>
                         </Grid>
 
-                        <TextBlock Text="{Binding ErroForm}" Foreground="{StaticResource Vermelho}"
+                        <TextBlock Text="{Binding ErroForm}" Foreground="{StaticResource Perigo}"
                                    FontSize="13" TextWrapping="Wrap" Margin="0,16,0,0">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
@@ -885,10 +910,10 @@
                             Background="#F7F8FA" CornerRadius="12,12,0,0"
                             BorderBrush="#E6E9EE" BorderThickness="0,0,0,1" Padding="28,22">
                         <StackPanel Orientation="Horizontal">
-                            <Border Width="68" Height="68" CornerRadius="34" Background="{StaticResource VermelhoClaro}"
-                                    BorderBrush="{StaticResource Vermelho}" BorderThickness="2">
+                            <Border Width="68" Height="68" CornerRadius="34" Background="{StaticResource PrimariaClara}"
+                                    BorderBrush="{StaticResource Primaria}" BorderThickness="2">
                                 <TextBlock Text="{Binding Iniciais}" FontSize="24" FontWeight="Bold"
-                                           Foreground="{StaticResource Vermelho}"
+                                           Foreground="{StaticResource Primaria}"
                                            HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Border>
                             <StackPanel Margin="18,0,0,0" VerticalAlignment="Center">
@@ -918,7 +943,7 @@
                                 <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                                     <Border Style="{StaticResource IconeSecaoDetalhe}">
                                         <TextBlock Text="&#xE77B;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                                                   Foreground="{StaticResource Vermelho}"
+                                                   Foreground="{StaticResource Primaria}"
                                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                     </Border>
                                     <TextBlock Text="DADOS PESSOAIS" Style="{StaticResource TituloSecaoDetalhe}"/>
@@ -982,7 +1007,7 @@
                                 <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                                     <Border Style="{StaticResource IconeSecaoDetalhe}">
                                         <TextBlock Text="&#xE717;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                                                   Foreground="{StaticResource Vermelho}"
+                                                   Foreground="{StaticResource Primaria}"
                                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                     </Border>
                                     <TextBlock Text="CONTATO" Style="{StaticResource TituloSecaoDetalhe}"/>
@@ -1017,7 +1042,7 @@
                                 <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                                     <Border Style="{StaticResource IconeSecaoDetalhe}">
                                         <TextBlock Text="&#xE80F;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                                                   Foreground="{StaticResource Vermelho}"
+                                                   Foreground="{StaticResource Primaria}"
                                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                     </Border>
                                     <TextBlock Text="ENDEREÇO DE DOMICÍLIO" Style="{StaticResource TituloSecaoDetalhe}"/>
@@ -1069,7 +1094,7 @@
                                 <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                                     <Border Style="{StaticResource IconeSecaoDetalhe}">
                                         <TextBlock Text="&#xE946;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                                                   Foreground="{StaticResource Vermelho}"
+                                                   Foreground="{StaticResource Primaria}"
                                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                     </Border>
                                     <TextBlock Text="INFORMAÇÕES ADICIONAIS" Style="{StaticResource TituloSecaoDetalhe}"/>

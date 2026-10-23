@@ -1,64 +1,72 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\Profe\\Desktop\\SaciGestao\\Projeto_Acelera\\SaciGestao\\",
+  "WorkspaceRootPath": "C:\\Users\\Profe\\Desktop\\GIT\\Projeto_Acelera\\SaciGestao\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|c:\\users\\profe\\desktop\\sacigestao\\projeto_acelera\\sacigestao\\sacigestao.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "AbsoluteMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|c:\\users\\profe\\desktop\\git\\projeto_acelera\\sacigestao\\models\\cliente.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|solutionrelative:models\\cliente.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|c:\\users\\profe\\desktop\\git\\projeto_acelera\\sacigestao\\viewmodels\\clientesviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|solutionrelative:viewmodels\\clientesviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|c:\\users\\profe\\desktop\\git\\projeto_acelera\\sacigestao\\sacigestao.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
       "RelativeMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|solutionrelative:sacigestao.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|c:\\users\\profe\\desktop\\sacigestao\\projeto_acelera\\sacigestao\\views\\loginwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|c:\\users\\profe\\desktop\\git\\projeto_acelera\\sacigestao\\views\\loginwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|solutionrelative:views\\loginwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|c:\\users\\profe\\desktop\\sacigestao\\projeto_acelera\\sacigestao\\views\\loginwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "AbsoluteMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|c:\\users\\profe\\desktop\\git\\projeto_acelera\\sacigestao\\views\\loginwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|solutionrelative:views\\loginwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|c:\\users\\profe\\desktop\\sacigestao\\projeto_acelera\\sacigestao\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "AbsoluteMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|c:\\users\\profe\\desktop\\git\\projeto_acelera\\sacigestao\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|solutionrelative:mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|c:\\users\\profe\\desktop\\sacigestao\\projeto_acelera\\sacigestao\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "AbsoluteMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|c:\\users\\profe\\desktop\\git\\projeto_acelera\\sacigestao\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|solutionrelative:app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|c:\\users\\profe\\desktop\\sacigestao\\projeto_acelera\\sacigestao\\service\\usuarioservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|c:\\users\\profe\\desktop\\git\\projeto_acelera\\sacigestao\\service\\usuarioservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|solutionrelative:service\\usuarioservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|c:\\users\\profe\\desktop\\sacigestao\\projeto_acelera\\sacigestao\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|c:\\users\\profe\\desktop\\git\\projeto_acelera\\sacigestao\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|solutionrelative:mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\T-GAMER\\AppData\\Local\\Temp\\.vsdbgsrc\\4daed2749e17f9fe9278987598a3218f97a3fd6d4dd10148f159aee4a48c489f\\Package.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|c:\\users\\profe\\desktop\\sacigestao\\projeto_acelera\\sacigestao\\models\\usuario.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|c:\\users\\profe\\desktop\\git\\projeto_acelera\\sacigestao\\models\\usuario.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|solutionrelative:models\\usuario.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|c:\\users\\profe\\desktop\\sacigestao\\projeto_acelera\\sacigestao\\viewmodels\\loginviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|c:\\users\\profe\\desktop\\git\\projeto_acelera\\sacigestao\\viewmodels\\loginviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|solutionrelative:viewmodels\\loginviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|c:\\users\\profe\\desktop\\sacigestao\\projeto_acelera\\sacigestao\\app.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|c:\\users\\profe\\desktop\\git\\projeto_acelera\\sacigestao\\app.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|solutionrelative:app.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|c:\\users\\profe\\desktop\\sacigestao\\projeto_acelera\\sacigestao\\views\\imovelformwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "AbsoluteMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|c:\\users\\profe\\desktop\\git\\projeto_acelera\\sacigestao\\views\\imovelformwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|solutionrelative:views\\imovelformwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|c:\\users\\profe\\desktop\\sacigestao\\projeto_acelera\\sacigestao\\viewmodels\\viewmodelbase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|c:\\users\\profe\\desktop\\git\\projeto_acelera\\sacigestao\\viewmodels\\viewmodelbase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|solutionrelative:viewmodels\\viewmodelbase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|c:\\users\\profe\\desktop\\sacigestao\\projeto_acelera\\sacigestao\\viewmodels\\imoveisviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|c:\\users\\profe\\desktop\\git\\projeto_acelera\\sacigestao\\viewmodels\\imoveisviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|solutionrelative:viewmodels\\imoveisviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|c:\\users\\profe\\desktop\\sacigestao\\projeto_acelera\\sacigestao\\views\\imoveisview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "AbsoluteMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|c:\\users\\profe\\desktop\\git\\projeto_acelera\\sacigestao\\views\\imoveisview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|solutionrelative:views\\imoveisview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     }
   ],
@@ -72,23 +80,49 @@
           "SelectedChildIndex": 3,
           "Children": [
             {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "LoginWindow.xaml",
-              "DocumentMoniker": "C:\\Users\\Profe\\Desktop\\SaciGestao\\Projeto_Acelera\\SaciGestao\\Views\\LoginWindow.xaml",
-              "RelativeDocumentMoniker": "Views\\LoginWindow.xaml",
-              "ToolTip": "C:\\Users\\Profe\\Desktop\\SaciGestao\\Projeto_Acelera\\SaciGestao\\Views\\LoginWindow.xaml",
-              "RelativeToolTip": "Views\\LoginWindow.xaml",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2026-10-11T19:10:08.042Z"
+              "DocumentIndex": 0,
+              "Title": "Cliente.cs",
+              "DocumentMoniker": "C:\\Users\\Profe\\Desktop\\GIT\\Projeto_Acelera\\SaciGestao\\Models\\Cliente.cs",
+              "RelativeDocumentMoniker": "Models\\Cliente.cs",
+              "ToolTip": "C:\\Users\\Profe\\Desktop\\GIT\\Projeto_Acelera\\SaciGestao\\Models\\Cliente.cs",
+              "RelativeToolTip": "Models\\Cliente.cs",
+              "ViewState": "AgIAAI4AAAAAAAAAAAAqwMUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-13T23:19:48.177Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "ClientesViewModel.cs",
+              "DocumentMoniker": "C:\\Users\\Profe\\Desktop\\GIT\\Projeto_Acelera\\SaciGestao\\ViewModels\\ClientesViewModel.cs",
+              "RelativeDocumentMoniker": "ViewModels\\ClientesViewModel.cs",
+              "ToolTip": "C:\\Users\\Profe\\Desktop\\GIT\\Projeto_Acelera\\SaciGestao\\ViewModels\\ClientesViewModel.cs",
+              "RelativeToolTip": "ViewModels\\ClientesViewModel.cs",
+              "ViewState": "AgIAAEcBAAAAAAAAAAAiwFYBAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-13T23:19:18.724Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
               "Title": "LoginWindow.xaml.cs",
-              "DocumentMoniker": "C:\\Users\\Profe\\Desktop\\SaciGestao\\Projeto_Acelera\\SaciGestao\\Views\\LoginWindow.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\Profe\\Desktop\\GIT\\Projeto_Acelera\\SaciGestao\\Views\\LoginWindow.xaml.cs",
               "RelativeDocumentMoniker": "Views\\LoginWindow.xaml.cs",
-              "ToolTip": "C:\\Users\\Profe\\Desktop\\SaciGestao\\Projeto_Acelera\\SaciGestao\\Views\\LoginWindow.xaml.cs",
+              "ToolTip": "C:\\Users\\Profe\\Desktop\\GIT\\Projeto_Acelera\\SaciGestao\\Views\\LoginWindow.xaml.cs",
               "RelativeToolTip": "Views\\LoginWindow.xaml.cs",
               "ViewState": "AgIAABAAAAAAAAAAAAAwwBYAAAAYAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -96,46 +130,56 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "SaciGestao.csproj",
+              "DocumentMoniker": "C:\\Users\\Profe\\Desktop\\GIT\\Projeto_Acelera\\SaciGestao\\SaciGestao.csproj",
+              "RelativeDocumentMoniker": "SaciGestao.csproj",
+              "ToolTip": "C:\\Users\\Profe\\Desktop\\GIT\\Projeto_Acelera\\SaciGestao\\SaciGestao.csproj",
+              "RelativeToolTip": "SaciGestao.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-10-01T20:40:14.212Z"
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 4,
+              "Title": "LoginWindow.xaml",
+              "DocumentMoniker": "C:\\Users\\Profe\\Desktop\\GIT\\Projeto_Acelera\\SaciGestao\\Views\\LoginWindow.xaml",
+              "RelativeDocumentMoniker": "Views\\LoginWindow.xaml",
+              "ToolTip": "C:\\Users\\Profe\\Desktop\\GIT\\Projeto_Acelera\\SaciGestao\\Views\\LoginWindow.xaml",
+              "RelativeToolTip": "Views\\LoginWindow.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-10-11T19:10:08.042Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
               "Title": "App.xaml",
-              "DocumentMoniker": "C:\\Users\\Profe\\Desktop\\SaciGestao\\Projeto_Acelera\\SaciGestao\\App.xaml",
+              "DocumentMoniker": "C:\\Users\\Profe\\Desktop\\GIT\\Projeto_Acelera\\SaciGestao\\App.xaml",
               "RelativeDocumentMoniker": "App.xaml",
-              "ToolTip": "C:\\Users\\Profe\\Desktop\\SaciGestao\\Projeto_Acelera\\SaciGestao\\App.xaml",
+              "ToolTip": "C:\\Users\\Profe\\Desktop\\GIT\\Projeto_Acelera\\SaciGestao\\App.xaml",
               "RelativeToolTip": "App.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
               "WhenOpened": "2026-10-11T19:10:50.642Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "SaciGestao.csproj",
-              "DocumentMoniker": "C:\\Users\\Profe\\Desktop\\SaciGestao\\Projeto_Acelera\\SaciGestao\\SaciGestao.csproj",
-              "RelativeDocumentMoniker": "SaciGestao.csproj",
-              "ToolTip": "C:\\Users\\Profe\\Desktop\\SaciGestao\\Projeto_Acelera\\SaciGestao\\SaciGestao.csproj",
-              "RelativeToolTip": "SaciGestao.csproj",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAvAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2026-10-01T20:40:14.212Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 5,
               "Title": "MainWindow.xaml",
-              "DocumentMoniker": "C:\\Users\\Profe\\Desktop\\SaciGestao\\Projeto_Acelera\\SaciGestao\\MainWindow.xaml",
+              "DocumentMoniker": "C:\\Users\\Profe\\Desktop\\GIT\\Projeto_Acelera\\SaciGestao\\MainWindow.xaml",
               "RelativeDocumentMoniker": "MainWindow.xaml",
-              "ToolTip": "C:\\Users\\Profe\\Desktop\\SaciGestao\\Projeto_Acelera\\SaciGestao\\MainWindow.xaml",
+              "ToolTip": "C:\\Users\\Profe\\Desktop\\GIT\\Projeto_Acelera\\SaciGestao\\MainWindow.xaml",
               "RelativeToolTip": "MainWindow.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
               "WhenOpened": "2026-10-01T20:40:22.982Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 7,
               "Title": "UsuarioService.cs",
-              "DocumentMoniker": "C:\\Users\\Profe\\Desktop\\SaciGestao\\Projeto_Acelera\\SaciGestao\\Service\\UsuarioService.cs",
+              "DocumentMoniker": "C:\\Users\\Profe\\Desktop\\GIT\\Projeto_Acelera\\SaciGestao\\Service\\UsuarioService.cs",
               "RelativeDocumentMoniker": "Service\\UsuarioService.cs",
-              "ToolTip": "C:\\Users\\Profe\\Desktop\\SaciGestao\\Projeto_Acelera\\SaciGestao\\Service\\UsuarioService.cs",
+              "ToolTip": "C:\\Users\\Profe\\Desktop\\GIT\\Projeto_Acelera\\SaciGestao\\Service\\UsuarioService.cs",
               "RelativeToolTip": "Service\\UsuarioService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAB0AAAAPAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -143,11 +187,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 8,
               "Title": "MainWindow.xaml.cs",
-              "DocumentMoniker": "C:\\Users\\Profe\\Desktop\\SaciGestao\\Projeto_Acelera\\SaciGestao\\MainWindow.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\Profe\\Desktop\\GIT\\Projeto_Acelera\\SaciGestao\\MainWindow.xaml.cs",
               "RelativeDocumentMoniker": "MainWindow.xaml.cs",
-              "ToolTip": "C:\\Users\\Profe\\Desktop\\SaciGestao\\Projeto_Acelera\\SaciGestao\\MainWindow.xaml.cs",
+              "ToolTip": "C:\\Users\\Profe\\Desktop\\GIT\\Projeto_Acelera\\SaciGestao\\MainWindow.xaml.cs",
               "RelativeToolTip": "MainWindow.xaml.cs",
               "ViewState": "AgIAABoAAAAAAAAAAAAQwDkAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -155,7 +199,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 9,
               "Title": "Package.cs",
               "DocumentMoniker": "C:\\Users\\T-GAMER\\AppData\\Local\\Temp\\.vsdbgsrc\\4daed2749e17f9fe9278987598a3218f97a3fd6d4dd10148f159aee4a48c489f\\Package.cs",
               "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\T-GAMER\\AppData\\Local\\Temp\\.vsdbgsrc\\4daed2749e17f9fe9278987598a3218f97a3fd6d4dd10148f159aee4a48c489f\\Package.cs",
@@ -168,11 +212,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 10,
               "Title": "Usuario.cs",
-              "DocumentMoniker": "C:\\Users\\Profe\\Desktop\\SaciGestao\\Projeto_Acelera\\SaciGestao\\Models\\Usuario.cs",
+              "DocumentMoniker": "C:\\Users\\Profe\\Desktop\\GIT\\Projeto_Acelera\\SaciGestao\\Models\\Usuario.cs",
               "RelativeDocumentMoniker": "Models\\Usuario.cs",
-              "ToolTip": "C:\\Users\\Profe\\Desktop\\SaciGestao\\Projeto_Acelera\\SaciGestao\\Models\\Usuario.cs",
+              "ToolTip": "C:\\Users\\Profe\\Desktop\\GIT\\Projeto_Acelera\\SaciGestao\\Models\\Usuario.cs",
               "RelativeToolTip": "Models\\Usuario.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -180,11 +224,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 12,
               "Title": "App.xaml.cs",
-              "DocumentMoniker": "C:\\Users\\Profe\\Desktop\\SaciGestao\\Projeto_Acelera\\SaciGestao\\App.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\Profe\\Desktop\\GIT\\Projeto_Acelera\\SaciGestao\\App.xaml.cs",
               "RelativeDocumentMoniker": "App.xaml.cs",
-              "ToolTip": "C:\\Users\\Profe\\Desktop\\SaciGestao\\Projeto_Acelera\\SaciGestao\\App.xaml.cs",
+              "ToolTip": "C:\\Users\\Profe\\Desktop\\GIT\\Projeto_Acelera\\SaciGestao\\App.xaml.cs",
               "RelativeToolTip": "App.xaml.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -192,11 +236,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 11,
               "Title": "LoginViewModel.cs",
-              "DocumentMoniker": "C:\\Users\\Profe\\Desktop\\SaciGestao\\Projeto_Acelera\\SaciGestao\\ViewModels\\LoginViewModel.cs",
+              "DocumentMoniker": "C:\\Users\\Profe\\Desktop\\GIT\\Projeto_Acelera\\SaciGestao\\ViewModels\\LoginViewModel.cs",
               "RelativeDocumentMoniker": "ViewModels\\LoginViewModel.cs",
-              "ToolTip": "C:\\Users\\Profe\\Desktop\\SaciGestao\\Projeto_Acelera\\SaciGestao\\ViewModels\\LoginViewModel.cs",
+              "ToolTip": "C:\\Users\\Profe\\Desktop\\GIT\\Projeto_Acelera\\SaciGestao\\ViewModels\\LoginViewModel.cs",
               "RelativeToolTip": "ViewModels\\LoginViewModel.cs",
               "ViewState": "AgIAAH4AAAAAAAAAAAAIwKgAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -204,22 +248,22 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 13,
               "Title": "ImovelFormWindow.xaml",
-              "DocumentMoniker": "C:\\Users\\Profe\\Desktop\\SaciGestao\\Projeto_Acelera\\SaciGestao\\Views\\ImovelFormWindow.xaml",
+              "DocumentMoniker": "C:\\Users\\Profe\\Desktop\\GIT\\Projeto_Acelera\\SaciGestao\\Views\\ImovelFormWindow.xaml",
               "RelativeDocumentMoniker": "Views\\ImovelFormWindow.xaml",
-              "ToolTip": "C:\\Users\\Profe\\Desktop\\SaciGestao\\Projeto_Acelera\\SaciGestao\\Views\\ImovelFormWindow.xaml",
+              "ToolTip": "C:\\Users\\Profe\\Desktop\\GIT\\Projeto_Acelera\\SaciGestao\\Views\\ImovelFormWindow.xaml",
               "RelativeToolTip": "Views\\ImovelFormWindow.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
               "WhenOpened": "2026-10-11T19:06:39.186Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 14,
               "Title": "ViewModelBase.cs",
-              "DocumentMoniker": "C:\\Users\\Profe\\Desktop\\SaciGestao\\Projeto_Acelera\\SaciGestao\\ViewModels\\ViewModelBase.cs",
+              "DocumentMoniker": "C:\\Users\\Profe\\Desktop\\GIT\\Projeto_Acelera\\SaciGestao\\ViewModels\\ViewModelBase.cs",
               "RelativeDocumentMoniker": "ViewModels\\ViewModelBase.cs",
-              "ToolTip": "C:\\Users\\Profe\\Desktop\\SaciGestao\\Projeto_Acelera\\SaciGestao\\ViewModels\\ViewModelBase.cs",
+              "ToolTip": "C:\\Users\\Profe\\Desktop\\GIT\\Projeto_Acelera\\SaciGestao\\ViewModels\\ViewModelBase.cs",
               "RelativeToolTip": "ViewModels\\ViewModelBase.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -227,11 +271,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 15,
               "Title": "ImoveisViewModel.cs",
-              "DocumentMoniker": "C:\\Users\\Profe\\Desktop\\SaciGestao\\Projeto_Acelera\\SaciGestao\\ViewModels\\ImoveisViewModel.cs",
+              "DocumentMoniker": "C:\\Users\\Profe\\Desktop\\GIT\\Projeto_Acelera\\SaciGestao\\ViewModels\\ImoveisViewModel.cs",
               "RelativeDocumentMoniker": "ViewModels\\ImoveisViewModel.cs",
-              "ToolTip": "C:\\Users\\Profe\\Desktop\\SaciGestao\\Projeto_Acelera\\SaciGestao\\ViewModels\\ImoveisViewModel.cs",
+              "ToolTip": "C:\\Users\\Profe\\Desktop\\GIT\\Projeto_Acelera\\SaciGestao\\ViewModels\\ImoveisViewModel.cs",
               "RelativeToolTip": "ViewModels\\ImoveisViewModel.cs",
               "ViewState": "AgIAAHcBAAAAAAAAAAAQwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -239,11 +283,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 16,
               "Title": "ImoveisView.xaml",
-              "DocumentMoniker": "C:\\Users\\Profe\\Desktop\\SaciGestao\\Projeto_Acelera\\SaciGestao\\Views\\ImoveisView.xaml",
+              "DocumentMoniker": "C:\\Users\\Profe\\Desktop\\GIT\\Projeto_Acelera\\SaciGestao\\Views\\ImoveisView.xaml",
               "RelativeDocumentMoniker": "Views\\ImoveisView.xaml",
-              "ToolTip": "C:\\Users\\Profe\\Desktop\\SaciGestao\\Projeto_Acelera\\SaciGestao\\Views\\ImoveisView.xaml",
+              "ToolTip": "C:\\Users\\Profe\\Desktop\\GIT\\Projeto_Acelera\\SaciGestao\\Views\\ImoveisView.xaml",
               "RelativeToolTip": "Views\\ImoveisView.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
               "WhenOpened": "2026-10-01T20:44:38.709Z"

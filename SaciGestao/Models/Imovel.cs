@@ -1,4 +1,7 @@
-﻿namespace SaciGestao.Models
+using System.Collections.Generic;
+using System.Text.Json.Serialization;
+
+namespace SaciGestao.Models
 {
     public enum TipoImovel { Casa, Apartamento, Terreno, Outros }
     public enum FinalidadeImovel { Venda, Aluguel }
@@ -11,7 +14,8 @@
         public string Titulo { get; set; } = string.Empty;
 
         // ---------- Proprietário / Cliente ----------
-        public string ProprietarioNome { get; set; } = string.Empty; // Dono / Proprietário
+        public int ProprietarioId { get; set; }                       // Cliente (Proprietário) dono do imóvel
+        public string ProprietarioNome { get; set; } = string.Empty; // Nome exibido (cópia do cliente)
 
         // ---------- Endereço ----------
         public string Endereco { get; set; } = string.Empty;
@@ -55,6 +59,29 @@
                 return $"{ruaNumero}{cidadeEstado}{cep}";
             }
         }
+
+        // ---------- Fotos (caminhos dos arquivos copiados para a pasta de fotos do app) ----------
+        public List<string> Fotos { get; set; } = new List<string>();
+
+        [JsonIgnore] public string? FotoCapa => Fotos.Count > 0 ? Fotos[0] : null;
+        [JsonIgnore] public string QuartosTexto => Quartos == 1 ? "1 quarto" : Quartos + " quartos";
+        [JsonIgnore] public string SuitesTexto => Suites == 1 ? "1 suíte" : Suites + " suítes";
+        [JsonIgnore] public string BanheirosTexto => Banheiros == 1 ? "1 banheiro" : Banheiros + " banheiros";
+        [JsonIgnore] public string VagasTexto => Vagas == 1 ? "1 vaga" : Vagas + " vagas";
+        private const string NaoInformado = "Não informado";
+        private static string OuNaoInformado(string? valor) => string.IsNullOrWhiteSpace(valor) ? NaoInformado : valor;
+
+        [JsonIgnore] public string DescricaoTexto => OuNaoInformado(Descricao);
+        [JsonIgnore] public string MatriculaEdpTexto => OuNaoInformado(MatriculaEdp);
+        [JsonIgnore] public string MatriculaSabespTexto => OuNaoInformado(MatriculaSabesp);
+        [JsonIgnore] public string ProprietarioTexto => OuNaoInformado(ProprietarioNome);
+        [JsonIgnore] public string CidadeEstadoTexto => string.IsNullOrWhiteSpace(Cidade) && string.IsNullOrWhiteSpace(Estado)
+            ? NaoInformado
+            : (Cidade + (string.IsNullOrWhiteSpace(Estado) ? "" : " / " + Estado));
+        [JsonIgnore] public string LocalizacaoCurta => string.IsNullOrWhiteSpace(Cidade) ? Bairro : Bairro + ", " + Cidade;
+
+        // Usado pelas listas de seleção (ComboBox) para mostrar o nome
+        public override string ToString() => Titulo;
 
         public Imovel Clonar()
         {

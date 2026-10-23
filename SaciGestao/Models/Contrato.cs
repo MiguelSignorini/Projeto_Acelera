@@ -42,6 +42,13 @@ namespace SaciGestao.Models
 
         public bool Ativo { get; set; } = true;
 
+        public string TipoTexto => Tipo == TipoContrato.Locacao ? "Locação" : "Venda";
+        public string PeriodoTexto => DataInicio.ToString("dd/MM/yyyy") + " a " + DataFim.ToString("dd/MM/yyyy");
+        public string ValorTexto => ValorMensal.ToString("C2", new System.Globalization.CultureInfo("pt-BR")) + (Tipo == TipoContrato.Locacao ? " /mês" : "");
+        public string ObservacoesTexto => string.IsNullOrWhiteSpace(Observacoes) ? "Não informado" : Observacoes;
+        public string UcEnergiaTexto => string.IsNullOrWhiteSpace(UC_Energia) ? "Não informado" : UC_Energia;
+        public string UcAguaTexto => string.IsNullOrWhiteSpace(UC_Agua) ? "Não informado" : UC_Agua;
+
         public Contrato Clonar()
         {
             return (Contrato)MemberwiseClone();

@@ -1,0 +1,97 @@
+<Window x:Class="SaciGestao.Views.FotoZoomWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Foto do imóvel"
+        WindowStyle="None" AllowsTransparency="True" Background="Transparent"
+        ResizeMode="NoResize" ShowInTaskbar="False"
+        WindowStartupLocation="CenterScreen"
+        xml:lang="pt-BR" FontFamily="Segoe UI"
+        PreviewKeyDown="Window_PreviewKeyDown">
+
+    <Window.Resources>
+        <!-- Botão redondo da barra do popup -->
+        <Style x:Key="BotaoZoom" TargetType="Button">
+            <Setter Property="Width" Value="40"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Margin" Value="6,0,0,0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="AutomationProperties.Name" Value="{Binding ToolTip, RelativeSource={RelativeSource Self}}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="fundo" Background="#33FFFFFF" CornerRadius="20">
+                            <TextBlock Text="{TemplateBinding Content}" FontFamily="Segoe MDL2 Assets" FontSize="15"
+                                       Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="fundo" Property="Background" Value="#1E5BB8"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="fundo" Property="Opacity" Value="0.4"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="BotaoSeta" TargetType="Button" BasedOn="{StaticResource BotaoZoom}">
+            <Setter Property="Width" Value="48"/>
+            <Setter Property="Height" Value="48"/>
+            <Setter Property="Margin" Value="0"/>
+        </Style>
+    </Window.Resources>
+
+    <Border Background="#F2111827" CornerRadius="14" BorderBrush="#33FFFFFF" BorderThickness="1">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Barra superior: contador e controles de zoom -->
+            <Grid Grid.Row="0" Margin="24,16,20,8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock x:Name="txtContador" FontSize="15" FontWeight="SemiBold" Foreground="White"
+                           VerticalAlignment="Center"/>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <Button Content="&#xE71F;" ToolTip="Diminuir zoom" Style="{StaticResource BotaoZoom}" Click="ZoomMenos_Click"/>
+                    <TextBlock x:Name="txtZoom" Text="100%" FontSize="14" FontWeight="SemiBold" Foreground="White"
+                               Width="56" TextAlignment="Center" VerticalAlignment="Center"/>
+                    <Button Content="&#xE8A3;" ToolTip="Aumentar zoom" Style="{StaticResource BotaoZoom}" Margin="0" Click="ZoomMais_Click"/>
+                    <Button Content="&#xE73F;" ToolTip="Ajustar à tela (100%)" Style="{StaticResource BotaoZoom}" Click="Ajustar_Click"/>
+                    <Button Content="&#xE711;" ToolTip="Fechar (Esc)" Style="{StaticResource BotaoZoom}" Margin="18,0,0,0" Click="Fechar_Click"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- Área da foto: roda do mouse dá zoom, arrastar move, duplo clique alterna -->
+            <Grid Grid.Row="1" Margin="24,0">
+                <ScrollViewer x:Name="rolagem"
+                              HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"
+                              Background="Transparent" Focusable="False"
+                              SizeChanged="Rolagem_SizeChanged"
+                              PreviewMouseWheel="Rolagem_MouseWheel"
+                              PreviewMouseLeftButtonDown="Rolagem_MouseDown"
+                              PreviewMouseMove="Rolagem_MouseMove"
+                              PreviewMouseLeftButtonUp="Rolagem_MouseUp">
+                    <Image x:Name="imagem" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality"/>
+                </ScrollViewer>
+
+                <Button x:Name="btnAnterior" Content="&#xE76B;" ToolTip="Foto anterior" Style="{StaticResource BotaoSeta}"
+                        HorizontalAlignment="Left" VerticalAlignment="Center" Click="Anterior_Click"/>
+                <Button x:Name="btnProxima" Content="&#xE76C;" ToolTip="Próxima foto" Style="{StaticResource BotaoSeta}"
+                        HorizontalAlignment="Right" VerticalAlignment="Center" Click="Proxima_Click"/>
+            </Grid>
+
+            <TextBlock Grid.Row="2" Margin="24,10,24,16" HorizontalAlignment="Center" FontSize="12.5" Foreground="#C4CCD6"
+                       Text="Roda do mouse: zoom  •  Arraste: mover  •  Duplo clique: ampliar/reduzir  •  ← →: trocar foto  •  Esc: fechar" TextTrimming="CharacterEllipsis"/>
+        </Grid>
+    </Border>
+</Window>

@@ -1,17 +1,14 @@
 ﻿<UserControl x:Class="SaciGestao.Views.ImoveisView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:conv="clr-namespace:SaciGestao.Converters"
+             xml:lang="pt-BR"
              FontFamily="Segoe UI">
 
     <UserControl.Resources>
 
         <BooleanToVisibilityConverter x:Key="BoolParaVisibilidade"/>
 
-        <SolidColorBrush x:Key="Vermelho" Color="#D32F2F"/>
-        <SolidColorBrush x:Key="VermelhoClaro" Color="#FDEDED"/>
-        <SolidColorBrush x:Key="Texto" Color="#1F2933"/>
-        <SolidColorBrush x:Key="TextoSuave" Color="#5B6570"/>
-        <SolidColorBrush x:Key="Borda" Color="#C9CFD8"/>
 
         <Style x:Key="Cartao" TargetType="Border">
             <Setter Property="Background" Value="White"/>
@@ -96,7 +93,7 @@
         </Style>
 
         <Style x:Key="BotaoPrimario" TargetType="Button">
-            <Setter Property="Background" Value="{StaticResource Vermelho}"/>
+            <Setter Property="Background" Value="{StaticResource Primaria}"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="FontSize" Value="15"/>
             <Setter Property="Height" Value="42"/>
@@ -111,7 +108,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="fundo" Property="Background" Value="#B71C1C"/>
+                                <Setter TargetName="fundo" Property="Background" Value="#174A96"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -144,7 +141,7 @@
 
         <!-- Botão de texto discreto (Excluir dentro do formulário) -->
         <Style x:Key="BotaoTextoPerigo" TargetType="Button">
-            <Setter Property="Foreground" Value="{StaticResource Vermelho}"/>
+            <Setter Property="Foreground" Value="{StaticResource Perigo}"/>
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="Height" Value="42"/>
             <Setter Property="Padding" Value="14,0"/>
@@ -158,7 +155,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="fundo" Property="Background" Value="{StaticResource VermelhoClaro}"/>
+                                <Setter TargetName="fundo" Property="Background" Value="{StaticResource PerigoClaro}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -167,6 +164,7 @@
         </Style>
 
         <Style x:Key="BotaoAcao" TargetType="Button">
+            <Setter Property="AutomationProperties.Name" Value="{Binding ToolTip, RelativeSource={RelativeSource Self}}"/>
             <Setter Property="Width" Value="34"/>
             <Setter Property="Height" Value="34"/>
             <Setter Property="Margin" Value="0,0,6,0"/>
@@ -194,14 +192,14 @@
 
         <Style x:Key="BotaoAcaoPerigo" TargetType="Button" BasedOn="{StaticResource BotaoAcao}">
             <Setter Property="Background" Value="#F8D7D7"/>
-            <Setter Property="Foreground" Value="{StaticResource Vermelho}"/>
+            <Setter Property="Foreground" Value="{StaticResource Perigo}"/>
         </Style>
 
         <Style x:Key="CabecalhoColuna" TargetType="DataGridColumnHeader">
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="DataGridColumnHeader">
-                        <Border Background="White" BorderBrush="{StaticResource Vermelho}"
+                        <Border Background="White" BorderBrush="{StaticResource Primaria}"
                                 BorderThickness="0,0,0,2" Padding="8,10">
                             <ContentPresenter VerticalAlignment="Center"/>
                         </Border>
@@ -243,37 +241,50 @@
             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
         </Style>
 
+        <!-- Status do imóvel: fundo suave + texto escuro (contraste mínimo 4,5:1); vermelho não é usado -->
         <Style x:Key="EtiquetaStatus" TargetType="Border">
             <Setter Property="CornerRadius" Value="10"/>
             <Setter Property="Padding" Value="12,3"/>
             <Setter Property="HorizontalAlignment" Value="Left"/>
             <Setter Property="Background" Value="#E4E7EC"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#C3C9D2"/>
             <Style.Triggers>
                 <DataTrigger Binding="{Binding Status}" Value="Disponível">
-                    <Setter Property="Background" Value="#8FCB91"/>
+                    <Setter Property="Background" Value="#D4EDDA"/>
+                    <Setter Property="BorderBrush" Value="#9AD0A6"/>
                 </DataTrigger>
                 <DataTrigger Binding="{Binding Status}" Value="Reservado">
-                    <Setter Property="Background" Value="#F5C542"/>
+                    <Setter Property="Background" Value="#FFF0C2"/>
+                    <Setter Property="BorderBrush" Value="#E8C65A"/>
                 </DataTrigger>
                 <DataTrigger Binding="{Binding Status}" Value="Alugado">
-                    <Setter Property="Background" Value="#2F7DD1"/>
+                    <Setter Property="Background" Value="#DCE9FB"/>
+                    <Setter Property="BorderBrush" Value="#9DBDEB"/>
                 </DataTrigger>
                 <DataTrigger Binding="{Binding Status}" Value="Vendido">
-                    <Setter Property="Background" Value="#D32F2F"/>
+                    <Setter Property="Background" Value="#E6E0F8"/>
+                    <Setter Property="BorderBrush" Value="#B8A8E6"/>
                 </DataTrigger>
             </Style.Triggers>
         </Style>
 
         <Style x:Key="TextoStatus" TargetType="TextBlock">
             <Setter Property="FontSize" Value="13"/>
-            <Setter Property="FontWeight" Value="Medium"/>
-            <Setter Property="Foreground" Value="#1F2933"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#374151"/>
             <Style.Triggers>
+                <DataTrigger Binding="{Binding Status}" Value="Disponível">
+                    <Setter Property="Foreground" Value="#14532D"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Status}" Value="Reservado">
+                    <Setter Property="Foreground" Value="#7A4B00"/>
+                </DataTrigger>
                 <DataTrigger Binding="{Binding Status}" Value="Alugado">
-                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="Foreground" Value="#14407A"/>
                 </DataTrigger>
                 <DataTrigger Binding="{Binding Status}" Value="Vendido">
-                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="Foreground" Value="#43257A"/>
                 </DataTrigger>
             </Style.Triggers>
         </Style>
@@ -288,6 +299,145 @@
             <Setter Property="FontSize" Value="16"/>
             <Setter Property="Foreground" Value="{StaticResource Texto}"/>
             <Setter Property="TextWrapping" Value="Wrap"/>
+        </Style>
+
+        <!-- ===== Estilos do visual novo (cards, galeria, detalhes) ===== -->
+        <conv:CaminhoParaImagemConverter x:Key="CaminhoParaImagem"/>
+
+        <Style x:Key="CartaoImovel" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="BorderBrush" Value="#E6E9EE"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="BorderBrush" Value="#1E5BB8"/>
+                    <Setter Property="Effect">
+                        <Setter.Value>
+                            <DropShadowEffect BlurRadius="16" ShadowDepth="2" Opacity="0.18" Color="#000000"/>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="ChipImovel" TargetType="Border">
+            <Setter Property="Background" Value="#F3F5F8"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Padding" Value="8,3"/>
+            <Setter Property="Margin" Value="0,0,6,6"/>
+        </Style>
+
+        <Style x:Key="TextoChipImovel" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Foreground" Value="#3D4752"/>
+        </Style>
+
+        <Style x:Key="CaixaDetalhe" TargetType="Border">
+            <Setter Property="Background" Value="#F7F8FA"/>
+            <Setter Property="BorderBrush" Value="#E6E9EE"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Padding" Value="20,16"/>
+        </Style>
+
+        <Style x:Key="TituloSecaoDetalhe" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="{StaticResource TextoSuave}"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="10,0,0,0"/>
+        </Style>
+
+        <Style x:Key="IconeSecaoDetalhe" TargetType="Border">
+            <Setter Property="Width" Value="28"/>
+            <Setter Property="Height" Value="28"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Background" Value="{StaticResource PrimariaClara}"/>
+        </Style>
+
+        <Style x:Key="ChipDetalhe" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#D9DEE5"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="13"/>
+            <Setter Property="Padding" Value="12,4"/>
+            <Setter Property="Margin" Value="0,0,8,0"/>
+        </Style>
+
+        <!-- Botão redondo semitransparente das setas da galeria -->
+        <Style x:Key="BotaoSetaGaleria" TargetType="Button">
+            <Setter Property="AutomationProperties.Name" Value="{Binding ToolTip, RelativeSource={RelativeSource Self}}"/>
+            <Setter Property="Width" Value="42"/>
+            <Setter Property="Height" Value="42"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="fundo" Background="#99000000" CornerRadius="21">
+                            <TextBlock Text="{TemplateBinding Content}" FontFamily="Segoe MDL2 Assets"
+                                       FontSize="16" Foreground="White"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="fundo" Property="Background" Value="#1E5BB8"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Botãozinho sobre a miniatura (capa / remover) -->
+        <Style x:Key="BotaoMiniFoto" TargetType="Button">
+            <Setter Property="AutomationProperties.Name" Value="{Binding ToolTip, RelativeSource={RelativeSource Self}}"/>
+            <Setter Property="Width" Value="26"/>
+            <Setter Property="Height" Value="26"/>
+            <Setter Property="Margin" Value="0,0,4,0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="fundo" Background="#B3000000" CornerRadius="13">
+                            <TextBlock Text="{TemplateBinding Content}" FontFamily="Segoe MDL2 Assets"
+                                       FontSize="11" Foreground="White"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="fundo" Property="Background" Value="#1E5BB8"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Faixa de miniaturas da galeria -->
+        <Style x:Key="MiniaturaGaleria" TargetType="ListBoxItem">
+            <Setter Property="Margin" Value="0,0,8,0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border x:Name="moldura" BorderBrush="Transparent" BorderThickness="2"
+                                CornerRadius="8" Padding="1" Opacity="0.65">
+                            <ContentPresenter/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="moldura" Property="Opacity" Value="1"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="moldura" Property="BorderBrush" Value="#1E5BB8"/>
+                                <Setter TargetName="moldura" Property="Opacity" Value="1"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
 
     </UserControl.Resources>
@@ -368,7 +518,7 @@
                                          FontSize="14" VerticalContentAlignment="Center"
                                          Text="{Binding Busca, UpdateSourceTrigger=PropertyChanged}"/>
                                 <TextBlock Text="Buscar por código, endereço, bairro ou cidade"
-                                           Foreground="#8A939E" FontSize="14" IsHitTestVisible="False"
+                                           Foreground="#5F6B7A" FontSize="14" IsHitTestVisible="False"
                                            VerticalAlignment="Center" Margin="2,0,0,0">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
@@ -438,107 +588,150 @@
         <!-- CONTEÚDO: lista OU formulário OU detalhes -->
         <Grid Grid.Row="2" Margin="0,18,0,0">
 
-            <!-- LISTA -->
-            <Border Style="{StaticResource Cartao}" Padding="20,8"
-                    Visibility="{Binding MostrandoLista, Converter={StaticResource BoolParaVisibilidade}}">
-                <Grid>
-                    <DataGrid ItemsSource="{Binding Imoveis}"
-                              AutoGenerateColumns="False" IsReadOnly="True"
-                              CanUserAddRows="False" CanUserDeleteRows="False"
-                              CanUserResizeColumns="False" CanUserReorderColumns="False"
-                              CanUserSortColumns="False"
-                              HeadersVisibility="Column" GridLinesVisibility="None"
-                              RowHeaderWidth="0" RowHeight="58"
-                              SelectionMode="Single" SelectionUnit="FullRow"
-                              Background="Transparent" BorderThickness="0"
-                              ColumnHeaderStyle="{StaticResource CabecalhoColuna}"
-                              CellStyle="{StaticResource CelulaGrid}"
-                              RowStyle="{StaticResource LinhaGrid}">
-                        <DataGrid.Columns>
+            <!-- LISTA (cards estilo portais imobiliários, 4 por linha) -->
+            <Grid Visibility="{Binding MostrandoLista, Converter={StaticResource BoolParaVisibilidade}}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <ItemsControl ItemsSource="{Binding Imoveis}" Margin="0,0,0,6">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Columns="4" VerticalAlignment="Top"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Style="{StaticResource CartaoImovel}" Margin="0,0,16,16"
+                                        ToolTip="Clique para ver os detalhes">
+                                    <Border.InputBindings>
+                                        <MouseBinding Gesture="LeftClick"
+                                                      Command="{Binding DataContext.VisualizarCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                      CommandParameter="{Binding}"/>
+                                    </Border.InputBindings>
 
-                            <DataGridTextColumn Header="Código" Binding="{Binding Codigo}" Width="90"
-                                                ElementStyle="{StaticResource TextoCelula}"/>
+                                    <!-- 3 linhas: foto / informações (esticam) / rodapé fixo na base do card -->
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
 
-                            <DataGridTemplateColumn Header="Imóvel" Width="1.5*" MinWidth="170">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <StackPanel Orientation="Horizontal" Margin="8,0" VerticalAlignment="Center">
-                                            <Border Width="44" Height="44" CornerRadius="6" Background="#E9ECF0"
-                                                    BorderBrush="#CBD1D9" BorderThickness="1">
-                                                <TextBlock Text="&#xEB9F;" FontFamily="Segoe MDL2 Assets"
-                                                           FontSize="18" Foreground="#8A939E"
-                                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        <!-- Foto de capa -->
+                                        <Grid Grid.Row="0" Height="170">
+                                            <Border Background="#E9ECF0" CornerRadius="12,12,0,0">
+                                                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                                    <TextBlock Text="&#xEB9F;" FontFamily="Segoe MDL2 Assets" FontSize="36"
+                                                               Foreground="#B4BBC4" HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="Sem foto" FontSize="12" Foreground="#5F6B7A"
+                                                               HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                                                </StackPanel>
                                             </Border>
-                                            <TextBlock Text="{Binding Titulo}" FontSize="14" Margin="10,0,0,0"
-                                                       VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                                            <Border CornerRadius="12,12,0,0">
+                                                <Border.Background>
+                                                    <ImageBrush Stretch="UniformToFill"
+                                                                ImageSource="{Binding FotoCapa, Converter={StaticResource CaminhoParaImagem}, ConverterParameter=640}"/>
+                                                </Border.Background>
+                                            </Border>
+                                            <Border Style="{StaticResource EtiquetaStatus}" Margin="10,10,0,0"
+                                                    VerticalAlignment="Top">
+                                                <TextBlock Text="{Binding Status}" Style="{StaticResource TextoStatus}"/>
+                                            </Border>
+                                            <Border Background="#CC1F2933" CornerRadius="10" Padding="10,3"
+                                                    HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,10,10,0">
+                                                <TextBlock Text="{Binding Finalidade}" FontSize="12" FontWeight="SemiBold"
+                                                           Foreground="White"/>
+                                            </Border>
+                                        </Grid>
+
+                                        <!-- Informações -->
+                                        <StackPanel Grid.Row="1" Margin="14,12,14,8">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding Valor, StringFormat=C0, ConverterCulture=pt-BR}"
+                                                           FontSize="20" FontWeight="Bold" Foreground="{StaticResource Primaria}"/>
+                                                <TextBlock Text="/mês" FontSize="12" Foreground="{StaticResource TextoSuave}"
+                                                           VerticalAlignment="Bottom" Margin="4,0,0,3">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Finalidade}" Value="Aluguel">
+                                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </StackPanel>
+
+                                            <TextBlock Text="{Binding Titulo}" FontSize="14.5" FontWeight="SemiBold"
+                                                       Foreground="{StaticResource Texto}" Margin="0,5,0,0"
+                                                       TextTrimming="CharacterEllipsis"/>
+                                            <TextBlock Text="{Binding EnderecoCompleto}" FontSize="12"
+                                                       Foreground="{StaticResource TextoSuave}" Margin="0,3,0,0"
+                                                       TextTrimming="CharacterEllipsis"/>
+                                            <TextBlock Text="{Binding LocalizacaoCurta}" FontSize="12"
+                                                       Foreground="{StaticResource TextoSuave}" Margin="0,1,0,0"
+                                                       TextTrimming="CharacterEllipsis"/>
+
+                                            <WrapPanel Margin="0,10,0,0">
+                                                <Border Style="{StaticResource ChipImovel}">
+                                                    <TextBlock Text="{Binding Tipo}" Style="{StaticResource TextoChipImovel}" FontWeight="SemiBold"/>
+                                                </Border>
+                                                <Border Style="{StaticResource ChipImovel}">
+                                                    <TextBlock Text="{Binding QuartosTexto}" Style="{StaticResource TextoChipImovel}"/>
+                                                </Border>
+                                                <Border Style="{StaticResource ChipImovel}">
+                                                    <TextBlock Text="{Binding BanheirosTexto}" Style="{StaticResource TextoChipImovel}"/>
+                                                </Border>
+                                                <Border Style="{StaticResource ChipImovel}">
+                                                    <TextBlock Text="{Binding VagasTexto}" Style="{StaticResource TextoChipImovel}"/>
+                                                </Border>
+                                            </WrapPanel>
                                         </StackPanel>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
 
-                            <DataGridTextColumn Header="Endereço" Binding="{Binding EnderecoCompleto}" Width="2*" MinWidth="180"
-                                                ElementStyle="{StaticResource TextoCelula}"/>
-
-                            <DataGridTextColumn Header="Bairro" Binding="{Binding Bairro}" Width="*" MinWidth="100"
-                                                ElementStyle="{StaticResource TextoCelula}"/>
-
-                            <DataGridTextColumn Header="Valor" Width="110"
-                                                Binding="{Binding Valor, StringFormat=C0, ConverterCulture=pt-BR}"
-                                                ElementStyle="{StaticResource TextoCelula}"/>
-
-                            <DataGridTextColumn Header="Finalidade" Binding="{Binding Finalidade}" Width="100"
-                                                ElementStyle="{StaticResource TextoCelula}"/>
-
-                            <DataGridTemplateColumn Header="Status" Width="120">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Border Style="{StaticResource EtiquetaStatus}" Margin="8,0">
-                                            <TextBlock Text="{Binding Status}" Style="{StaticResource TextoStatus}"/>
+                                        <!-- Rodapé fixo: código à esquerda, ações à direita -->
+                                        <Border Grid.Row="2" BorderBrush="#EEF0F3" BorderThickness="0,1,0,0"
+                                                Margin="14,0" Padding="0,10">
+                                            <Grid>
+                                                <TextBlock Text="{Binding Codigo}" FontSize="12" FontWeight="SemiBold"
+                                                           Foreground="#5F6B7A" VerticalAlignment="Center"/>
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                                    <Button Content="&#xE721;" ToolTip="Ver detalhes"
+                                                            Style="{StaticResource BotaoAcao}"
+                                                            Command="{Binding DataContext.VisualizarCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                            CommandParameter="{Binding}"/>
+                                                    <Button Content="&#xE70F;" ToolTip="Editar"
+                                                            Style="{StaticResource BotaoAcao}"
+                                                            Command="{Binding DataContext.EditarCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                            CommandParameter="{Binding}"/>
+                                                    <Button Content="&#xE74D;" ToolTip="Excluir"
+                                                            Style="{StaticResource BotaoAcaoPerigo}" Margin="0"
+                                                            Command="{Binding DataContext.ExcluirCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                            CommandParameter="{Binding}"/>
+                                                </StackPanel>
+                                            </Grid>
                                         </Border>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
 
-                            <DataGridTemplateColumn Header="Ações" Width="140">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <StackPanel Orientation="Horizontal" Margin="8,0" VerticalAlignment="Center">
-                                            <Button Content="&#xE721;" ToolTip="Visualizar"
-                                                    Style="{StaticResource BotaoAcao}"
-                                                    Command="{Binding DataContext.VisualizarCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                                    CommandParameter="{Binding}"/>
-                                            <Button Content="&#xE70F;" ToolTip="Editar"
-                                                    Style="{StaticResource BotaoAcao}"
-                                                    Command="{Binding DataContext.EditarCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                                    CommandParameter="{Binding}"/>
-                                            <Button Content="&#xE74D;" ToolTip="Excluir"
-                                                    Style="{StaticResource BotaoAcaoPerigo}"
-                                                    Command="{Binding DataContext.ExcluirCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                                    CommandParameter="{Binding}"/>
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-
-                        </DataGrid.Columns>
-                    </DataGrid>
-
-                    <TextBlock Text="Nenhum imóvel encontrado com esses filtros."
-                               Foreground="{StaticResource TextoSuave}" FontSize="15"
-                               HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <TextBlock.Style>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="Visibility" Value="Collapsed"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Imoveis.Count}" Value="0">
-                                        <Setter Property="Visibility" Value="Visible"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-                </Grid>
-            </Border>
+                <TextBlock Text="Nenhum imóvel encontrado com esses filtros."
+                           Foreground="{StaticResource TextoSuave}" FontSize="15"
+                           HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Imoveis.Count}" Value="0">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </Grid>
 
             <!-- FORMULÁRIO (novo ou editar) -->
             <Border Style="{StaticResource Cartao}" MaxWidth="1180" HorizontalAlignment="Stretch"
@@ -559,9 +752,9 @@
                             </Grid.ColumnDefinitions>
 
                             <StackPanel Orientation="Horizontal">
-                                <Border Width="42" Height="42" CornerRadius="8" Background="{StaticResource VermelhoClaro}">
+                                <Border Width="42" Height="42" CornerRadius="8" Background="{StaticResource PrimariaClara}">
                                     <TextBlock Text="&#xE80F;" FontFamily="Segoe MDL2 Assets" FontSize="18"
-                                               Foreground="{StaticResource Vermelho}"
+                                               Foreground="{StaticResource Primaria}"
                                                HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 </Border>
                                 <StackPanel Margin="12,0,0,0" VerticalAlignment="Center">
@@ -621,14 +814,17 @@
                             <!-- Dono / Proprietário -->
                             <StackPanel>
                                 <TextBlock Text="Dono / Proprietário" Style="{StaticResource RotuloForm}"/>
-                                <TextBox Style="{StaticResource CampoForm}"
-                                         Text="{Binding ProprietarioNomeForm, UpdateSourceTrigger=PropertyChanged}"
-                                         ToolTip="Nome do proprietário do imóvel"/>
+                                <ComboBox Style="{StaticResource ComboArredondado}"
+                                          ItemsSource="{Binding ListaProprietarios}"
+                                          DisplayMemberPath="Nome"
+                                          SelectedValuePath="Id"
+                                          SelectedValue="{Binding ProprietarioIdForm, Mode=TwoWay}"
+                                          ToolTip="Clientes cadastrados como Proprietário"/>
                             </StackPanel>
 
                             <!-- Endereço -->
                             <TextBlock Text="ENDEREÇO" FontSize="12" FontWeight="Bold"
-                                   Foreground="{StaticResource Vermelho}" Margin="0,20,0,0"/>
+                                   Foreground="{StaticResource Primaria}" Margin="0,20,0,0"/>
                             <Border BorderBrush="#E6E9EE" BorderThickness="0,1,0,0" Margin="0,4,0,0"/>
 
                             <Grid>
@@ -695,6 +891,56 @@
                                 </StackPanel>
                             </Grid>
 
+                            <!-- Fotos -->
+                            <TextBlock Text="FOTOS" FontSize="12" FontWeight="Bold"
+                                   Foreground="{StaticResource Primaria}" Margin="0,20,0,0"/>
+                            <Border BorderBrush="#E6E9EE" BorderThickness="0,1,0,0" Margin="0,4,0,10"/>
+
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                                <Button Style="{StaticResource BotaoContorno}" Command="{Binding AdicionarFotosCommand}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xE722;" FontFamily="Segoe MDL2 Assets" FontSize="14"
+                                                   Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Adicionar fotos" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                                <TextBlock Text="A primeira foto é a capa. Use a estrela para trocar a capa."
+                                           FontSize="12" Foreground="{StaticResource TextoSuave}"
+                                           VerticalAlignment="Center" Margin="14,0,0,0"/>
+                            </StackPanel>
+
+                            <ItemsControl ItemsSource="{Binding FotosForm}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Width="150" Height="104" Margin="0,0,12,12">
+                                            <Border Background="#E9ECF0" CornerRadius="8"/>
+                                            <Border CornerRadius="8" BorderBrush="#D9DEE5" BorderThickness="1">
+                                                <Border.Background>
+                                                    <ImageBrush Stretch="UniformToFill"
+                                                                ImageSource="{Binding ., Converter={StaticResource CaminhoParaImagem}, ConverterParameter=320}"/>
+                                                </Border.Background>
+                                            </Border>
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right"
+                                                        VerticalAlignment="Top" Margin="0,6,2,0">
+                                                <Button Content="&#xE734;" ToolTip="Definir como capa"
+                                                        Style="{StaticResource BotaoMiniFoto}"
+                                                        Command="{Binding DataContext.DefinirCapaCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                        CommandParameter="{Binding}"/>
+                                                <Button Content="&#xE711;" ToolTip="Remover foto"
+                                                        Style="{StaticResource BotaoMiniFoto}"
+                                                        Command="{Binding DataContext.RemoverFotoCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                        CommandParameter="{Binding}"/>
+                                            </StackPanel>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
                             <!-- Descrição -->
                             <TextBlock Text="Descrição / Cômodos" Style="{StaticResource RotuloForm}"/>
                             <TextBox Style="{StaticResource CampoFormMultilinha}"
@@ -702,7 +948,7 @@
 
                             <!-- Cômodos Específicos -->
                             <TextBlock Text="CÔMODOS E DETALHES" FontSize="12" FontWeight="Bold"
-                                   Foreground="{StaticResource Vermelho}" Margin="0,20,0,0"/>
+                                   Foreground="{StaticResource Primaria}" Margin="0,20,0,0"/>
                             <Border BorderBrush="#E6E9EE" BorderThickness="0,1,0,0" Margin="0,4,0,0"/>
 
                             <Grid>
@@ -748,7 +994,7 @@
 
                             <!-- Concessionárias -->
                             <TextBlock Text="CONCESSIONÁRIAS E OUTROS DADOS" FontSize="12" FontWeight="Bold"
-                                   Foreground="{StaticResource Vermelho}" Margin="0,20,0,0"/>
+                                   Foreground="{StaticResource Primaria}" Margin="0,20,0,0"/>
                             <Border BorderBrush="#E6E9EE" BorderThickness="0,1,0,0" Margin="0,4,0,0"/>
 
                             <Grid>
@@ -780,7 +1026,7 @@
                                 </StackPanel>
                             </Grid>
 
-                            <TextBlock Text="{Binding ErroForm}" Foreground="{StaticResource Vermelho}"
+                            <TextBlock Text="{Binding ErroForm}" Foreground="{StaticResource Perigo}"
                                    FontSize="13" TextWrapping="Wrap" Margin="0,16,0,0">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
@@ -820,159 +1066,348 @@
                 </Grid>
             </Border>
 
-            <!-- DETALHES -->
-            <Border Style="{StaticResource Cartao}" MaxWidth="1180" HorizontalAlignment="Stretch"
+            <!-- DETALHES (galeria de fotos + dados, estilo portais imobiliários) -->
+            <Border Style="{StaticResource Cartao}" VerticalAlignment="Stretch"
                     Visibility="{Binding MostrandoDetalhes, Converter={StaticResource BoolParaVisibilidade}}">
-                <!-- DataContext do imóvel fica só no Grid interno, para não quebrar o Visibility acima -->
-                <Grid DataContext="{Binding ImovelDetalhe}">
+                <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <!-- Cabeçalho: ícone + imóvel + código + status em destaque -->
-                    <Border Grid.Row="0" Background="#F7F8FA" CornerRadius="12,12,0,0"
-                            BorderBrush="#E6E9EE" BorderThickness="0,0,0,1" Padding="24,18">
+                    <!-- Cabeçalho: título, código, endereço e etiquetas -->
+                    <Border Grid.Row="0" DataContext="{Binding ImovelDetalhe}"
+                            Background="#F7F8FA" CornerRadius="12,12,0,0"
+                            BorderBrush="#E6E9EE" BorderThickness="0,0,0,1" Padding="28,20">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
 
-                            <StackPanel Orientation="Horizontal">
-                                <Border Width="52" Height="52" CornerRadius="8" Background="#E9ECF0"
-                                        BorderBrush="#CBD1D9" BorderThickness="1">
-                                    <TextBlock Text="&#xEB9F;" FontFamily="Segoe MDL2 Assets" FontSize="22"
-                                               Foreground="#8A939E"
-                                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                </Border>
-                                <StackPanel Margin="14,0,0,0" VerticalAlignment="Center">
-                                    <TextBlock Text="{Binding Titulo}" FontSize="18" FontWeight="Bold"
-                                               Foreground="{StaticResource Texto}"/>
-                                    <TextBlock Text="{Binding Codigo}" FontSize="12"
-                                               Foreground="{StaticResource TextoSuave}"/>
-                                </StackPanel>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="{Binding Titulo}" FontSize="24" FontWeight="Bold"
+                                           Foreground="{StaticResource Texto}" TextTrimming="CharacterEllipsis"/>
+                                <TextBlock Text="{Binding EnderecoCompleto}" FontSize="13.5"
+                                           Foreground="{StaticResource TextoSuave}" Margin="0,4,0,0"
+                                           TextTrimming="CharacterEllipsis"/>
                             </StackPanel>
 
-                            <Border Grid.Column="1" Style="{StaticResource EtiquetaStatus}" VerticalAlignment="Center">
-                                <TextBlock Text="{Binding Status}" Style="{StaticResource TextoStatus}"/>
-                            </Border>
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                <Border Style="{StaticResource ChipDetalhe}">
+                                    <TextBlock Text="{Binding Codigo}" FontSize="13" FontWeight="SemiBold"
+                                               Foreground="{StaticResource Texto}"/>
+                                </Border>
+                                <Border Style="{StaticResource ChipDetalhe}">
+                                    <TextBlock Text="{Binding Tipo}" FontSize="13" FontWeight="SemiBold"
+                                               Foreground="{StaticResource Texto}"/>
+                                </Border>
+                                <Border Style="{StaticResource EtiquetaStatus}" Padding="14,4" Margin="0">
+                                    <TextBlock Text="{Binding Status}" Style="{StaticResource TextoStatus}"/>
+                                </Border>
+                            </StackPanel>
                         </Grid>
                     </Border>
 
-                    <!-- Campos em pares rótulo/valor -->
                     <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-                        <StackPanel Margin="24,20,24,24">
+                        <Grid Margin="28,24,28,24">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="24"/>
+                                <ColumnDefinition Width="330"/>
+                            </Grid.ColumnDefinitions>
 
-                            <Grid Margin="0,0,0,18">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <StackPanel Grid.Column="0">
-                                    <TextBlock Text="TIPO" Style="{StaticResource RotuloDetalhe}"/>
-                                    <TextBlock Text="{Binding Tipo}" Style="{StaticResource ValorDetalhe}"/>
-                                </StackPanel>
-                                <StackPanel Grid.Column="1">
-                                    <TextBlock Text="FINALIDADE" Style="{StaticResource RotuloDetalhe}"/>
-                                    <TextBlock Text="{Binding Finalidade}" Style="{StaticResource ValorDetalhe}"/>
-                                </StackPanel>
-                                <StackPanel Grid.Column="2">
-                                    <TextBlock Text="VALOR" Style="{StaticResource RotuloDetalhe}"/>
-                                    <TextBlock Text="{Binding Valor, StringFormat=C0, ConverterCulture=pt-BR}"
-                                           FontSize="18" FontWeight="Bold" Foreground="{StaticResource Vermelho}"/>
-                                </StackPanel>
-                            </Grid>
+                            <!-- ============ COLUNA ESQUERDA: galeria + seções ============ -->
+                            <StackPanel Grid.Column="0">
 
-                            <StackPanel Margin="0,0,0,18">
-                                <TextBlock Text="DONO / PROPRIETÁRIO" Style="{StaticResource RotuloDetalhe}"/>
-                                <TextBlock Text="{Binding ProprietarioNome}" Style="{StaticResource ValorDetalhe}" FontWeight="SemiBold"/>
-                            </StackPanel>
+                                <!-- Galeria: DataContext volta para o ViewModel -->
+                                <StackPanel DataContext="{Binding DataContext, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                            Margin="0,0,0,26">
 
-                            <StackPanel Margin="0,0,0,18">
-                                <TextBlock Text="ENDEREÇO" Style="{StaticResource RotuloDetalhe}"/>
-                                <TextBlock Text="{Binding EnderecoCompleto}" Style="{StaticResource ValorDetalhe}"/>
-                            </StackPanel>
+                                    <Grid Height="420">
+                                        <!-- Moldura de tamanho FIXO: a foto se ajusta dentro dela (inteira, sem esticar) -->
+                                        <Border Background="#1F2933" CornerRadius="12">
+                                            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                                <StackPanel.Style>
+                                                    <Style TargetType="StackPanel">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding FotoAtual}" Value="{x:Null}">
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </StackPanel.Style>
+                                                <TextBlock Text="&#xEB9F;" FontFamily="Segoe MDL2 Assets" FontSize="64"
+                                                           Foreground="#8A94A3" HorizontalAlignment="Center"/>
+                                                <TextBlock Text="Nenhuma foto cadastrada" FontSize="14" Foreground="#D1D8E0"
+                                                           HorizontalAlignment="Center" Margin="0,8,0,0"/>
+                                                <TextBlock Text="Edite o imóvel para adicionar fotos." FontSize="12" Foreground="#B5BFCB"
+                                                           HorizontalAlignment="Center" Margin="0,2,0,0"/>
+                                            </StackPanel>
+                                        </Border>
+                                        <Border CornerRadius="12" Cursor="Hand" ToolTip="Clique para ampliar">
+                                            <Border.InputBindings>
+                                                <MouseBinding Gesture="LeftClick" Command="{Binding AmpliarFotoCommand}"/>
+                                            </Border.InputBindings>
+                                            <Border.Background>
+                                                <ImageBrush Stretch="Uniform"
+                                                            ImageSource="{Binding FotoAtual, Converter={StaticResource CaminhoParaImagem}, ConverterParameter=1280}"/>
+                                            </Border.Background>
+                                        </Border>
 
-                            <StackPanel Margin="0,0,0,18">
-                                <TextBlock Text="DESCRIÇÃO / CÔMODOS" Style="{StaticResource RotuloDetalhe}"/>
-                                <TextBlock Text="{Binding Descricao}" Style="{StaticResource ValorDetalhe}" FontSize="14"/>
-                            </StackPanel>
+                                        <!-- Ampliar (também acessível pelo teclado) -->
+                                        <Button Content="&#xE8A3;" ToolTip="Ampliar foto" Style="{StaticResource BotaoSetaGaleria}"
+                                                HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="16,0,0,16"
+                                                Command="{Binding AmpliarFotoCommand}"
+                                                Visibility="{Binding TemFotoAtual, Converter={StaticResource BoolParaVisibilidade}}"/>
 
-                            <!-- Cômodos na tela de detalhes -->
-                            <Grid Margin="0,0,0,18">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <StackPanel Grid.Column="0">
-                                    <TextBlock Text="QUARTOS" Style="{StaticResource RotuloDetalhe}"/>
-                                    <TextBlock Text="{Binding Quartos}" Style="{StaticResource ValorDetalhe}"/>
-                                </StackPanel>
-                                <StackPanel Grid.Column="1">
-                                    <TextBlock Text="SUÍTES" Style="{StaticResource RotuloDetalhe}"/>
-                                    <TextBlock Text="{Binding Suites}" Style="{StaticResource ValorDetalhe}"/>
-                                </StackPanel>
-                                <StackPanel Grid.Column="2">
-                                    <TextBlock Text="BANHEIROS" Style="{StaticResource RotuloDetalhe}"/>
-                                    <TextBlock Text="{Binding Banheiros}" Style="{StaticResource ValorDetalhe}"/>
-                                </StackPanel>
-                                <StackPanel Grid.Column="3">
-                                    <TextBlock Text="COZINHAS" Style="{StaticResource RotuloDetalhe}"/>
-                                    <TextBlock Text="{Binding Cozinhas}" Style="{StaticResource ValorDetalhe}"/>
-                                </StackPanel>
-                                <StackPanel Grid.Column="4">
-                                    <TextBlock Text="SALAS" Style="{StaticResource RotuloDetalhe}"/>
-                                    <TextBlock Text="{Binding Salas}" Style="{StaticResource ValorDetalhe}"/>
-                                </StackPanel>
-                                <StackPanel Grid.Column="5">
-                                    <TextBlock Text="VAGAS" Style="{StaticResource RotuloDetalhe}"/>
-                                    <TextBlock Text="{Binding Vagas}" Style="{StaticResource ValorDetalhe}"/>
-                                </StackPanel>
-                            </Grid>
+                                        <Button Content="&#xE76B;" Style="{StaticResource BotaoSetaGaleria}"
+                                                HorizontalAlignment="Left" VerticalAlignment="Center" Margin="16,0,0,0"
+                                                Command="{Binding FotoAnteriorCommand}"
+                                                Visibility="{Binding VariasFotos, Converter={StaticResource BoolParaVisibilidade}}"/>
+                                        <Button Content="&#xE76C;" Style="{StaticResource BotaoSetaGaleria}"
+                                                HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,16,0"
+                                                Command="{Binding ProximaFotoCommand}"
+                                                Visibility="{Binding VariasFotos, Converter={StaticResource BoolParaVisibilidade}}"/>
 
-                            <Grid Margin="0,0,0,18">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <StackPanel Grid.Column="0">
-                                    <TextBlock Text="MATRÍCULA EDP (ENERGIA)" Style="{StaticResource RotuloDetalhe}"/>
-                                    <TextBlock Text="{Binding MatriculaEdp}" Style="{StaticResource ValorDetalhe}" FontSize="14"/>
-                                </StackPanel>
-                                <StackPanel Grid.Column="1">
-                                    <TextBlock Text="MATRÍCULA SABESP (ÁGUA)" Style="{StaticResource RotuloDetalhe}"/>
-                                    <TextBlock Text="{Binding MatriculaSabesp}" Style="{StaticResource ValorDetalhe}" FontSize="14"/>
-                                </StackPanel>
-                            </Grid>
+                                        <Border Background="#B3000000" CornerRadius="14" Padding="12,5"
+                                                HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,16,16"
+                                                Visibility="{Binding VariasFotos, Converter={StaticResource BoolParaVisibilidade}}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="&#xE722;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                                           Foreground="White" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                                <TextBlock Text="{Binding ContadorFotos}" FontSize="13" FontWeight="SemiBold"
+                                                           Foreground="White"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </Grid>
 
-                            <!-- Rodapé: Voltar no canto esquerdo, Editar no direito -->
-                            <Grid Margin="0,10,0,0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
+                                    <!-- Miniaturas (clicar troca a foto grande) -->
+                                    <ListBox ItemsSource="{Binding ImovelDetalhe.Fotos}"
+                                             SelectedItem="{Binding FotoAtual, Mode=TwoWay}"
+                                             ItemContainerStyle="{StaticResource MiniaturaGaleria}"
+                                             Background="Transparent" BorderThickness="0" Margin="0,12,0,0"
+                                             ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                             ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                                             Visibility="{Binding VariasFotos, Converter={StaticResource BoolParaVisibilidade}}">
+                                        <ListBox.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <StackPanel Orientation="Horizontal"/>
+                                            </ItemsPanelTemplate>
+                                        </ListBox.ItemsPanel>
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border Width="104" Height="72" CornerRadius="6" Background="#E9ECF0">
+                                                    <Border CornerRadius="6">
+                                                        <Border.Background>
+                                                            <ImageBrush Stretch="UniformToFill"
+                                                                        ImageSource="{Binding ., Converter={StaticResource CaminhoParaImagem}, ConverterParameter=220}"/>
+                                                        </Border.Background>
+                                                    </Border>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
+                                </StackPanel>
 
-                                <Button Grid.Column="0" Style="{StaticResource BotaoContorno}"
-                                    Command="{Binding DataContext.FecharDetalhesCommand, RelativeSource={RelativeSource AncestorType=UserControl}}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="&#xE72B;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                                               Margin="0,0,8,0" VerticalAlignment="Center"/>
-                                        <TextBlock Text="Voltar" VerticalAlignment="Center"/>
+                                <!-- Seções com os dados do imóvel -->
+                                <StackPanel DataContext="{Binding ImovelDetalhe}">
+
+                                    <!-- Características -->
+                                    <StackPanel Margin="0,0,0,22">
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                                            <Border Style="{StaticResource IconeSecaoDetalhe}">
+                                                <TextBlock Text="&#xE80F;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                                           Foreground="{StaticResource Primaria}"
+                                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <TextBlock Text="CARACTERÍSTICAS" Style="{StaticResource TituloSecaoDetalhe}"/>
+                                        </StackPanel>
+                                        <Border Style="{StaticResource CaixaDetalhe}">
+                                            <UniformGrid Columns="6">
+                                                <StackPanel HorizontalAlignment="Center">
+                                                    <TextBlock Text="{Binding Quartos}" FontSize="24" FontWeight="Bold"
+                                                               Foreground="{StaticResource Texto}" HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="Quartos" Style="{StaticResource RotuloDetalhe}" HorizontalAlignment="Center"/>
+                                                </StackPanel>
+                                                <StackPanel HorizontalAlignment="Center">
+                                                    <TextBlock Text="{Binding Suites}" FontSize="24" FontWeight="Bold"
+                                                               Foreground="{StaticResource Texto}" HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="Suítes" Style="{StaticResource RotuloDetalhe}" HorizontalAlignment="Center"/>
+                                                </StackPanel>
+                                                <StackPanel HorizontalAlignment="Center">
+                                                    <TextBlock Text="{Binding Banheiros}" FontSize="24" FontWeight="Bold"
+                                                               Foreground="{StaticResource Texto}" HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="Banheiros" Style="{StaticResource RotuloDetalhe}" HorizontalAlignment="Center"/>
+                                                </StackPanel>
+                                                <StackPanel HorizontalAlignment="Center">
+                                                    <TextBlock Text="{Binding Cozinhas}" FontSize="24" FontWeight="Bold"
+                                                               Foreground="{StaticResource Texto}" HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="Cozinhas" Style="{StaticResource RotuloDetalhe}" HorizontalAlignment="Center"/>
+                                                </StackPanel>
+                                                <StackPanel HorizontalAlignment="Center">
+                                                    <TextBlock Text="{Binding Salas}" FontSize="24" FontWeight="Bold"
+                                                               Foreground="{StaticResource Texto}" HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="Salas" Style="{StaticResource RotuloDetalhe}" HorizontalAlignment="Center"/>
+                                                </StackPanel>
+                                                <StackPanel HorizontalAlignment="Center">
+                                                    <TextBlock Text="{Binding Vagas}" FontSize="24" FontWeight="Bold"
+                                                               Foreground="{StaticResource Texto}" HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="Vagas" Style="{StaticResource RotuloDetalhe}" HorizontalAlignment="Center"/>
+                                                </StackPanel>
+                                            </UniformGrid>
+                                        </Border>
                                     </StackPanel>
-                                </Button>
 
-                                <Button Grid.Column="2" Content="Editar imóvel" Style="{StaticResource BotaoPrimario}"
-                                    Command="{Binding DataContext.EditarDosDetalhesCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
-                            </Grid>
+                                    <!-- Descrição -->
+                                    <StackPanel Margin="0,0,0,22">
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                                            <Border Style="{StaticResource IconeSecaoDetalhe}">
+                                                <TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                                           Foreground="{StaticResource Primaria}"
+                                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <TextBlock Text="DESCRIÇÃO" Style="{StaticResource TituloSecaoDetalhe}"/>
+                                        </StackPanel>
+                                        <Border Style="{StaticResource CaixaDetalhe}">
+                                            <TextBlock Text="{Binding DescricaoTexto}" Style="{StaticResource ValorDetalhe}" FontSize="14"
+                                                       LineHeight="22"/>
+                                        </Border>
+                                    </StackPanel>
 
-                        </StackPanel>
+                                    <!-- Localização -->
+                                    <StackPanel Margin="0,0,0,22">
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                                            <Border Style="{StaticResource IconeSecaoDetalhe}">
+                                                <TextBlock Text="&#xE707;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                                           Foreground="{StaticResource Primaria}"
+                                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <TextBlock Text="LOCALIZAÇÃO" Style="{StaticResource TituloSecaoDetalhe}"/>
+                                        </StackPanel>
+                                        <Border Style="{StaticResource CaixaDetalhe}">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="2*"/>
+                                                    <ColumnDefinition Width="16"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="16"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <StackPanel Grid.Column="0">
+                                                    <TextBlock Text="Endereço" Style="{StaticResource RotuloDetalhe}"/>
+                                                    <TextBlock Text="{Binding EnderecoCompleto}" Style="{StaticResource ValorDetalhe}"/>
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="2">
+                                                    <TextBlock Text="Bairro" Style="{StaticResource RotuloDetalhe}"/>
+                                                    <TextBlock Text="{Binding Bairro}" Style="{StaticResource ValorDetalhe}"/>
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="4">
+                                                    <TextBlock Text="Cidade / UF" Style="{StaticResource RotuloDetalhe}"/>
+                                                    <TextBlock Text="{Binding CidadeEstadoTexto}" Style="{StaticResource ValorDetalhe}"/>
+                                                </StackPanel>
+                                            </Grid>
+                                        </Border>
+                                    </StackPanel>
+
+                                    <!-- Concessionárias -->
+                                    <StackPanel>
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                                            <Border Style="{StaticResource IconeSecaoDetalhe}">
+                                                <TextBlock Text="&#xE945;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                                           Foreground="{StaticResource Primaria}"
+                                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <TextBlock Text="CONCESSIONÁRIAS" Style="{StaticResource TituloSecaoDetalhe}"/>
+                                        </StackPanel>
+                                        <Border Style="{StaticResource CaixaDetalhe}">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="16"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <StackPanel Grid.Column="0">
+                                                    <TextBlock Text="Matrícula EDP (energia)" Style="{StaticResource RotuloDetalhe}"/>
+                                                    <TextBlock Text="{Binding MatriculaEdpTexto}" Style="{StaticResource ValorDetalhe}"/>
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="2">
+                                                    <TextBlock Text="Matrícula Sabesp (água)" Style="{StaticResource RotuloDetalhe}"/>
+                                                    <TextBlock Text="{Binding MatriculaSabespTexto}" Style="{StaticResource ValorDetalhe}"/>
+                                                </StackPanel>
+                                            </Grid>
+                                        </Border>
+                                    </StackPanel>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <!-- ============ COLUNA DIREITA: preço, dono e ações ============ -->
+                            <StackPanel Grid.Column="2" DataContext="{Binding ImovelDetalhe}">
+                                <Border Style="{StaticResource CaixaDetalhe}" Background="White" Padding="22,20">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Finalidade, StringFormat='{}{0} • valor'}" Style="{StaticResource RotuloDetalhe}"/>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding Valor, StringFormat=C0, ConverterCulture=pt-BR}"
+                                                       FontSize="32" FontWeight="Bold" Foreground="{StaticResource Primaria}"/>
+                                            <TextBlock Text="/mês" FontSize="14" Foreground="{StaticResource TextoSuave}"
+                                                       VerticalAlignment="Bottom" Margin="6,0,0,6">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Finalidade}" Value="Aluguel">
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </StackPanel>
+
+                                        <WrapPanel Margin="0,14,0,0">
+                                            <Border Style="{StaticResource ChipImovel}">
+                                                <TextBlock Text="{Binding QuartosTexto}" Style="{StaticResource TextoChipImovel}"/>
+                                            </Border>
+                                            <Border Style="{StaticResource ChipImovel}">
+                                                <TextBlock Text="{Binding BanheirosTexto}" Style="{StaticResource TextoChipImovel}"/>
+                                            </Border>
+                                            <Border Style="{StaticResource ChipImovel}">
+                                                <TextBlock Text="{Binding VagasTexto}" Style="{StaticResource TextoChipImovel}"/>
+                                            </Border>
+                                        </WrapPanel>
+
+                                        <Border BorderBrush="#E6E9EE" BorderThickness="0,1,0,0" Margin="0,8,0,0" Padding="0,16,0,0">
+                                            <StackPanel>
+                                                <TextBlock Text="Dono / proprietário" Style="{StaticResource RotuloDetalhe}"/>
+                                                <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                                                    <Border Width="40" Height="40" CornerRadius="20" Background="{StaticResource PrimariaClara}"
+                                                            BorderBrush="{StaticResource Primaria}" BorderThickness="1.5">
+                                                        <TextBlock Text="&#xE77B;" FontFamily="Segoe MDL2 Assets" FontSize="16"
+                                                                   Foreground="{StaticResource Primaria}"
+                                                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    </Border>
+                                                    <TextBlock Text="{Binding ProprietarioTexto}" FontSize="15" FontWeight="SemiBold"
+                                                               Foreground="{StaticResource Texto}" VerticalAlignment="Center"
+                                                               Margin="12,0,0,0" TextWrapping="Wrap" MaxWidth="220"/>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </Border>
+
+                                        <Button Content="Editar imóvel" Style="{StaticResource BotaoPrimario}" Margin="0,22,0,0"
+                                                Command="{Binding DataContext.EditarDosDetalhesCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                                        <Button Style="{StaticResource BotaoContorno}" Margin="0,10,0,0"
+                                                Command="{Binding DataContext.FecharDetalhesCommand, RelativeSource={RelativeSource AncestorType=UserControl}}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="&#xE72B;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                                           Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                                <TextBlock Text="Voltar para a lista" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Button>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+                        </Grid>
                     </ScrollViewer>
                 </Grid>
             </Border>
