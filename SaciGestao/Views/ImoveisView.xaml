@@ -1007,13 +1007,13 @@
                                 </Grid.ColumnDefinitions>
 
                                 <StackPanel Grid.Column="0">
-                                    <TextBlock Text="Matrícula EDP (Energia)" Style="{StaticResource RotuloForm}"/>
+                                    <TextBlock Text="Inscrição EDP (Energia)" Style="{StaticResource RotuloForm}"/>
                                     <TextBox Style="{StaticResource CampoForm}"
                                          Text="{Binding MatriculaEdpForm, UpdateSourceTrigger=PropertyChanged}"/>
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="2">
-                                    <TextBlock Text="Matrícula SABESP (Água)" Style="{StaticResource RotuloForm}"/>
+                                    <TextBlock Text="RGI" Style="{StaticResource RotuloForm}"/>
                                     <TextBox Style="{StaticResource CampoForm}"
                                          Text="{Binding MatriculaSabespForm, UpdateSourceTrigger=PropertyChanged}"/>
                                 </StackPanel>
@@ -1023,6 +1023,26 @@
                                     <ComboBox Style="{StaticResource ComboArredondado}"
                                           ItemsSource="{Binding StatusesEnum}"
                                           SelectedItem="{Binding StatusForm, Mode=TwoWay}"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <Grid Margin="0,14,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="14"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Matrícula (registro do imóvel)" Style="{StaticResource RotuloForm}"/>
+                                    <TextBox Style="{StaticResource CampoForm}"
+                                         Text="{Binding MatriculaForm, UpdateSourceTrigger=PropertyChanged}"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="IPTU" Style="{StaticResource RotuloForm}"/>
+                                    <TextBox Style="{StaticResource CampoForm}"
+                                         Text="{Binding IptuForm, UpdateSourceTrigger=PropertyChanged}"/>
                                 </StackPanel>
                             </Grid>
 
@@ -1162,11 +1182,11 @@
                                                 Command="{Binding AmpliarFotoCommand}"
                                                 Visibility="{Binding TemFotoAtual, Converter={StaticResource BoolParaVisibilidade}}"/>
 
-                                        <Button Content="&#xE76B;" Style="{StaticResource BotaoSetaGaleria}"
+                                        <Button Content="&#xE76B;" ToolTip="Foto anterior" Style="{StaticResource BotaoSetaGaleria}"
                                                 HorizontalAlignment="Left" VerticalAlignment="Center" Margin="16,0,0,0"
                                                 Command="{Binding FotoAnteriorCommand}"
                                                 Visibility="{Binding VariasFotos, Converter={StaticResource BoolParaVisibilidade}}"/>
-                                        <Button Content="&#xE76C;" Style="{StaticResource BotaoSetaGaleria}"
+                                        <Button Content="&#xE76C;" ToolTip="Próxima foto" Style="{StaticResource BotaoSetaGaleria}"
                                                 HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,16,0"
                                                 Command="{Binding ProximaFotoCommand}"
                                                 Visibility="{Binding VariasFotos, Converter={StaticResource BoolParaVisibilidade}}"/>

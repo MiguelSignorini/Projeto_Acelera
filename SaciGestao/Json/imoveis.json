@@ -24,6 +24,8 @@
     "Descricao": "2 quartos, sala, cozinha, banheiro social.",
     "MatriculaEdp": "EDP-00123456",
     "MatriculaSabesp": "SAB-00987654",
+    "Matricula": "",
+    "Iptu": "",
     "Ativo": true,
     "Fotos": []
   },
@@ -52,6 +54,8 @@
     "Descricao": "3 quartos (1 suíte), sala ampla, cozinha, quintal.",
     "MatriculaEdp": "EDP-00223344",
     "MatriculaSabesp": "SAB-00112233",
+    "Matricula": "",
+    "Iptu": "",
     "Ativo": true,
     "Fotos": []
   },
@@ -80,6 +84,8 @@
     "Descricao": "1 quarto, sala conjugada, cozinha americana.",
     "MatriculaEdp": "EDP-00334455",
     "MatriculaSabesp": "SAB-00223344",
+    "Matricula": "",
+    "Iptu": "",
     "Ativo": true,
     "Fotos": [
       "10ea4f899b8e487fa9a599e067533e93.jpg",
@@ -116,6 +122,8 @@
     "Descricao": "Terreno plano, murado, pronto para construir.",
     "MatriculaEdp": "",
     "MatriculaSabesp": "",
+    "Matricula": "",
+    "Iptu": "",
     "Ativo": true,
     "Fotos": []
   },
@@ -144,6 +152,8 @@
     "Descricao": "2 quartos, sala, cozinha, área de serviço.",
     "MatriculaEdp": "EDP-00445566",
     "MatriculaSabesp": "SAB-00334455",
+    "Matricula": "",
+    "Iptu": "",
     "Ativo": true,
     "Fotos": []
   },
@@ -172,6 +182,8 @@
     "Descricao": "Sala comercial térrea, banheiro, copa.",
     "MatriculaEdp": "EDP-00556677",
     "MatriculaSabesp": "SAB-00445566",
+    "Matricula": "",
+    "Iptu": "",
     "Ativo": true,
     "Fotos": []
   }

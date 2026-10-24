@@ -43,6 +43,8 @@ namespace SaciGestao.Models
         // ---------- Concessionárias ----------
         public string MatriculaEdp { get; set; } = string.Empty;
         public string MatriculaSabesp { get; set; } = string.Empty;
+        public string Matricula { get; set; } = string.Empty;
+        public string Iptu { get; set; } = string.Empty;
 
         public bool Ativo { get; set; } = true;
 
@@ -72,6 +74,8 @@ namespace SaciGestao.Models
         private static string OuNaoInformado(string? valor) => string.IsNullOrWhiteSpace(valor) ? NaoInformado : valor;
 
         [JsonIgnore] public string DescricaoTexto => OuNaoInformado(Descricao);
+        [JsonIgnore] public string MatriculaTexto => OuNaoInformado(Matricula);
+        [JsonIgnore] public string IptuTexto => OuNaoInformado(Iptu);
         [JsonIgnore] public string MatriculaEdpTexto => OuNaoInformado(MatriculaEdp);
         [JsonIgnore] public string MatriculaSabespTexto => OuNaoInformado(MatriculaSabesp);
         [JsonIgnore] public string ProprietarioTexto => OuNaoInformado(ProprietarioNome);

@@ -49,6 +49,10 @@ namespace SaciGestao.Service
             existente.Status = editado.Status;
             existente.Valor = editado.Valor;
             existente.Quartos = editado.Quartos;
+            existente.Suites = editado.Suites;
+            existente.Banheiros = editado.Banheiros;
+            existente.Cozinhas = editado.Cozinhas;
+            existente.Salas = editado.Salas;
             existente.Suites = editado.Suites;       // Novo campo
             existente.Banheiros = editado.Banheiros; // Novo campo
             existente.Cozinhas = editado.Cozinhas;   // Novo campo
@@ -57,6 +61,8 @@ namespace SaciGestao.Service
             existente.Descricao = editado.Descricao;
             existente.MatriculaEdp = editado.MatriculaEdp;
             existente.MatriculaSabesp = editado.MatriculaSabesp;
+            existente.Matricula = editado.Matricula;
+            existente.Iptu = editado.Iptu;
 
         }
 

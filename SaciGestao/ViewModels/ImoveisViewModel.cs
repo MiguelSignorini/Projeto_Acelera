@@ -143,6 +143,18 @@ namespace SaciGestao.ViewModels
         private string _quartosForm = "0";
         public string QuartosForm { get => _quartosForm; set => SetProperty(ref _quartosForm, value); }
 
+        private string _suitesForm = "0";
+        public string SuitesForm { get => _suitesForm; set => SetProperty(ref _suitesForm, value); }
+
+        private string _banheirosForm = "0";
+        public string BanheirosForm { get => _banheirosForm; set => SetProperty(ref _banheirosForm, value); }
+
+        private string _cozinhasForm = "1";
+        public string CozinhasForm { get => _cozinhasForm; set => SetProperty(ref _cozinhasForm, value); }
+
+        private string _salasForm = "1";
+        public string SalasForm { get => _salasForm; set => SetProperty(ref _salasForm, value); }
+
         private string _vagasForm = "0";
         public string VagasForm { get => _vagasForm; set => SetProperty(ref _vagasForm, value); }
 
@@ -151,6 +163,12 @@ namespace SaciGestao.ViewModels
 
         private string _matriculaEdpForm = string.Empty;
         public string MatriculaEdpForm { get => _matriculaEdpForm; set => SetProperty(ref _matriculaEdpForm, value); }
+
+        private string _matriculaForm = string.Empty;
+        public string MatriculaForm { get => _matriculaForm; set => SetProperty(ref _matriculaForm, value); }
+
+        private string _iptuForm = string.Empty;
+        public string IptuForm { get => _iptuForm; set => SetProperty(ref _iptuForm, value); }
 
         private string _matriculaSabespForm = string.Empty;
         public string MatriculaSabespForm { get => _matriculaSabespForm; set => SetProperty(ref _matriculaSabespForm, value); }
@@ -374,10 +392,16 @@ namespace SaciGestao.ViewModels
             CepForm = string.Empty;
             ValorForm = string.Empty;
             QuartosForm = "0";
+            SuitesForm = "0";
+            BanheirosForm = "0";
+            CozinhasForm = "1";
+            SalasForm = "1";
             VagasForm = "0";
             DescricaoForm = string.Empty;
             MatriculaEdpForm = string.Empty;
             MatriculaSabespForm = string.Empty;
+            MatriculaForm = string.Empty;
+            IptuForm = string.Empty;
             FotosForm.Clear();
             CarregarProprietarios(0);
             ProprietarioIdForm = 0;
@@ -406,10 +430,16 @@ namespace SaciGestao.ViewModels
             CepForm = imovel.Cep;
             ValorForm = imovel.Valor > 0 ? imovel.Valor.ToString("N2", PtBr) : string.Empty;
             QuartosForm = imovel.Quartos.ToString();
+            SuitesForm = imovel.Suites.ToString();
+            BanheirosForm = imovel.Banheiros.ToString();
+            CozinhasForm = imovel.Cozinhas.ToString();
+            SalasForm = imovel.Salas.ToString();
             VagasForm = imovel.Vagas.ToString();
             DescricaoForm = imovel.Descricao;
             MatriculaEdpForm = imovel.MatriculaEdp;
             MatriculaSabespForm = imovel.MatriculaSabesp;
+            MatriculaForm = imovel.Matricula;
+            IptuForm = imovel.Iptu;
             // Imóveis gravados antes do ProprietarioId existir: localiza o dono pelo nome
             int donoId = imovel.ProprietarioId;
             if (donoId == 0 && !string.IsNullOrWhiteSpace(imovel.ProprietarioNome))
@@ -446,9 +476,13 @@ namespace SaciGestao.ViewModels
             }
 
             if (!int.TryParse(QuartosForm, out int quartos) || quartos < 0 ||
+                !int.TryParse(SuitesForm, out int suites) || suites < 0 ||
+                !int.TryParse(BanheirosForm, out int banheiros) || banheiros < 0 ||
+                !int.TryParse(CozinhasForm, out int cozinhas) || cozinhas < 0 ||
+                !int.TryParse(SalasForm, out int salas) || salas < 0 ||
                 !int.TryParse(VagasForm, out int vagas) || vagas < 0)
             {
-                ErroForm = "Quartos e vagas devem ser números inteiros (0 ou mais).";
+                ErroForm = "Quartos, suítes, banheiros, cozinhas, salas e vagas devem ser números inteiros (0 ou mais).";
                 return;
             }
 
@@ -477,10 +511,16 @@ namespace SaciGestao.ViewModels
                 Status = StatusForm,
                 Valor = valor,
                 Quartos = quartos,
+                Suites = suites,
+                Banheiros = banheiros,
+                Cozinhas = cozinhas,
+                Salas = salas,
                 Vagas = vagas,
                 Descricao = DescricaoForm.Trim(),
                 MatriculaEdp = MatriculaEdpForm.Trim(),
-                MatriculaSabesp = MatriculaSabespForm.Trim()
+                MatriculaSabesp = MatriculaSabespForm.Trim(),
+                Matricula = MatriculaForm.Trim(),
+                Iptu = IptuForm.Trim()
             };
 
             if (_idEmEdicao == 0)

@@ -1,10 +1,12 @@
 using System;
 using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows;
-using System.Windows.Documents;
-using System.Windows.Controls;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
+using Microsoft.Win32;
+using MigraDoc.DocumentObjectModel;
+using MigraDoc.DocumentObjectModel.Tables;
+using MigraDoc.Rendering;
 using SaciGestao.Models;
 
 namespace SaciGestao.Service
@@ -15,143 +17,18 @@ namespace SaciGestao.Service
         {
             try
             {
-                var doc = new FlowDocument
+                var dialogo = new SaveFileDialog
                 {
-                    PagePadding = new Thickness(50),
-                    ColumnWidth = double.PositiveInfinity,
-                    FontFamily = new FontFamily("Calibri"),
-                    FontSize = 11,
-                    LineHeight = 16
+                    Title = "Salvar contrato em PDF",
+                    Filter = "Arquivo PDF (*.pdf)|*.pdf",
+                    DefaultExt = ".pdf",
+                    FileName = $"Contrato_Sacilotti_{contrato.Codigo}.pdf"
                 };
+                if (dialogo.ShowDialog() != true) return;
 
-                // 1. LOGOTIPO E CABEÇALHO OFICIAL
-                var pLogo = new Paragraph { TextAlignment = TextAlignment.Center, Margin = new Thickness(0, 0, 0, 5) };
-                var logo = CarregarLogo();
-                if (logo != null)
-                {
-                    var imagem = new Image
-                    {
-                        Source = logo,
-                        Width = 140,
-                        Height = 70
-                    };
-                    pLogo.Inlines.Add(imagem);
-                }
+                GerarArquivo(contrato, dialogo.FileName);
 
-                doc.Blocks.Add(pLogo);
-
-                var pCabecalho = new Paragraph() { TextAlignment = TextAlignment.Center, Margin = new Thickness(0, 0, 0, 10) };
-                pCabecalho.Inlines.Add(new Bold(new Run("SACILOTTI IMÓVEIS & NEGÓCIOS LTDA\n")) { FontSize = 14, Foreground = Brushes.DarkRed });
-                pCabecalho.Inlines.Add(new Run("Avenida Coronel Domiciano, nº 534, Centro, Cachoeira Paulista - SP, CEP 12630-000\nContato: (12) 99788-9138 | E-mail: sacilotti.imoveis@gmail.com | CNPJ: 41.795.740/0001-49\n"));
-                doc.Blocks.Add(pCabecalho);
-
-                doc.Blocks.Add(new Paragraph(new Run("_________________________________________________________________________________")) { TextAlignment = TextAlignment.Center, Margin = new Thickness(0, 0, 0, 15) });
-
-                // TÍTULO DO CONTRATO
-                var pTitulo = new Paragraph(new Bold(new Run($"Contrato de Locação nº {contrato.Codigo}\nCONTRATO DE LOCAÇÃO RESIDENCIAL SEM GARANTIA")))
-                {
-                    FontSize = 13,
-                    TextAlignment = TextAlignment.Center,
-                    Margin = new Thickness(0, 0, 0, 20)
-                };
-                doc.Blocks.Add(pTitulo);
-
-                // ==================== AS 17 CLÁUSULAS NA ÍNTEGRA ====================
-
-                // CLÁUSULA PRIMEIRA
-                AddClausula(doc, "CLÁUSULA PRIMEIRA: DAS PARTES");
-                AddParagrafo(doc, $"1.1 - LOCADOR(a): {contrato.LocadorNome}, de nacionalidade Brasileira, portador(a) dos documentos cadastrados, residente e domiciliado(a) no imóvel sob sua propriedade, representado neste ato por Sacilotti Imóveis & Negócios LTDA.");
-                AddParagrafo(doc, $"1.2 - LOCATÁRIO(a): {contrato.LocatarioNome}, de nacionalidade Brasileira, devidamente qualificado(a) no cadastro do sistema SaciGestão.");
-
-                // CLÁUSULA SEGUNDA
-                AddClausula(doc, "CLÁUSULA SEGUNDA: OBJETO DO CONTRATO");
-                AddParagrafo(doc, $"2.1 - Neste ato o(a) LOCADOR(a) se compromete a ceder em locação ao(à) LOCATÁRIO(a) o imóvel localizado à {contrato.ImovelTitulo}.");
-                AddParagrafo(doc, "2.2 - O(a) LOCADOR(a) dá em locação ao(à) LOCATÁRIO(a) a posse direta do imóvel, declarando que o mesmo se encontra desembaraçado de dívidas ou gravames, comprometendo-se a não o onerar sob qualquer hipótese.");
-
-                // CLÁUSULA TERCEIRA
-                AddClausula(doc, "CLÁUSULA TERCEIRA: DA FINALIDADE");
-                AddParagrafo(doc, "3.1 - O imóvel objeto desta locação se destina exclusivamente para fim Residencial, não podendo a sua destinação ser mudada sem consentimento expresso do(a) LOCADOR(a).");
-
-                // CLÁUSULA QUARTA
-                AddClausula(doc, "CLÁUSULA QUARTA: PRAZO DA LOCAÇÃO");
-                AddParagrafo(doc, $"4.1 - O prazo da presente locação é de {contrato.PrazoMeses} meses, iniciando em {contrato.DataInicio:dd/MM/yyyy} e se encerrando em {contrato.DataFim:dd/MM/yyyy}, data em que o(a) LOCATÁRIO(a) se obriga a restituir o imóvel completamente desocupado e em perfeito estado.");
-                AddParagrafo(doc, "4.2 - Não restituindo o imóvel no prazo avençado, pagará o aluguel mensal e encargos contratuais até a efetiva entrega das chaves.");
-                AddParagrafo(doc, "4.3 - A entrega do imóvel só se efetivará com o depósito das chaves nas mãos da ADMINISTRADORA (Corretor Willyan Sacilotti).");
-                AddParagrafo(doc, "4.4 - As condições vigorarão até que as partes liquidem todas as pendências.");
-                AddParagrafo(doc, "4.5 - Findo o prazo sem manifestação, o contrato passará a vigorar por prazo indeterminado.");
-
-                // CLÁUSULA QUINTA
-                AddClausula(doc, "CLÁUSULA QUINTA: VALOR DO ALUGUEL E REAJUSTE");
-                AddParagrafo(doc, $"5.1 - O valor do aluguel é de {contrato.ValorMensal:C} por mês, para os primeiros 12 (doze) meses, reajustado anualmente pela variação do percentual do {contrato.IndiceReajuste}.");
-
-                // CLÁUSULA SEXTA
-                AddClausula(doc, "CLÁUSULA SEXTA: DO PAGAMENTO");
-                AddParagrafo(doc, $"6.1 - O(a) LOCATÁRIO(a) obriga-se a pagar pontualmente até o dia {contrato.DiaVencimento} de cada mês.");
-                AddParagrafo(doc, "6.2 a 6.10 - O pagamento será feito via boleto bancário emitido pela ADMINISTRADORA. Atrasos superiores a 15 dias incorrerão em 20% de honorários advocatícios. Não será aceito pagamento em cheque.");
-
-                // CLÁUSULA SÉTIMA
-                AddClausula(doc, "CLÁUSULA SÉTIMA: DA MULTA E DO ATRASO NO PAGAMENTO");
-                AddParagrafo(doc, $"7.1 - O atraso sujeitará multa moratória de {contrato.PercentualMultaAtraso}% sobre o valor do débito, mais juros de 1% ao mês.");
-                AddParagrafo(doc, "7.2 e 7.3 - O débito poderá ser levado a protesto em cartório e o nome incluído nos órgãos de proteção ao crédito (SPC/Serasa).");
-
-                // CLÁUSULA OITAVA
-                AddClausula(doc, "CLÁUSULA OITAVA: DOS DIREITOS E OBRIGAÇÕES ACESSÓRIAS");
-                AddParagrafo(doc, "8.1 a 8.12 - São encargos do LOCATÁRIO: Energia Elétrica, Água, IPTU e Seguro Incêndio. Obrigatoriedade de transferência de titularidade nas concessionárias em até 30 dias.");
-
-                // CLÁUSULA NONA
-                AddClausula(doc, "CLÁUSULA NONA: DAS CONDIÇÕES DO IMÓVEL");
-                AddParagrafo(doc, "9.1 a 9.22 - O imóvel é entregue em perfeito estado conforme Laudo de Vistoria de Entrada. Proibição de modificações estruturais sem autorização prévia por escrito.");
-
-                // CLÁUSULA DÉCIMA
-                AddClausula(doc, "CLÁUSULA DÉCIMA: DOS DIREITOS E OBRIGAÇÕES DOS LOCADORES");
-                AddParagrafo(doc, "10.1 a 10.6 - Responsabilidade pela higidez estrutural e despesas extraordinárias.");
-
-                // CLÁUSULA DÉCIMA PRIMEIRA
-                AddClausula(doc, "CLÁUSULA DÉCIMA PRIMEIRA: DA ADMINISTRADORA");
-                AddParagrafo(doc, "11.1 e 11.2 - Sacilotti Imóveis & Negócios LTDA representada por Willyan Sacilotti dos Santos Siqueira, atuando como gestora e procuradora para todos os fins locatícios.");
-
-                // CLÁUSULA DÉCIMA SEGUNDA
-                AddClausula(doc, "CLÁUSULA DÉCIMA SEGUNDA: DA GARANTIA LOCATÍCIA");
-                AddParagrafo(doc, "12.1 - O(a) LOCADOR(a) abriu mão da garantia locatícia.");
-
-                // CLÁUSULA DÉCIMA TERCEIRA
-                AddClausula(doc, "CLÁUSULA DÉCIMA TERCEIRA: DAS SUBLOCAÇÕES E CESSÃO");
-                AddParagrafo(doc, "13.1 - É vedada a sublocação, cessão ou empréstimo do imóvel a terceiros sem prévia anuência por escrito.");
-
-                // CLÁUSULA DÉCIMA QUARTA
-                AddClausula(doc, "CLÁUSULA DÉCIMA QUARTA: DA RESCISÃO");
-                AddParagrafo(doc, $"14.1 a 14.8 - Multa rescisória equivalente a 3 (três) meses de aluguel proporcional ao período. Isenção de multa após o cumprimento de {contrato.MesesIsencaoMultaRescisao} meses mediante aviso prévio de 30 dias.");
-
-                // CLÁUSULA DÉCIMA QUINTA
-                AddClausula(doc, "CLÁUSULA DÉCIMA QUINTA: DO DIREITO DE PREFERÊNCIA");
-                AddParagrafo(doc, "15.1 a 15.3 - Direito de preferência do inquilino em caso de venda do imóvel nos termos da Lei 8.245/91.");
-
-                // CLÁUSULA DÉCIMA SEXTA
-                AddClausula(doc, "CLÁUSULA DÉCIMA SEXTA: DAS DISPOSIÇÕES FINAIS");
-                AddParagrafo(doc, "16.1 a 16.9 - Obrigatoriedade extensiva aos sucessores, citações por via postal e eleição de foro.");
-
-                // CLÁUSULA DÉCIMA SÉTIMA
-                AddClausula(doc, "CLÁUSULA DÉCIMA SÉTIMA: DO FORO");
-                AddParagrafo(doc, "17.1 - Para todas as questões oriundas deste contrato, será competente o Foro da comarca de Cachoeira Paulista - SP.");
-
-                // ==================== ASSINATURAS ====================
-                doc.Blocks.Add(new Paragraph(new Run($"\nCachoeira Paulista - SP, {DateTime.Now:D}.\n\n\n")) { TextAlignment = TextAlignment.Center });
-
-                var pAssinaturas = new Paragraph() { TextAlignment = TextAlignment.Center, Margin = new Thickness(0, 20, 0, 0) };
-                pAssinaturas.Inlines.Add(new Run("________________________________________          ________________________________________\n"));
-                pAssinaturas.Inlines.Add(new Bold(new Run($"LOCADOR(A): {contrato.LocadorNome}                          LOCATÁRIO(A): {contrato.LocatarioNome}\n\n\n\n")));
-                pAssinaturas.Inlines.Add(new Run("________________________________________________________________________\n"));
-                pAssinaturas.Inlines.Add(new Bold(new Run("SACILOTTI IMÓVEIS & NEGÓCIOS LTDA\n(Administradora)")));
-                doc.Blocks.Add(pAssinaturas);
-
-                // DISPARAR IMPRESSÃO / PDF DO WINDOWS
-                var pd = new PrintDialog();
-                if (pd.ShowDialog() == true)
-                {
-                    IDocumentPaginatorSource idp = doc;
-                    pd.PrintDocument(idp.DocumentPaginator, $"Contrato_Sacilotti_{contrato.Codigo}");
-                    MessageBox.Show("Contrato oficial de locação gerado com sucesso!", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
+                MessageBox.Show($"Contrato salvo em:\n{dialogo.FileName}", "PDF gerado", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
@@ -159,42 +36,202 @@ namespace SaciGestao.Service
             }
         }
 
-        // Carrega o logo do jeito que o MainWindow já usa (Resources/logo.png como Resource do projeto).
+        public static void GerarArquivo(Contrato contrato, string caminho)
+        {
+            var locador = ClienteService.Instancia.ObterTodos().FirstOrDefault(c => c.Id == contrato.LocadorId)
+                          ?? new Cliente { Nome = contrato.LocadorNome };
+            var locatario = ClienteService.Instancia.ObterTodos().FirstOrDefault(c => c.Id == contrato.LocatarioId)
+                            ?? new Cliente { Nome = contrato.LocatarioNome };
+            var imovel = ImovelService.Instancia.ObterAtivos().FirstOrDefault(i => i.Id == contrato.ImovelId);
+
+            var doc = new Document();
+            doc.Info.Title = ModeloContratoLocacao.Titulo(contrato);
+            var normal = doc.Styles[StyleNames.Normal]!;
+            normal.Font.Name = "Calibri";
+            normal.Font.Size = 10;
+
+            var sec = doc.AddSection();
+            sec.PageSetup.PageFormat = PageFormat.A4;
+            sec.PageSetup.LeftMargin = Unit.FromPoint(56);
+            sec.PageSetup.RightMargin = Unit.FromPoint(56);
+            sec.PageSetup.TopMargin = Unit.FromPoint(80);
+            sec.PageSetup.BottomMargin = Unit.FromPoint(60);
+            sec.PageSetup.HeaderDistance = Unit.FromPoint(14);
+            sec.PageSetup.FooterDistance = Unit.FromPoint(20);
+
+            MontarCabecalhoRodape(sec);
+
+            // Título
+            var pNumero = sec.AddParagraph(ModeloContratoLocacao.Titulo(contrato));
+            pNumero.Format.Alignment = ParagraphAlignment.Right;
+            pNumero.Format.SpaceAfter = 6;
+
+            var pTitulo = sec.AddParagraph();
+            pTitulo.Format.Alignment = ParagraphAlignment.Center;
+            pTitulo.Format.SpaceAfter = 10;
+            pTitulo.AddFormattedText("CONTRATO DE LOCAÇÃO RESIDENCIAL SEM GARANTIA", TextFormat.Bold).Size = 15;
+
+            // Cláusulas
+            foreach (var bloco in ModeloContratoLocacao.Montar(contrato, locador, locatario, imovel))
+            {
+                switch (bloco.Tipo)
+                {
+                    case TipoBloco.Clausula:
+                        var pc = sec.AddParagraph();
+                        pc.Format.Alignment = ParagraphAlignment.Center;
+                        pc.Format.SpaceBefore = 10;
+                        pc.Format.SpaceAfter = 6;
+                        pc.Format.KeepWithNext = true;
+                        pc.AddFormattedText(bloco.Texto, TextFormat.Bold).Size = 11.5;
+                        break;
+
+                    case TipoBloco.Item:
+                        var pi = sec.AddParagraph();
+                        pi.Format.Alignment = ParagraphAlignment.Justify;
+                        pi.Format.SpaceAfter = 8;
+                        // O número do item ("4.1 -") sai em negrito, como na minuta
+                        var m = Regex.Match(bloco.Texto, @"^\d+\.\d+\s?-");
+                        if (m.Success)
+                        {
+                            pi.AddFormattedText(m.Value, TextFormat.Bold);
+                            pi.AddText(bloco.Texto.Substring(m.Length));
+                        }
+                        else
+                        {
+                            pi.AddText(bloco.Texto);
+                        }
+                        break;
+
+                    case TipoBloco.SubItem:
+                        var ps = sec.AddParagraph(bloco.Texto);
+                        ps.Format.LeftIndent = Unit.FromPoint(30);
+                        ps.Format.Alignment = ParagraphAlignment.Justify;
+                        ps.Format.SpaceAfter = 3;
+                        break;
+                }
+            }
+
+            MontarAssinaturas(sec, contrato, locador, locatario);
+
+            var renderer = new PdfDocumentRenderer { Document = doc };
+            renderer.RenderDocument();
+            renderer.PdfDocument.Save(caminho);
+        }
+
+        // Cabeçalho (logo + dados da imobiliária) e rodapé "Página X de Y" em todas as páginas
+        private static void MontarCabecalhoRodape(Section sec)
+        {
+            var tab = sec.Headers.Primary.AddTable();
+            tab.AddColumn(Unit.FromPoint(40));
+            tab.AddColumn(Unit.FromPoint(300));
+            tab.AddColumn(Unit.FromPoint(99));
+            var linha = tab.AddRow();
+            linha.VerticalAlignment = MigraDoc.DocumentObjectModel.Tables.VerticalAlignment.Top;
+
+            var logo = CarregarLogoBase64();
+            if (logo != null)
+            {
+                var img = linha.Cells[0].AddParagraph().AddImage(logo);
+                img.LockAspectRatio = true;
+                img.Width = Unit.FromPoint(32);
+            }
+
+            var pNome = linha.Cells[1].AddParagraph();
+            pNome.Format.Font.Size = 9;
+            pNome.AddFormattedText(DadosImobiliaria.NomeCabecalho, TextFormat.Bold);
+            var pEnd = linha.Cells[1].AddParagraph(DadosImobiliaria.EnderecoCabecalho);
+            pEnd.Format.Font.Size = 9;
+
+            var pTel = linha.Cells[2].AddParagraph(DadosImobiliaria.Telefone);
+            pTel.Format.Alignment = ParagraphAlignment.Right;
+            pTel.Format.Font.Size = 9;
+            var pMail = linha.Cells[2].AddParagraph(DadosImobiliaria.Email);
+            pMail.Format.Alignment = ParagraphAlignment.Right;
+            pMail.Format.Font.Size = 9;
+
+            var rodape = sec.Footers.Primary.AddParagraph();
+            rodape.Format.Alignment = ParagraphAlignment.Right;
+            rodape.Format.Font.Size = 9;
+            rodape.AddText("Página ");
+            rodape.AddPageField();
+            rodape.AddText(" de ");
+            rodape.AddNumPagesField();
+        }
+
+        private static void MontarAssinaturas(Section sec, Contrato contrato, Cliente locador, Cliente locatario)
+        {
+            const string Linha = "________________________________________";
+
+            var pData = sec.AddParagraph(ModeloContratoLocacao.LinhaData(contrato));
+            pData.Format.Alignment = ParagraphAlignment.Right;
+            pData.Format.SpaceBefore = 18;
+            pData.Format.SpaceAfter = 14;
+            pData.Format.KeepWithNext = true;
+
+            void Titulo(string texto)
+            {
+                var p = sec.AddParagraph();
+                p.Format.Alignment = ParagraphAlignment.Center;
+                p.Format.SpaceBefore = 14;
+                p.Format.KeepWithNext = true;
+                p.AddFormattedText(texto, TextFormat.Bold);
+            }
+
+            void Assinante(string nome)
+            {
+                var p = sec.AddParagraph();
+                p.Format.Alignment = ParagraphAlignment.Center;
+                p.Format.SpaceBefore = 22;
+                p.Format.KeepWithNext = true;
+                p.AddText(Linha);
+                p.AddLineBreak();
+                p.AddText(nome);
+            }
+
+            Titulo("LOCATÁRIOS");
+            Assinante(locatario.Nome);
+
+            Titulo("LOCADORES");
+            Assinante(locador.Nome);
+
+            Titulo("IMOBILIÁRIA");
+            Assinante("Sacilotti Imóveis & Negócios LTDA");
+
+            Titulo("TESTEMUNHAS");
+            var tab = sec.AddTable();
+            tab.Format.KeepTogether = true;
+            tab.AddColumn(Unit.FromPoint(220));
+            tab.AddColumn(Unit.FromPoint(20));
+            tab.AddColumn(Unit.FromPoint(220));
+            var assin = tab.AddRow();
+            assin.Height = Unit.FromPoint(40);
+            assin.VerticalAlignment = MigraDoc.DocumentObjectModel.Tables.VerticalAlignment.Bottom;
+            assin.Cells[0].AddParagraph(Linha);
+            assin.Cells[2].AddParagraph(Linha);
+            var nomes = tab.AddRow();
+            nomes.Cells[0].AddParagraph("Nome:");
+            nomes.Cells[2].AddParagraph("Nome:");
+            var cpfs = tab.AddRow();
+            cpfs.Cells[0].AddParagraph("CPF:");
+            cpfs.Cells[2].AddParagraph("CPF:");
+        }
+
+        // Lê o logo (Resources/logo.png, embutido no projeto) e entrega no formato "base64:" que o MigraDoc aceita.
         // Se não existir ou der qualquer problema, o PDF é gerado sem logo, sem travar.
-        private static BitmapImage? CarregarLogo()
+        private static string? CarregarLogoBase64()
         {
             try
             {
-                var imagem = new BitmapImage();
-                imagem.BeginInit();
-                imagem.UriSource = new Uri("pack://application:,,,/Resources/logo.png", UriKind.Absolute);
-                imagem.CacheOption = BitmapCacheOption.OnLoad;
-                imagem.EndInit();
-                return imagem;
+                var recurso = Application.GetResourceStream(new Uri("pack://application:,,,/Resources/logo.png", UriKind.Absolute));
+                if (recurso == null) return null;
+                using var ms = new MemoryStream();
+                recurso.Stream.CopyTo(ms);
+                return "base64:" + Convert.ToBase64String(ms.ToArray());
             }
             catch
             {
                 return null;
             }
-        }
-
-        private static void AddClausula(FlowDocument doc, string titulo)
-        {
-            doc.Blocks.Add(new Paragraph(new Bold(new Run(titulo)))
-            {
-                FontSize = 11,
-                Foreground = Brushes.DarkRed,
-                Margin = new Thickness(0, 12, 0, 3)
-            });
-        }
-
-        private static void AddParagrafo(FlowDocument doc, string texto)
-        {
-            doc.Blocks.Add(new Paragraph(new Run(texto))
-            {
-                Margin = new Thickness(0, 0, 0, 4),
-                TextAlignment = TextAlignment.Justify
-            });
         }
     }
 }

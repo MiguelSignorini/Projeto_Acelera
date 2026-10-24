@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
@@ -16,11 +17,160 @@ namespace SaciGestao.ViewModels
             set => SetProperty(ref _clientes, value);
         }
 
-        private Cliente _clienteForm = new();
-        public Cliente ClienteForm
+        private int _idEmEdicao; // 0 = criando um cliente novo
+
+        private string _subtituloFormulario = "Preencha os dados do cliente";
+        public string SubtituloFormulario
         {
-            get => _clienteForm;
-            set => SetProperty(ref _clienteForm, value);
+            get => _subtituloFormulario;
+            set => SetProperty(ref _subtituloFormulario, value);
+        }
+
+        private string _erroForm = string.Empty;
+        public string ErroForm
+        {
+            get => _erroForm;
+            set => SetProperty(ref _erroForm, value);
+        }
+
+        private DateTime? _dataNascimentoForm;
+        public DateTime? DataNascimentoForm
+        {
+            get => _dataNascimentoForm;
+            set => SetProperty(ref _dataNascimentoForm, value);
+        }
+
+        public static IReadOnlyList<string> EstadosCivis { get; } =
+            ["Solteiro(a)", "Casado(a)", "Divorciado(a)", "Viúvo(a)", "União Estável"];
+
+        private string? _estadoCivilForm;
+        public string? EstadoCivilForm
+        {
+            get => _estadoCivilForm;
+            set => SetProperty(ref _estadoCivilForm, value);
+        }
+
+        public static IReadOnlyList<TipoCliente> TiposEnum { get; } = Enum.GetValues<TipoCliente>();
+
+        private TipoCliente _tipoForm;
+        public TipoCliente TipoForm
+        {
+            get => _tipoForm;
+            set => SetProperty(ref _tipoForm, value);
+        }
+
+        public static IReadOnlyList<StatusCliente> StatusesForm { get; } = Enum.GetValues<StatusCliente>();
+
+        private StatusCliente _statusForm = StatusCliente.Ativo;
+        public StatusCliente StatusForm
+        {
+            get => _statusForm;
+            set => SetProperty(ref _statusForm, value);
+        }
+
+        private string _nomeForm = string.Empty;
+        public string NomeForm
+        {
+            get => _nomeForm;
+            set => SetProperty(ref _nomeForm, value);
+        }
+
+        private string _cpfForm = string.Empty;
+        public string CpfForm
+        {
+            get => _cpfForm;
+            set => SetProperty(ref _cpfForm, value);
+        }
+
+        private string _rgForm = string.Empty;
+        public string RgForm
+        {
+            get => _rgForm;
+            set => SetProperty(ref _rgForm, value);
+        }
+
+        private string _orgaoEmissorRgForm = string.Empty;
+        public string OrgaoEmissorRgForm
+        {
+            get => _orgaoEmissorRgForm;
+            set => SetProperty(ref _orgaoEmissorRgForm, value);
+        }
+
+        private string _nacionalidadeForm = string.Empty;
+        public string NacionalidadeForm
+        {
+            get => _nacionalidadeForm;
+            set => SetProperty(ref _nacionalidadeForm, value);
+        }
+
+        private string _telefonePrincipalForm = string.Empty;
+        public string TelefonePrincipalForm
+        {
+            get => _telefonePrincipalForm;
+            set => SetProperty(ref _telefonePrincipalForm, value);
+        }
+
+        private string _telefoneSecundarioForm = string.Empty;
+        public string TelefoneSecundarioForm
+        {
+            get => _telefoneSecundarioForm;
+            set => SetProperty(ref _telefoneSecundarioForm, value);
+        }
+
+        private string _emailForm = string.Empty;
+        public string EmailForm
+        {
+            get => _emailForm;
+            set => SetProperty(ref _emailForm, value);
+        }
+
+        private string _ruaForm = string.Empty;
+        public string RuaForm
+        {
+            get => _ruaForm;
+            set => SetProperty(ref _ruaForm, value);
+        }
+
+        private string _numeroForm = string.Empty;
+        public string NumeroForm
+        {
+            get => _numeroForm;
+            set => SetProperty(ref _numeroForm, value);
+        }
+
+        private string _bairroForm = string.Empty;
+        public string BairroForm
+        {
+            get => _bairroForm;
+            set => SetProperty(ref _bairroForm, value);
+        }
+
+        private string _cepForm = string.Empty;
+        public string CepForm
+        {
+            get => _cepForm;
+            set => SetProperty(ref _cepForm, value);
+        }
+
+        private string _cidadeForm = string.Empty;
+        public string CidadeForm
+        {
+            get => _cidadeForm;
+            set => SetProperty(ref _cidadeForm, value);
+        }
+
+        private string _profissaoForm = string.Empty;
+        public string ProfissaoForm
+        {
+            get => _profissaoForm;
+            set => SetProperty(ref _profissaoForm, value);
+        }
+
+        private string _empresaForm = string.Empty;
+        public string EmpresaForm
+        {
+            get => _empresaForm;
+            set => SetProperty(ref _empresaForm, value);
         }
 
         private Cliente? _clienteDetalhe;
@@ -113,7 +263,7 @@ namespace SaciGestao.ViewModels
             FecharDetalhesCommand = new RelayCommand(_ => VoltarParaLista());
             EditarDoDetalheCommand = new RelayCommand(_ => AbrirEditar(ClienteDetalhe));
             ExcluirDoDetalheCommand = new RelayCommand(_ => { ExcluirCliente(ClienteDetalhe); VoltarParaLista(); });
-            ExcluirDoFormCommand = new RelayCommand(_ => { ExcluirCliente(ClienteForm); VoltarParaLista(); });
+            ExcluirDoFormCommand = new RelayCommand(_ => { ExcluirPorId(_idEmEdicao); VoltarParaLista(); });
 
             FiltrarClientes();
         }
@@ -139,10 +289,42 @@ namespace SaciGestao.ViewModels
             Clientes = new ObservableCollection<Cliente>(lista);
         }
 
+        private void CarregarForm(Cliente c)
+        {
+            _idEmEdicao = c.Id;
+            NomeForm = c.Nome;
+            CpfForm = c.Cpf;
+            RgForm = c.Rg;
+            OrgaoEmissorRgForm = c.OrgaoEmissorRg;
+            NacionalidadeForm = c.Nacionalidade;
+            TelefonePrincipalForm = c.TelefonePrincipal;
+            TelefoneSecundarioForm = c.TelefoneSecundario;
+            EmailForm = c.Email;
+            RuaForm = c.Rua;
+            NumeroForm = c.Numero;
+            BairroForm = c.Bairro;
+            CepForm = c.Cep;
+            CidadeForm = c.Cidade;
+            ProfissaoForm = c.Profissao;
+            EmpresaForm = c.Empresa;
+            DataNascimentoForm = c.DataNascimento;
+            EstadoCivilForm = string.IsNullOrWhiteSpace(c.EstadoCivil) ? null : c.EstadoCivil;
+            TipoForm = c.Tipo;
+            StatusForm = c.Status;
+            ErroForm = string.Empty;
+        }
+
+        private static void ExcluirPorId(int id)
+        {
+            if (id == 0) return;
+            ClienteService.Instancia.Excluir(id);
+        }
+
         private void AbrirNovo()
         {
-            ClienteForm = new Cliente();
+            CarregarForm(new Cliente());
             TituloFormulario = "NOVO CLIENTE";
+            SubtituloFormulario = "Preencha os dados do cliente";
             EditandoExistente = false;
             MostrandoLista = false;
             MostrandoDetalhes = false;
@@ -152,8 +334,9 @@ namespace SaciGestao.ViewModels
         private void AbrirEditar(Cliente? cliente)
         {
             if (cliente == null) return;
-            ClienteForm = cliente;
+            CarregarForm(cliente);
             TituloFormulario = "EDITAR CLIENTE";
+            SubtituloFormulario = cliente.Nome;
             EditandoExistente = true;
             MostrandoLista = false;
             MostrandoDetalhes = false;
@@ -178,10 +361,40 @@ namespace SaciGestao.ViewModels
 
         private void SalvarCliente()
         {
-            if (ClienteForm.Id == 0)
-                ClienteService.Instancia.Adicionar(ClienteForm);
+            if (string.IsNullOrWhiteSpace(NomeForm))
+            {
+                ErroForm = "Informe o nome do cliente.";
+                return;
+            }
+
+            var cliente = new Cliente
+            {
+                Id = _idEmEdicao,
+                Nome = NomeForm.Trim(),
+                Cpf = CpfForm.Trim(),
+                Rg = RgForm.Trim(),
+                OrgaoEmissorRg = OrgaoEmissorRgForm.Trim(),
+                Nacionalidade = NacionalidadeForm.Trim(),
+                TelefonePrincipal = TelefonePrincipalForm.Trim(),
+                TelefoneSecundario = TelefoneSecundarioForm.Trim(),
+                Email = EmailForm.Trim(),
+                Rua = RuaForm.Trim(),
+                Numero = NumeroForm.Trim(),
+                Bairro = BairroForm.Trim(),
+                Cep = CepForm.Trim(),
+                Cidade = CidadeForm.Trim(),
+                Profissao = ProfissaoForm.Trim(),
+                Empresa = EmpresaForm.Trim(),
+                DataNascimento = DataNascimentoForm,
+                EstadoCivil = EstadoCivilForm ?? string.Empty,
+                Tipo = TipoForm,
+                Status = StatusForm
+            };
+
+            if (cliente.Id == 0)
+                ClienteService.Instancia.Adicionar(cliente);
             else
-                ClienteService.Instancia.Atualizar(ClienteForm);
+                ClienteService.Instancia.Atualizar(cliente);
 
             VoltarParaLista();
         }
