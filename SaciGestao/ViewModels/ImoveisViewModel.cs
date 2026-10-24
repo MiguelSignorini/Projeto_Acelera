@@ -149,10 +149,10 @@ namespace SaciGestao.ViewModels
         private string _banheirosForm = "0";
         public string BanheirosForm { get => _banheirosForm; set => SetProperty(ref _banheirosForm, value); }
 
-        private string _cozinhasForm = "1";
+        private string _cozinhasForm = "0";
         public string CozinhasForm { get => _cozinhasForm; set => SetProperty(ref _cozinhasForm, value); }
 
-        private string _salasForm = "1";
+        private string _salasForm = "0";
         public string SalasForm { get => _salasForm; set => SetProperty(ref _salasForm, value); }
 
         private string _vagasForm = "0";
@@ -394,8 +394,8 @@ namespace SaciGestao.ViewModels
             QuartosForm = "0";
             SuitesForm = "0";
             BanheirosForm = "0";
-            CozinhasForm = "1";
-            SalasForm = "1";
+            CozinhasForm = "0";
+            SalasForm = "0";
             VagasForm = "0";
             DescricaoForm = string.Empty;
             MatriculaEdpForm = string.Empty;

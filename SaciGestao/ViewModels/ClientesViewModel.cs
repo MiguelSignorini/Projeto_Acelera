@@ -40,6 +40,10 @@ namespace SaciGestao.ViewModels
             set => SetProperty(ref _dataNascimentoForm, value);
         }
 
+        public static IReadOnlyList<string> Nacionalidades { get; } =
+            ["Brasileira", "Argentina", "Boliviana", "Chilena", "Colombiana", "Paraguaia", "Peruana", "Uruguaia",
+             "Venezuelana", "Portuguesa", "Italiana", "Espanhola", "Alemã", "Francesa", "Americana", "Japonesa", "Chinesa", "Outra"];
+
         public static IReadOnlyList<string> EstadosCivis { get; } =
             ["Solteiro(a)", "Casado(a)", "Divorciado(a)", "Viúvo(a)", "União Estável"];
 
@@ -361,9 +365,30 @@ namespace SaciGestao.ViewModels
 
         private void SalvarCliente()
         {
-            if (string.IsNullOrWhiteSpace(NomeForm))
+            // Todos os campos são obrigatórios, menos o telefone secundário
+            var faltando = new List<string>();
+            void Exige(string? valor, string nome) { if (string.IsNullOrWhiteSpace(valor)) faltando.Add(nome); }
+
+            Exige(NomeForm, "Nome Completo");
+            Exige(CpfForm, "CPF");
+            Exige(RgForm, "RG");
+            Exige(OrgaoEmissorRgForm, "Órgão Emissor do RG");
+            if (DataNascimentoForm == null) faltando.Add("Data de Nascimento");
+            Exige(NacionalidadeForm, "Nacionalidade");
+            Exige(EstadoCivilForm, "Estado Civil");
+            Exige(TelefonePrincipalForm, "Telefone Principal");
+            Exige(EmailForm, "E-mail");
+            Exige(RuaForm, "Rua");
+            Exige(NumeroForm, "Número");
+            Exige(BairroForm, "Bairro");
+            Exige(CepForm, "CEP");
+            Exige(CidadeForm, "Cidade");
+            Exige(ProfissaoForm, "Cargo / Profissão");
+            Exige(EmpresaForm, "Empresa");
+
+            if (faltando.Count > 0)
             {
-                ErroForm = "Informe o nome do cliente.";
+                ErroForm = "Preencha os campos obrigatórios: " + string.Join(", ", faltando) + ".";
                 return;
             }
 

@@ -691,22 +691,22 @@
                             </Grid.ColumnDefinitions>
 
                             <StackPanel Grid.Column="0">
-                                <TextBlock Text="Nome Completo" Style="{StaticResource Rotulo}"/>
+                                <TextBlock Text="Nome Completo *" Style="{StaticResource Rotulo}"/>
                                 <TextBox Style="{StaticResource CampoForm}"
                                          Text="{Binding NomeForm, UpdateSourceTrigger=PropertyChanged}"/>
                             </StackPanel>
                             <StackPanel Grid.Column="2">
-                                <TextBlock Text="CPF" Style="{StaticResource Rotulo}"/>
+                                <TextBlock Text="CPF *" Style="{StaticResource Rotulo}"/>
                                 <TextBox Style="{StaticResource CampoForm}"
                                          Text="{Binding CpfForm, UpdateSourceTrigger=PropertyChanged}"/>
                             </StackPanel>
                             <StackPanel Grid.Column="4">
-                                <TextBlock Text="RG" Style="{StaticResource Rotulo}"/>
+                                <TextBlock Text="RG *" Style="{StaticResource Rotulo}"/>
                                 <TextBox Style="{StaticResource CampoForm}"
                                          Text="{Binding RgForm, UpdateSourceTrigger=PropertyChanged}"/>
                             </StackPanel>
                             <StackPanel Grid.Column="6">
-                                <TextBlock Text="Órgão Emissor do RG" Style="{StaticResource Rotulo}"/>
+                                <TextBlock Text="Órgão Emissor do RG *" Style="{StaticResource Rotulo}"/>
                                 <TextBox Style="{StaticResource CampoForm}"
                                          Text="{Binding OrgaoEmissorRgForm, UpdateSourceTrigger=PropertyChanged}"/>
                             </StackPanel>
@@ -723,17 +723,18 @@
                             </Grid.ColumnDefinitions>
 
                             <StackPanel Grid.Column="0">
-                                <TextBlock Text="Data de Nascimento" Style="{StaticResource Rotulo}"/>
+                                <TextBlock Text="Data de Nascimento *" Style="{StaticResource Rotulo}"/>
                                 <DatePicker Style="{StaticResource DataPickerForm}"
                                             SelectedDate="{Binding DataNascimentoForm, Mode=TwoWay}"/>
                             </StackPanel>
                             <StackPanel Grid.Column="2">
-                                <TextBlock Text="Nacionalidade" Style="{StaticResource Rotulo}"/>
-                                <TextBox Style="{StaticResource CampoForm}"
-                                         Text="{Binding NacionalidadeForm, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBlock Text="Nacionalidade *" Style="{StaticResource Rotulo}"/>
+                                <ComboBox Style="{StaticResource ComboArredondado}"
+                                          ItemsSource="{Binding Nacionalidades}"
+                                          SelectedItem="{Binding NacionalidadeForm, Mode=TwoWay}"/>
                             </StackPanel>
                             <StackPanel Grid.Column="4" Grid.ColumnSpan="3">
-                                <TextBlock Text="Estado Civil" Style="{StaticResource Rotulo}"/>
+                                <TextBlock Text="Estado Civil *" Style="{StaticResource Rotulo}"/>
                                 <ComboBox Style="{StaticResource ComboArredondado}"
                                           ItemsSource="{Binding EstadosCivis}"
                                           SelectedItem="{Binding EstadoCivilForm, Mode=TwoWay}"/>
@@ -751,7 +752,7 @@
                             </Grid.ColumnDefinitions>
 
                             <StackPanel Grid.Column="0">
-                                <TextBlock Text="Telefone Principal" Style="{StaticResource Rotulo}"/>
+                                <TextBlock Text="Telefone Principal *" Style="{StaticResource Rotulo}"/>
                                 <TextBox Style="{StaticResource CampoForm}"
                                          Text="{Binding TelefonePrincipalForm, UpdateSourceTrigger=PropertyChanged}"/>
                             </StackPanel>
@@ -761,7 +762,7 @@
                                          Text="{Binding TelefoneSecundarioForm, UpdateSourceTrigger=PropertyChanged}"/>
                             </StackPanel>
                             <StackPanel Grid.Column="4">
-                                <TextBlock Text="E-mail" Style="{StaticResource Rotulo}"/>
+                                <TextBlock Text="E-mail *" Style="{StaticResource Rotulo}"/>
                                 <TextBox Style="{StaticResource CampoForm}"
                                          Text="{Binding EmailForm, UpdateSourceTrigger=PropertyChanged}"/>
                             </StackPanel>
@@ -778,17 +779,17 @@
                             </Grid.ColumnDefinitions>
 
                             <StackPanel Grid.Column="0">
-                                <TextBlock Text="Rua" Style="{StaticResource Rotulo}"/>
+                                <TextBlock Text="Rua *" Style="{StaticResource Rotulo}"/>
                                 <TextBox Style="{StaticResource CampoForm}"
                                          Text="{Binding RuaForm, UpdateSourceTrigger=PropertyChanged}"/>
                             </StackPanel>
                             <StackPanel Grid.Column="2">
-                                <TextBlock Text="Número" Style="{StaticResource Rotulo}"/>
+                                <TextBlock Text="Número *" Style="{StaticResource Rotulo}"/>
                                 <TextBox Style="{StaticResource CampoForm}"
                                          Text="{Binding NumeroForm, UpdateSourceTrigger=PropertyChanged}"/>
                             </StackPanel>
                             <StackPanel Grid.Column="4">
-                                <TextBlock Text="Bairro" Style="{StaticResource Rotulo}"/>
+                                <TextBlock Text="Bairro *" Style="{StaticResource Rotulo}"/>
                                 <TextBox Style="{StaticResource CampoForm}"
                                          Text="{Binding BairroForm, UpdateSourceTrigger=PropertyChanged}"/>
                             </StackPanel>
@@ -803,12 +804,12 @@
                             </Grid.ColumnDefinitions>
 
                             <StackPanel Grid.Column="0">
-                                <TextBlock Text="CEP" Style="{StaticResource Rotulo}"/>
+                                <TextBlock Text="CEP *" Style="{StaticResource Rotulo}"/>
                                 <TextBox Style="{StaticResource CampoForm}"
                                          Text="{Binding CepForm, UpdateSourceTrigger=PropertyChanged}"/>
                             </StackPanel>
                             <StackPanel Grid.Column="2" Grid.ColumnSpan="3">
-                                <TextBlock Text="Cidade" Style="{StaticResource Rotulo}"/>
+                                <TextBlock Text="Cidade *" Style="{StaticResource Rotulo}"/>
                                 <TextBox Style="{StaticResource CampoForm}"
                                          Text="{Binding CidadeForm, UpdateSourceTrigger=PropertyChanged}"/>
                             </StackPanel>
@@ -844,12 +845,12 @@
                             </Grid.ColumnDefinitions>
 
                             <StackPanel Grid.Column="0">
-                                <TextBlock Text="Cargo / Profissão" Style="{StaticResource Rotulo}"/>
+                                <TextBlock Text="Cargo / Profissão *" Style="{StaticResource Rotulo}"/>
                                 <TextBox Style="{StaticResource CampoForm}"
                                          Text="{Binding ProfissaoForm, UpdateSourceTrigger=PropertyChanged}"/>
                             </StackPanel>
                             <StackPanel Grid.Column="2">
-                                <TextBlock Text="Empresa" Style="{StaticResource Rotulo}"/>
+                                <TextBlock Text="Empresa *" Style="{StaticResource Rotulo}"/>
                                 <TextBox Style="{StaticResource CampoForm}"
                                          Text="{Binding EmpresaForm, UpdateSourceTrigger=PropertyChanged}"/>
                             </StackPanel>

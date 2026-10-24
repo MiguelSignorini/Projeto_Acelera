@@ -34,8 +34,8 @@ namespace SaciGestao.Models
         public int Quartos { get; set; }
         public int Suites { get; set; }
         public int Banheiros { get; set; }
-        public int Cozinhas { get; set; } = 1;
-        public int Salas { get; set; } = 1;
+        public int Cozinhas { get; set; }
+        public int Salas { get; set; }
         public int Vagas { get; set; }
 
         public string Descricao { get; set; } = string.Empty;

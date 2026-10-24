@@ -23,5 +23,30 @@
     "UC_Agua": "",
     "Observacoes": "",
     "Ativo": true
+  },
+  {
+    "Id": 2,
+    "Codigo": "CTR002",
+    "ImovelId": 5,
+    "LocatarioId": 2,
+    "LocadorId": 1,
+    "ImovelTitulo": "Casa Vila Nova 2Q",
+    "LocatarioNome": "Maria Oliveira",
+    "LocadorNome": "João Silva",
+    "Tipo": "Locacao",
+    "Status": "Ativo",
+    "ValorMensal": 25000.00,
+    "PrazoMeses": 45,
+    "DiaVencimento": 20,
+    "DataInicio": "2026-10-24T00:00:00-03:00",
+    "DataFim": "2030-07-24T00:00:00-03:00",
+    "DataAssinatura": "2026-10-24T00:00:00-03:00",
+    "IndiceReajuste": "IGP-M/FGV",
+    "PercentualMultaAtraso": 10.0,
+    "MesesIsencaoMultaRescisao": 12,
+    "UC_Energia": "EDP-00445566",
+    "UC_Agua": "SAB-00334455",
+    "Observacoes": "Testes",
+    "Ativo": true
   }
 ]

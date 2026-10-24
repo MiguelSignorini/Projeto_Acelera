@@ -1148,17 +1148,7 @@
                                         <!-- Moldura de tamanho FIXO: a foto se ajusta dentro dela (inteira, sem esticar) -->
                                         <Border Background="#1F2933" CornerRadius="12">
                                             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                                                <StackPanel.Style>
-                                                    <Style TargetType="StackPanel">
-                                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                                        <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding FotoAtual}" Value="{x:Null}">
-                                                                <Setter Property="Visibility" Value="Visible"/>
-                                                            </DataTrigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </StackPanel.Style>
-                                                <TextBlock Text="&#xEB9F;" FontFamily="Segoe MDL2 Assets" FontSize="64"
+                                                        <TextBlock Text="&#xEB9F;" FontFamily="Segoe MDL2 Assets" FontSize="64"
                                                            Foreground="#8A94A3" HorizontalAlignment="Center"/>
                                                 <TextBlock Text="Nenhuma foto cadastrada" FontSize="14" Foreground="#D1D8E0"
                                                            HorizontalAlignment="Center" Margin="0,8,0,0"/>
@@ -1331,6 +1321,35 @@
                                         </Border>
                                     </StackPanel>
 
+                                    <!-- Registro do imóvel -->
+                                    <StackPanel>
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                                            <Border Style="{StaticResource IconeSecaoDetalhe}">
+                                                <TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                                           Foreground="{StaticResource Primaria}"
+                                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <TextBlock Text="REGISTRO DO IMÓVEL" Style="{StaticResource TituloSecaoDetalhe}"/>
+                                        </StackPanel>
+                                        <Border Style="{StaticResource CaixaDetalhe}">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="16"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <StackPanel Grid.Column="0">
+                                                    <TextBlock Text="Matrícula" Style="{StaticResource RotuloDetalhe}"/>
+                                                    <TextBlock Text="{Binding MatriculaTexto}" Style="{StaticResource ValorDetalhe}"/>
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="2">
+                                                    <TextBlock Text="IPTU" Style="{StaticResource RotuloDetalhe}"/>
+                                                    <TextBlock Text="{Binding IptuTexto}" Style="{StaticResource ValorDetalhe}"/>
+                                                </StackPanel>
+                                            </Grid>
+                                        </Border>
+                                    </StackPanel>
+
                                     <!-- Concessionárias -->
                                     <StackPanel>
                                         <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
@@ -1349,11 +1368,11 @@
                                                     <ColumnDefinition Width="*"/>
                                                 </Grid.ColumnDefinitions>
                                                 <StackPanel Grid.Column="0">
-                                                    <TextBlock Text="Matrícula EDP (energia)" Style="{StaticResource RotuloDetalhe}"/>
+                                                    <TextBlock Text="Inscrição EDP (energia)" Style="{StaticResource RotuloDetalhe}"/>
                                                     <TextBlock Text="{Binding MatriculaEdpTexto}" Style="{StaticResource ValorDetalhe}"/>
                                                 </StackPanel>
                                                 <StackPanel Grid.Column="2">
-                                                    <TextBlock Text="Matrícula Sabesp (água)" Style="{StaticResource RotuloDetalhe}"/>
+                                                    <TextBlock Text="RGI" Style="{StaticResource RotuloDetalhe}"/>
                                                     <TextBlock Text="{Binding MatriculaSabespTexto}" Style="{StaticResource ValorDetalhe}"/>
                                                 </StackPanel>
                                             </Grid>
