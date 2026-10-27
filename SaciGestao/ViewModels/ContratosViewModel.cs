@@ -21,8 +21,33 @@ namespace SaciGestao.ViewModels
         public Contrato ContratoForm
         {
             get => _contratoForm;
-            set => SetProperty(ref _contratoForm, value);
+            set
+            {
+                if (SetProperty(ref _contratoForm, value))
+                {
+                    OnPropertyChanged(nameof(TipoSelecionadoForm));
+                    OnPropertyChanged(nameof(MostrarIndiceReajuste));
+                }
+            }
         }
+
+        // Propriedade para controlar e notificar a mudança entre Locação e Venda na View
+        public TipoContrato TipoSelecionadoForm
+        {
+            get => ContratoForm?.Tipo ?? TipoContrato.Locacao;
+            set
+            {
+                if (ContratoForm != null && ContratoForm.Tipo != value)
+                {
+                    ContratoForm.Tipo = value;
+                    OnPropertyChanged(nameof(TipoSelecionadoForm));
+                    OnPropertyChanged(nameof(MostrarIndiceReajuste));
+                }
+            }
+        }
+
+        // Retorna verdadeiro se for Locação (usado para mostrar/ocultar o índice de reajuste)
+        public bool MostrarIndiceReajuste => ContratoForm?.Tipo == TipoContrato.Locacao;
 
         private Contrato? _contratoDetalhe;
         public Contrato? ContratoDetalhe
@@ -65,7 +90,7 @@ namespace SaciGestao.ViewModels
                 var locatarioAtualId = ContratoForm?.LocatarioId ?? 0;
                 return ClienteService.Instancia.ObterTodos()
                     .Where(c => (c.Status != StatusCliente.Inativo &&
-                                (c.Tipo == TipoCliente.Inquilino || c.Tipo == TipoCliente.Comprador))
+                                 (c.Tipo == TipoCliente.Inquilino || c.Tipo == TipoCliente.Comprador))
                                 || c.Id == locatarioAtualId)
                     .ToList();
             }
@@ -194,15 +219,13 @@ namespace SaciGestao.ViewModels
                 ContratoForm.ValorMensal = imovel.Valor;
             }
 
-            // As unidades consumidoras vêm das matrículas cadastradas no imóvel
             ContratoForm.UC_Energia = imovel.MatriculaEdp;
             ContratoForm.UC_Agua = imovel.MatriculaSabesp;
 
-            // Preenche o locador com o dono do imóvel (pelo Id; imóveis antigos só têm o nome)
             var todosClientes = ClienteService.Instancia.ObterTodos();
             var dono = todosClientes.FirstOrDefault(c => imovel.ProprietarioId > 0 && c.Id == imovel.ProprietarioId)
-                       ?? todosClientes.FirstOrDefault(c => !string.IsNullOrWhiteSpace(imovel.ProprietarioNome) &&
-                              string.Equals(c.Nome, imovel.ProprietarioNome, StringComparison.OrdinalIgnoreCase));
+                      ?? todosClientes.FirstOrDefault(c => !string.IsNullOrWhiteSpace(imovel.ProprietarioNome) &&
+                          string.Equals(c.Nome, imovel.ProprietarioNome, StringComparison.OrdinalIgnoreCase));
 
             if (dono != null)
             {
@@ -210,7 +233,6 @@ namespace SaciGestao.ViewModels
                 ContratoForm.LocadorNome = dono.Nome;
             }
 
-            // Atualiza a lista de locadores (garante que o dono apareça) e os campos da tela
             OnPropertyChanged(nameof(ListaLocadores));
             OnPropertyChanged(nameof(ContratoForm));
         }
@@ -260,6 +282,8 @@ namespace SaciGestao.ViewModels
             OnPropertyChanged(nameof(ListaLocatarios));
             OnPropertyChanged(nameof(ListaLocadores));
             OnPropertyChanged(nameof(ImovelIdSelecionado));
+            OnPropertyChanged(nameof(TipoSelecionadoForm));
+            OnPropertyChanged(nameof(MostrarIndiceReajuste));
 
             MostrandoLista = false;
             MostrandoDetalhes = false;
@@ -278,6 +302,8 @@ namespace SaciGestao.ViewModels
             OnPropertyChanged(nameof(ListaLocatarios));
             OnPropertyChanged(nameof(ListaLocadores));
             OnPropertyChanged(nameof(ImovelIdSelecionado));
+            OnPropertyChanged(nameof(TipoSelecionadoForm));
+            OnPropertyChanged(nameof(MostrarIndiceReajuste));
 
             MostrandoLista = false;
             MostrandoDetalhes = false;
@@ -297,6 +323,7 @@ namespace SaciGestao.ViewModels
         {
             if (contrato == null) return;
             ContratoService.Instancia.Excluir(contrato.Id);
+            ContratoService.Instancia.Salvar(); // Garante persistência imediata na memória/disco[cite: 4, 5]
             Filtrar();
         }
 
@@ -304,15 +331,22 @@ namespace SaciGestao.ViewModels
         {
             if (ContratoForm == null) return;
 
+            // Validação rigorosa para não deixar campos importantes vazios
             if (ContratoForm.ImovelId <= 0 || ContratoForm.LocatarioId <= 0 || ContratoForm.LocadorId <= 0)
             {
-                ErroForm = "Selecione o imóvel, o inquilino / comprador e o proprietário.";
+                ErroForm = "Por favor, selecione o imóvel, o inquilino/comprador e o proprietário.";
                 return;
             }
 
             if (ContratoForm.ValorMensal <= 0)
             {
-                ErroForm = "Informe um valor maior que zero.";
+                ErroForm = "Informe um valor válido maior que zero.";
+                return;
+            }
+
+            if (ContratoForm.Tipo == TipoContrato.Locacao && string.IsNullOrWhiteSpace(ContratoForm.IndiceReajuste))
+            {
+                ErroForm = "Selecione o índice de reajuste para o contrato de locação.";
                 return;
             }
 
@@ -332,6 +366,9 @@ namespace SaciGestao.ViewModels
                 ContratoService.Instancia.Adicionar(ContratoForm);
             else
                 ContratoService.Instancia.Atualizar(ContratoForm);
+
+            // Salva de imediato para garantir persistência consistente[cite: 4, 5]
+            ContratoService.Instancia.Salvar();
 
             VoltarParaLista();
         }

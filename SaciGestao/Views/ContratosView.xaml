@@ -781,8 +781,9 @@
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Column="0">
                                 <TextBlock Text="Tipo" Style="{StaticResource RotuloForm}"/>
+                                <!-- ALTERAÇÃO 1: Usa TipoSelecionadoForm para disparar a visibilidade do reajuste -->
                                 <ComboBox Style="{StaticResource ComboArredondado}" ItemsSource="{Binding TiposContratoEnum}" ItemTemplate="{StaticResource ModeloEnumTexto}"
-                                          SelectedItem="{Binding ContratoForm.Tipo, Mode=TwoWay}"/>
+                                          SelectedItem="{Binding TipoSelecionadoForm, Mode=TwoWay}"/>
                             </StackPanel>
                             <StackPanel Grid.Column="2">
                                 <TextBlock Text="Status" Style="{StaticResource RotuloForm}"/>
@@ -828,11 +829,14 @@
                                 <DatePicker SelectedDate="{Binding ContratoForm.DataAssinatura, Mode=TwoWay}" Height="40"
                                             VerticalContentAlignment="Center" FontSize="14"/>
                             </StackPanel>
-                            <StackPanel Grid.Column="4">
+
+                            <!-- ALTERAÇÃO 2: Envolvido em StackPanel com visibilidade baseada em MostrarIndiceReajuste -->
+                            <StackPanel Grid.Column="4" Visibility="{Binding MostrarIndiceReajuste, Converter={StaticResource BoolParaVisibilidade}}">
                                 <TextBlock Text="Índice de reajuste" Style="{StaticResource RotuloForm}"/>
                                 <ComboBox Style="{StaticResource ComboArredondado}" ItemsSource="{Binding IndicesReajuste}"
                                           SelectedItem="{Binding ContratoForm.IndiceReajuste, Mode=TwoWay}"/>
                             </StackPanel>
+
                             <StackPanel Grid.Column="6">
                                 <TextBlock Text="Multa por atraso (%)" Style="{StaticResource RotuloForm}"/>
                                 <TextBox Style="{StaticResource CampoForm}" Text="{Binding ContratoForm.PercentualMultaAtraso}"/>

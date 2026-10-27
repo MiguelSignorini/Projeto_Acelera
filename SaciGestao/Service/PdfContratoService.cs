@@ -44,8 +44,10 @@ namespace SaciGestao.Service
                             ?? new Cliente { Nome = contrato.LocatarioNome };
             var imovel = ImovelService.Instancia.ObterAtivos().FirstOrDefault(i => i.Id == contrato.ImovelId);
 
+            bool ehVenda = contrato.Tipo == TipoContrato.Venda;
+
             var doc = new Document();
-            doc.Info.Title = ModeloContratoLocacao.Titulo(contrato);
+            doc.Info.Title = ehVenda ? ModeloContratoVenda.Titulo(contrato) : ModeloContratoLocacao.Titulo(contrato);
             var normal = doc.Styles[StyleNames.Normal]!;
             normal.Font.Name = "Calibri";
             normal.Font.Size = 10;
@@ -61,18 +63,25 @@ namespace SaciGestao.Service
 
             MontarCabecalhoRodape(sec);
 
-            // Título
-            var pNumero = sec.AddParagraph(ModeloContratoLocacao.Titulo(contrato));
+            // Título principal do documento
+            var pNumero = sec.AddParagraph(ehVenda ? ModeloContratoVenda.Titulo(contrato) : ModeloContratoLocacao.Titulo(contrato));
             pNumero.Format.Alignment = ParagraphAlignment.Right;
             pNumero.Format.SpaceAfter = 6;
 
             var pTitulo = sec.AddParagraph();
             pTitulo.Format.Alignment = ParagraphAlignment.Center;
             pTitulo.Format.SpaceAfter = 10;
-            pTitulo.AddFormattedText("CONTRATO DE LOCAÇÃO RESIDENCIAL SEM GARANTIA", TextFormat.Bold).Size = 15;
+            string tituloTexto = ehVenda
+                ? "INSTRUMENTO PARTICULAR DE COMPROMISSO DE COMPRA E VENDA DE IMÓVEL"
+                : "CONTRATO DE LOCAÇÃO RESIDENCIAL SEM GARANTIA";
+            pTitulo.AddFormattedText(tituloTexto, TextFormat.Bold).Size = 14;
 
-            // Cláusulas
-            foreach (var bloco in ModeloContratoLocacao.Montar(contrato, locador, locatario, imovel))
+            // Cláusulas dinâmicas (Locação ou Venda)
+            var blocos = ehVenda
+                ? ModeloContratoVenda.Montar(contrato, locador, locatario, imovel)
+                : ModeloContratoLocacao.Montar(contrato, locador, locatario, imovel);
+
+            foreach (var bloco in blocos)
             {
                 switch (bloco.Tipo)
                 {
@@ -89,7 +98,6 @@ namespace SaciGestao.Service
                         var pi = sec.AddParagraph();
                         pi.Format.Alignment = ParagraphAlignment.Justify;
                         pi.Format.SpaceAfter = 8;
-                        // O número do item ("4.1 -") sai em negrito, como na minuta
                         var m = Regex.Match(bloco.Texto, @"^\d+\.\d+\s?-");
                         if (m.Success)
                         {
@@ -111,7 +119,7 @@ namespace SaciGestao.Service
                 }
             }
 
-            MontarAssinaturas(sec, contrato, locador, locatario);
+            MontarAssinaturas(sec, contrato, locador, locatario, ehVenda);
 
             var renderer = new PdfDocumentRenderer { Document = doc };
             renderer.RenderDocument();
@@ -158,7 +166,7 @@ namespace SaciGestao.Service
             rodape.AddNumPagesField();
         }
 
-        private static void MontarAssinaturas(Section sec, Contrato contrato, Cliente locador, Cliente locatario)
+        private static void MontarAssinaturas(Section sec, Contrato contrato, Cliente locador, Cliente locatario, bool ehVenda)
         {
             const string Linha = "________________________________________";
 
@@ -188,36 +196,39 @@ namespace SaciGestao.Service
                 p.AddText(nome);
             }
 
-            Titulo("LOCATÁRIOS");
+            // Assinaturas das partes conforme o tipo de contrato
+            Titulo(ehVenda ? "PROMITENTE COMPRADORA" : "LOCATÁRIOS");
             Assinante(locatario.Nome);
 
-            Titulo("LOCADORES");
+            Titulo(ehVenda ? "PROMITENTE VENDEDOR" : "LOCADORES");
             Assinante(locador.Nome);
 
             Titulo("IMOBILIÁRIA");
             Assinante("Sacilotti Imóveis & Negócios LTDA");
 
+            // Tabela padronizada de testemunhas lado a lado
             Titulo("TESTEMUNHAS");
             var tab = sec.AddTable();
             tab.Format.KeepTogether = true;
             tab.AddColumn(Unit.FromPoint(220));
             tab.AddColumn(Unit.FromPoint(20));
             tab.AddColumn(Unit.FromPoint(220));
+
             var assin = tab.AddRow();
             assin.Height = Unit.FromPoint(40);
             assin.VerticalAlignment = MigraDoc.DocumentObjectModel.Tables.VerticalAlignment.Bottom;
             assin.Cells[0].AddParagraph(Linha);
             assin.Cells[2].AddParagraph(Linha);
+
             var nomes = tab.AddRow();
             nomes.Cells[0].AddParagraph("Nome:");
             nomes.Cells[2].AddParagraph("Nome:");
+
             var cpfs = tab.AddRow();
             cpfs.Cells[0].AddParagraph("CPF:");
             cpfs.Cells[2].AddParagraph("CPF:");
         }
 
-        // Lê o logo (Resources/logo.png, embutido no projeto) e entrega no formato "base64:" que o MigraDoc aceita.
-        // Se não existir ou der qualquer problema, o PDF é gerado sem logo, sem travar.
         private static string? CarregarLogoBase64()
         {
             try
