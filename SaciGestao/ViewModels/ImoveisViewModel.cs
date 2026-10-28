@@ -41,6 +41,12 @@ namespace SaciGestao.ViewModels
 
         public ObservableCollection<Imovel> Imoveis { get; } = new ObservableCollection<Imovel>();
         public ObservableCollection<string> Bairros { get; } = new ObservableCollection<string>();
+
+        // Bairros de Cachoeira Paulista: aparecem no cadastro e também no filtro
+        public static readonly string[] BairrosCachoeira = { "Centro", "Jardim América", "Vila Nova" };
+
+        // Lista do combo Bairro no formulário (pode receber o bairro de um imóvel antigo)
+        public ObservableCollection<string> BairrosCadastro { get; } = new ObservableCollection<string>(BairrosCachoeira);
         public List<string> Tipos { get; }
         public List<string> Finalidades { get; }
         public List<string> Statuses { get; }
@@ -425,6 +431,9 @@ namespace SaciGestao.ViewModels
             EnderecoForm = imovel.Endereco;
             NumeroForm = imovel.Numero;
             BairroForm = imovel.Bairro;
+            // Bairro gravado fora da lista de Cachoeira: inclui no combo para não sumir da tela
+            if (!string.IsNullOrWhiteSpace(imovel.Bairro) && !BairrosCadastro.Contains(imovel.Bairro))
+                BairrosCadastro.Add(imovel.Bairro);
             CidadeForm = imovel.Cidade;
             EstadoForm = imovel.Estado;
             CepForm = imovel.Cep;
@@ -600,8 +609,8 @@ namespace SaciGestao.ViewModels
         {
             _carregando = true;
 
-            var bairros = _service.ObterAtivos()
-                .Select(i => i.Bairro)
+            var bairros = BairrosCachoeira
+                .Concat(_service.ObterAtivos().Select(i => i.Bairro))
                 .Where(b => !string.IsNullOrWhiteSpace(b))
                 .Distinct()
                 .OrderBy(b => b)

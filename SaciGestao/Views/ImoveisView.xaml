@@ -850,8 +850,9 @@
 
                                 <StackPanel Grid.Column="4">
                                     <TextBlock Text="Bairro" Style="{StaticResource RotuloForm}"/>
-                                    <TextBox Style="{StaticResource CampoForm}"
-                                         Text="{Binding BairroForm, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <ComboBox Style="{StaticResource ComboArredondado}"
+                                              ItemsSource="{Binding BairrosCadastro}"
+                                              SelectedItem="{Binding BairroForm, Mode=TwoWay}"/>
                                 </StackPanel>
                             </Grid>
 
