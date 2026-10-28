@@ -27,7 +27,9 @@
     "Matricula": "",
     "Iptu": "",
     "Ativo": true,
-    "Fotos": []
+    "Fotos": [
+      "demo_imovel_1.jpg"
+    ]
   },
   {
     "Id": 2,
@@ -57,7 +59,9 @@
     "Matricula": "",
     "Iptu": "",
     "Ativo": true,
-    "Fotos": []
+    "Fotos": [
+      "demo_imovel_2.jpg"
+    ]
   },
   {
     "Id": 3,
@@ -88,13 +92,8 @@
     "Iptu": "",
     "Ativo": true,
     "Fotos": [
-      "10ea4f899b8e487fa9a599e067533e93.jpg",
-      "f674542420994a66a47a4741b00cce5e.jpg",
-      "fa5887b6974540febed6cbd4cd512a0d.jpg",
-      "d5ab4cb4b574453bb2a458703ff98d34.jpg",
-      "079aafe73e064190b9d15a39c49643fe.jpg",
-      "f4b13c1049924656ae48e7e88065631b.jpg",
-      "ad03941258454a428c148a1d3a988dd5.jpg"
+      "94fe34e6b1ea4491ae0a7a0f2b6f3ae4.png",
+      "2caac61ef0454dc5b0b0ac6d08f0ef9f.png"
     ]
   },
   {
@@ -125,7 +124,9 @@
     "Matricula": "",
     "Iptu": "",
     "Ativo": true,
-    "Fotos": []
+    "Fotos": [
+      "demo_imovel_3.jpg"
+    ]
   },
   {
     "Id": 5,
@@ -155,7 +156,9 @@
     "Matricula": "",
     "Iptu": "",
     "Ativo": true,
-    "Fotos": []
+    "Fotos": [
+      "demo_imovel_4.jpg"
+    ]
   },
   {
     "Id": 6,
@@ -185,6 +188,8 @@
     "Matricula": "",
     "Iptu": "",
     "Ativo": true,
-    "Fotos": []
+    "Fotos": [
+      "demo_imovel_5.jpg"
+    ]
   }
 ]

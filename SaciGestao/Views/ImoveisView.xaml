@@ -92,6 +92,50 @@
             </Setter>
         </Style>
 
+        <!-- ComboBox pesquisável: a pessoa digita e a lista filtra pelo começo do nome (usado no Bairro do formulário) -->
+        <Style x:Key="ComboBuscaBairro" TargetType="ComboBox" BasedOn="{StaticResource ComboArredondado}">
+            <Setter Property="IsEditable" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <ToggleButton x:Name="toggle" Focusable="False" ClickMode="Press"
+                                          IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
+                                <ToggleButton.Template>
+                                    <ControlTemplate TargetType="ToggleButton">
+                                        <Border Background="White" BorderBrush="{StaticResource Borda}"
+                                                BorderThickness="1" CornerRadius="8">
+                                            <TextBlock Text="&#xE70D;" FontFamily="Segoe MDL2 Assets"
+                                                       FontSize="11" Foreground="{StaticResource TextoSuave}"
+                                                       HorizontalAlignment="Right" VerticalAlignment="Center"
+                                                       Margin="0,0,12,0"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                            </ToggleButton>
+                            <TextBox x:Name="PART_EditableTextBox" Margin="12,0,32,0"
+                                     VerticalAlignment="Center" VerticalContentAlignment="Center"
+                                     Background="Transparent" BorderThickness="0" Padding="0"
+                                     FontSize="14" Foreground="{TemplateBinding Foreground}"/>
+                            <Popup IsOpen="{TemplateBinding IsDropDownOpen}" Placement="Bottom"
+                                   AllowsTransparency="True" Focusable="False" PopupAnimation="Slide">
+                                <Border MinWidth="{Binding ActualWidth, RelativeSource={RelativeSource TemplatedParent}}"
+                                        MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                                        Margin="0,4,0,0" Background="White"
+                                        BorderBrush="{StaticResource Borda}" BorderThickness="1"
+                                        CornerRadius="8">
+                                    <ScrollViewer>
+                                        <StackPanel IsItemsHost="True"
+                                                    KeyboardNavigation.DirectionalNavigation="Contained"/>
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <Style x:Key="BotaoPrimario" TargetType="Button">
             <Setter Property="Background" Value="{StaticResource Primaria}"/>
             <Setter Property="Foreground" Value="White"/>
@@ -572,9 +616,11 @@
 
                     <StackPanel Grid.Column="1">
                         <TextBlock Text="Bairro" Style="{StaticResource Rotulo}"/>
-                        <ComboBox Style="{StaticResource ComboArredondado}"
-                                  ItemsSource="{Binding Bairros}"
-                                  SelectedItem="{Binding BairroSelecionado, Mode=TwoWay}"/>
+                        <ComboBox Style="{StaticResource ComboBuscaBairro}"
+                                  ItemsSource="{Binding BairrosFiltroFiltrados}"
+                                  SelectedItem="{Binding BairroSelecionado, Mode=TwoWay}"
+                                  Text="{Binding BuscaBairroFiltro, UpdateSourceTrigger=PropertyChanged}"
+                                  PreviewKeyUp="ComboBairro_PreviewKeyUp"/>
                     </StackPanel>
                 </Grid>
 
@@ -850,9 +896,10 @@
 
                                 <StackPanel Grid.Column="4">
                                     <TextBlock Text="Bairro" Style="{StaticResource RotuloForm}"/>
-                                    <ComboBox Style="{StaticResource ComboArredondado}"
-                                              ItemsSource="{Binding BairrosCadastro}"
-                                              SelectedItem="{Binding BairroForm, Mode=TwoWay}"/>
+                                    <ComboBox Style="{StaticResource ComboBuscaBairro}"
+                                              ItemsSource="{Binding BairrosFiltrados}"
+                                              Text="{Binding BairroForm, UpdateSourceTrigger=PropertyChanged}"
+                                              PreviewKeyUp="ComboBairro_PreviewKeyUp"/>
                                 </StackPanel>
                             </Grid>
 

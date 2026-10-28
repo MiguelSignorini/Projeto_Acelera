@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 using Microsoft.Win32;
 using System.Windows;
 using System.Windows.Input;
@@ -24,6 +25,7 @@ namespace SaciGestao.ViewModels
     public class ImoveisViewModel : ViewModelBase
     {
         private const string Todos = "Todos";
+        private const string TodasBairros = "Todas";
         private static readonly CultureInfo PtBr = new CultureInfo("pt-BR");
 
         private readonly ImovelService _service = ImovelService.Instancia;
@@ -36,17 +38,30 @@ namespace SaciGestao.ViewModels
         private string _tipo = Todos;
         private string _finalidade = Todos;
         private string _status = Todos;
-        private string _bairro = Todos;
+        private string _bairro = TodasBairros;
         private FaixaPreco _faixa;
 
         public ObservableCollection<Imovel> Imoveis { get; } = new ObservableCollection<Imovel>();
         public ObservableCollection<string> Bairros { get; } = new ObservableCollection<string>();
 
-        // Bairros de Cachoeira Paulista: aparecem no cadastro e também no filtro
-        public static readonly string[] BairrosCachoeira = { "Centro", "Jardim América", "Vila Nova" };
+        // Bairros de Cachoeira Paulista (lista oficial da Prefeitura): aparecem no cadastro e também no filtro
+        public static readonly string[] BairrosCachoeira =
+        {
+            "Alto da Bela Vista", "Alto da Boa Vista", "Alto da Igreja", "Bairro das Palmeiras",
+            "Centro", "Chácara do Moinho", "Condomínio Residencial Terraluz",
+            "Conjunto Habitacional Eurico Martins Lara", "Embaú", "Embauzinho",
+            "Jardim da Fonte", "Jardim das Indústrias", "Jardim dos Ipês", "Jardim Europa I",
+            "Jardim Europa II", "Jardim Nova Cachoeira", "Jardim Trabalhista", "Jardim Vale do Sol",
+            "Margem Esquerda", "Parque Primavera", "Pitéu", "Quilombo", "Santa Rita",
+            "Santa Terezinha", "São João", "São José", "Vila Cacarro", "Vila Carmem",
+            "Vila Nova Esperança"
+        };
 
-        // Lista do combo Bairro no formulário (pode receber o bairro de um imóvel antigo)
+        // Todos os bairros do combo Bairro no formulário (inclui o de um imóvel antigo fora da lista)
         public ObservableCollection<string> BairrosCadastro { get; } = new ObservableCollection<string>(BairrosCachoeira);
+
+        // Sugestões do combo Bairro: mostram só os que começam com o que a pessoa digitou
+        public ObservableCollection<string> BairrosFiltrados { get; } = new ObservableCollection<string>(BairrosCachoeira);
         public List<string> Tipos { get; }
         public List<string> Finalidades { get; }
         public List<string> Statuses { get; }
@@ -81,6 +96,16 @@ namespace SaciGestao.ViewModels
             get => _bairro;
             set { if (value != null && SetProperty(ref _bairro, value)) Filtrar(); }
         }
+
+        // Texto digitado no combo Bairro do filtro: afina BairrosFiltroFiltrados
+        private string _buscaBairroFiltro = TodasBairros;
+        public string BuscaBairroFiltro
+        {
+            get => _buscaBairroFiltro;
+            set { if (SetProperty(ref _buscaBairroFiltro, value)) AtualizarBairrosFiltroBusca(); }
+        }
+
+        public ObservableCollection<string> BairrosFiltroFiltrados { get; } = new ObservableCollection<string>();
 
         public FaixaPreco FaixaSelecionada
         {
@@ -132,7 +157,11 @@ namespace SaciGestao.ViewModels
         public string NumeroForm { get => _numeroForm; set => SetProperty(ref _numeroForm, value); }
 
         private string _bairroForm = string.Empty;
-        public string BairroForm { get => _bairroForm; set => SetProperty(ref _bairroForm, value); }
+        public string BairroForm
+        {
+            get => _bairroForm;
+            set { if (SetProperty(ref _bairroForm, value)) AtualizarBairrosFiltrados(); }
+        }
 
         private string _cidadeForm = string.Empty;
         public string CidadeForm { get => _cidadeForm; set => SetProperty(ref _cidadeForm, value); }
@@ -393,6 +422,7 @@ namespace SaciGestao.ViewModels
             EnderecoForm = string.Empty;
             NumeroForm = string.Empty;
             BairroForm = string.Empty;
+            AtualizarBairrosFiltrados();
             CidadeForm = string.Empty;
             EstadoForm = string.Empty;
             CepForm = string.Empty;
@@ -430,10 +460,11 @@ namespace SaciGestao.ViewModels
             TituloForm = imovel.Titulo;
             EnderecoForm = imovel.Endereco;
             NumeroForm = imovel.Numero;
-            BairroForm = imovel.Bairro;
             // Bairro gravado fora da lista de Cachoeira: inclui no combo para não sumir da tela
             if (!string.IsNullOrWhiteSpace(imovel.Bairro) && !BairrosCadastro.Contains(imovel.Bairro))
                 BairrosCadastro.Add(imovel.Bairro);
+            BairroForm = imovel.Bairro;
+            AtualizarBairrosFiltrados();
             CidadeForm = imovel.Cidade;
             EstadoForm = imovel.Estado;
             CepForm = imovel.Cep;
@@ -590,7 +621,8 @@ namespace SaciGestao.ViewModels
             _tipo = Todos;
             _finalidade = Todos;
             _status = Todos;
-            _bairro = Todos;
+            _bairro = TodasBairros;
+            _buscaBairroFiltro = TodasBairros;
             _faixa = Faixas[0];
             _carregando = false;
 
@@ -599,8 +631,10 @@ namespace SaciGestao.ViewModels
             OnPropertyChanged(nameof(FinalidadeSelecionada));
             OnPropertyChanged(nameof(StatusSelecionado));
             OnPropertyChanged(nameof(BairroSelecionado));
+            OnPropertyChanged(nameof(BuscaBairroFiltro));
             OnPropertyChanged(nameof(FaixaSelecionada));
 
+            AtualizarBairrosFiltroBusca();
             Filtrar();
         }
 
@@ -617,15 +651,31 @@ namespace SaciGestao.ViewModels
                 .ToList();
 
             Bairros.Clear();
-            Bairros.Add(Todos);
+            Bairros.Add(TodasBairros);
             foreach (var b in bairros) Bairros.Add(b);
 
-            if (!Bairros.Contains(_bairro)) _bairro = Todos;
+            if (!Bairros.Contains(_bairro)) _bairro = TodasBairros;
 
             _carregando = false;
             OnPropertyChanged(nameof(BairroSelecionado));
+            AtualizarBairrosFiltroBusca();
 
             Filtrar();
+        }
+
+        // Sugestões do combo Bairro do filtro: começam com o texto digitado (ignora acentos e maiúsculas)
+        private void AtualizarBairrosFiltroBusca()
+        {
+            // "Todas" é o valor padrão mostrado no combo, não um texto de busca
+            string texto = _buscaBairroFiltro == TodasBairros ? string.Empty : _buscaBairroFiltro;
+            string busca = SemAcento(texto ?? string.Empty).Trim();
+
+            BairrosFiltroFiltrados.Clear();
+            foreach (var bairro in Bairros)
+            {
+                if (busca.Length == 0 || SemAcento(bairro).StartsWith(busca, StringComparison.OrdinalIgnoreCase))
+                    BairrosFiltroFiltrados.Add(bairro);
+            }
         }
 
         private void Filtrar()
@@ -651,7 +701,7 @@ namespace SaciGestao.ViewModels
             if (_status != Todos)
                 consulta = consulta.Where(i => i.Status.ToString() == _status);
 
-            if (_bairro != Todos)
+            if (_bairro != TodasBairros)
                 consulta = consulta.Where(i => i.Bairro == _bairro);
 
             consulta = consulta.Where(i => i.Valor >= _faixa.Min && i.Valor <= _faixa.Max);
@@ -663,6 +713,32 @@ namespace SaciGestao.ViewModels
         private static bool Contem(string texto, string trecho)
         {
             return (texto ?? string.Empty).IndexOf(trecho, StringComparison.OrdinalIgnoreCase) >= 0;
+        }
+
+        // ---------- Busca de bairro no formulário ----------
+        // Digitar "B" mostra os que começam com B; "BA", "BARO"... vão afinando a lista.
+        // Ignora acentos e maiúsculas: "embau" encontra "Embaú".
+        private void AtualizarBairrosFiltrados()
+        {
+            string busca = SemAcento(_bairroForm ?? string.Empty).Trim();
+
+            BairrosFiltrados.Clear();
+            foreach (var bairro in BairrosCadastro)
+            {
+                if (busca.Length == 0 || SemAcento(bairro).StartsWith(busca, StringComparison.OrdinalIgnoreCase))
+                    BairrosFiltrados.Add(bairro);
+            }
+        }
+
+        private static string SemAcento(string texto)
+        {
+            var sb = new StringBuilder();
+            foreach (char c in texto.Normalize(NormalizationForm.FormD))
+            {
+                if (CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark)
+                    sb.Append(c);
+            }
+            return sb.ToString();
         }
     }
 }
