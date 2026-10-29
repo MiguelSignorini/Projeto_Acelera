@@ -1,0 +1,231 @@
+<UserControl x:Class="SaciGestao.Views.ConfiguracoesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xml:lang="pt-BR"
+             FontFamily="Segoe UI">
+
+    <UserControl.Resources>
+        <Style x:Key="Cartao" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="BorderBrush" Value="#E6E9EE"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="28"/>
+        </Style>
+
+        <Style x:Key="TituloSecao" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{StaticResource Texto}"/>
+        </Style>
+
+        <Style x:Key="DescricaoSecao" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Foreground" Value="{StaticResource TextoSuave}"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="Margin" Value="0,6,0,0"/>
+        </Style>
+
+        <Style x:Key="Rotulo" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{StaticResource Texto}"/>
+            <Setter Property="Margin" Value="0,16,0,6"/>
+        </Style>
+
+        <Style x:Key="Campo" TargetType="Control">
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="10,0"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="BotaoPrimario" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource Primaria}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Padding" Value="22,0"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+
+        <Style x:Key="BotaoContorno" TargetType="Button">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="{StaticResource Texto}"/>
+            <Setter Property="BorderBrush" Value="#C9CFD8"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Padding" Value="18,0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+
+        <Style x:Key="TextoMensagem" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="Margin" Value="0,14,0,0"/>
+            <Setter Property="Visibility" Value="Collapsed"/>
+        </Style>
+
+        <!-- Item do menu lateral da configuração (marcado = seção aberta) -->
+        <Style x:Key="ItemSecaoStyle" TargetType="RadioButton">
+            <Setter Property="GroupName" Value="SecoesConfig"/>
+            <Setter Property="Foreground" Value="{StaticResource TextoSuave}"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Height" Value="44"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Margin" Value="0,2"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border x:Name="fundo" CornerRadius="8" Background="Transparent" Padding="14,0">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock Text="{TemplateBinding Tag}" FontFamily="Segoe MDL2 Assets"
+                                           FontSize="16" Width="26" VerticalAlignment="Center"/>
+                                <TextBlock Text="{TemplateBinding Content}" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="fundo" Property="Background" Value="#F1F3F6"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="fundo" Property="Background" Value="{StaticResource PrimariaClara}"/>
+                                <Setter Property="Foreground" Value="{StaticResource Primaria}"/>
+                                <Setter Property="FontWeight" Value="SemiBold"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="0,0,0,20">
+            <TextBlock Text="CONFIGURAÇÕES" FontSize="28" FontWeight="Bold" Foreground="{StaticResource Texto}"/>
+            <TextBlock Text="Gerencie seu perfil, sua senha e o acesso ao sistema."
+                       FontSize="14" Foreground="{StaticResource TextoSuave}" Margin="0,4,0,0"/>
+        </StackPanel>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="240"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- MENU DE SEÇÕES -->
+            <Border Grid.Column="0" Style="{StaticResource Cartao}" Padding="12" VerticalAlignment="Top">
+                <StackPanel>
+                    <RadioButton x:Name="rbSecaoPerfil" Tag="&#xE77B;" Content="Perfil"
+                                 Style="{StaticResource ItemSecaoStyle}" Checked="Secao_Checked"/>
+                    <RadioButton x:Name="rbSecaoSenha" Tag="&#xE72E;" Content="Alterar senha"
+                                 Style="{StaticResource ItemSecaoStyle}" Checked="Secao_Checked"/>
+                    <RadioButton x:Name="rbSecaoRecuperacao" Tag="&#xE897;" Content="Recuperação de senha"
+                                 Style="{StaticResource ItemSecaoStyle}" Checked="Secao_Checked"/>
+                    <RadioButton x:Name="rbSecaoSessao" Tag="&#xE7E8;" Content="Sessão"
+                                 Style="{StaticResource ItemSecaoStyle}" Checked="Secao_Checked"/>
+                </StackPanel>
+            </Border>
+
+            <!-- CONTEÚDO DA SEÇÃO ESCOLHIDA -->
+            <ScrollViewer Grid.Column="1" Margin="20,0,0,0" VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled">
+                <Grid>
+
+                    <!-- PERFIL -->
+                    <Border x:Name="secaoPerfil" Style="{StaticResource Cartao}" VerticalAlignment="Top">
+                        <StackPanel>
+                            <TextBlock Text="Perfil" Style="{StaticResource TituloSecao}"/>
+                            <TextBlock Text="Foto, nome completo e nome de usuário usados para entrar no sistema."
+                                       Style="{StaticResource DescricaoSecao}"/>
+
+                            <StackPanel Orientation="Horizontal" Margin="0,24,0,0">
+                                <Ellipse x:Name="elipseFoto" Width="96" Height="96"
+                                         Fill="#E4E8EE" Stroke="#D3D9E2" StrokeThickness="1"/>
+                                <StackPanel Margin="20,0,0,0" VerticalAlignment="Center">
+                                    <Button Content="Alterar foto..." Style="{StaticResource BotaoContorno}"
+                                            HorizontalAlignment="Left" Click="AlterarFoto_Click"/>
+                                    <Button Content="Remover foto" Style="{StaticResource BotaoContorno}"
+                                            HorizontalAlignment="Left" Margin="0,8,0,0" Click="RemoverFoto_Click"/>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <TextBlock Text="Nome completo" Style="{StaticResource Rotulo}"/>
+                            <TextBox x:Name="txtNome" Style="{StaticResource Campo}"/>
+
+                            <TextBlock Text="Nome de usuário" Style="{StaticResource Rotulo}"/>
+                            <TextBox x:Name="txtUsuario" Style="{StaticResource Campo}"/>
+
+                            <TextBlock x:Name="txtMsgPerfil" Style="{StaticResource TextoMensagem}"/>
+
+                            <Button Content="Salvar perfil" Style="{StaticResource BotaoPrimario}"
+                                    HorizontalAlignment="Left" Margin="0,24,0,0" Click="SalvarPerfil_Click"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- SENHA -->
+                    <Border x:Name="secaoSenha" Style="{StaticResource Cartao}" VerticalAlignment="Top" Visibility="Collapsed">
+                        <StackPanel>
+                            <TextBlock Text="Alterar senha" Style="{StaticResource TituloSecao}"/>
+                            <TextBlock Text="Para trocar, informe a senha atual. A nova precisa ter pelo menos 3 caracteres."
+                                       Style="{StaticResource DescricaoSecao}"/>
+
+                            <TextBlock Text="Senha atual" Style="{StaticResource Rotulo}"/>
+                            <PasswordBox x:Name="pwSenhaAtual" Style="{StaticResource Campo}"/>
+
+                            <TextBlock Text="Nova senha" Style="{StaticResource Rotulo}"/>
+                            <PasswordBox x:Name="pwSenhaNova" Style="{StaticResource Campo}"/>
+
+                            <TextBlock Text="Confirmar nova senha" Style="{StaticResource Rotulo}"/>
+                            <PasswordBox x:Name="pwSenhaConfirmar" Style="{StaticResource Campo}"/>
+
+                            <TextBlock x:Name="txtMsgSenha" Style="{StaticResource TextoMensagem}"/>
+
+                            <Button Content="Alterar senha" Style="{StaticResource BotaoPrimario}"
+                                    HorizontalAlignment="Left" Margin="0,24,0,0" Click="SalvarSenha_Click"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- RECUPERAÇÃO DE SENHA -->
+                    <Border x:Name="secaoRecuperacao" Style="{StaticResource Cartao}" VerticalAlignment="Top" Visibility="Collapsed">
+                        <StackPanel>
+                            <TextBlock Text="Recuperação de senha" Style="{StaticResource TituloSecao}"/>
+                            <TextBlock Text="Usada na tela de login quando você esquecer a senha. Para salvar, digite a pergunta e a resposta novamente."
+                                       Style="{StaticResource DescricaoSecao}"/>
+
+                            <TextBlock Text="Pergunta secreta" Style="{StaticResource Rotulo}"/>
+                            <TextBox x:Name="txtPergunta" Style="{StaticResource Campo}"/>
+
+                            <TextBlock Text="Resposta secreta" Style="{StaticResource Rotulo}"/>
+                            <TextBox x:Name="txtResposta" Style="{StaticResource Campo}"/>
+
+                            <TextBlock x:Name="txtMsgRecuperacao" Style="{StaticResource TextoMensagem}"/>
+
+                            <Button Content="Salvar recuperação" Style="{StaticResource BotaoPrimario}"
+                                    HorizontalAlignment="Left" Margin="0,24,0,0" Click="SalvarRecuperacao_Click"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- SESSÃO -->
+                    <Border x:Name="secaoSessao" Style="{StaticResource Cartao}" VerticalAlignment="Top" Visibility="Collapsed">
+                        <StackPanel>
+                            <TextBlock Text="Sessão" Style="{StaticResource TituloSecao}"/>
+                            <TextBlock Text="Sair da conta volta para a tela de login. Para fechar o sistema, use o botão Sair do menu lateral."
+                                       Style="{StaticResource DescricaoSecao}"/>
+
+                            <Button Content="Sair da conta" Style="{StaticResource BotaoContorno}"
+                                    HorizontalAlignment="Left" Margin="0,24,0,0" Click="SairConta_Click"/>
+                        </StackPanel>
+                    </Border>
+
+                </Grid>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+</UserControl>
