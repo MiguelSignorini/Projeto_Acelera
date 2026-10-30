@@ -85,28 +85,6 @@
             </Setter>
         </Style>
 
-        <!-- Foto do perfil no canto superior direito (abre o menu do usuário) -->
-        <Style x:Key="BotaoPerfilStyle" TargetType="Button">
-            <Setter Property="Width" Value="40"/>
-            <Setter Property="Height" Value="40"/>
-            <Setter Property="Margin" Value="10,0,0,0"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border x:Name="fundo" CornerRadius="20">
-                            <ContentPresenter/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="fundo" Property="Opacity" Value="0.8"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
         <!-- Botão quadrado com ícone -->
         <Style x:Key="BotaoIconeStyle" TargetType="Button">
             <Setter Property="Width" Value="40"/>
@@ -149,19 +127,19 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-    
+
             <!-- Bloco branco com o Logo reduzido -->
             <Border Height="160"
         Padding="10" 
         Margin="-10,-10,0,-15">
-    <Image Source="Resources/logo3.png" 
+                <Image Source="Resources/logo3.png" 
            MaxHeight="150" 
            MaxWidth="200"
            Stretch="Uniform" 
            HorizontalAlignment="Center"
            VerticalAlignment="Center"
            RenderOptions.BitmapScalingMode="HighQuality"/>
-</Border>
+            </Border>
 
             <!-- 2. Itens do menu -->
             <StackPanel Grid.Row="1">
@@ -239,18 +217,8 @@
                             </Grid>
                         </Border>
 
-                        <Button x:Name="btnUsuario" Style="{StaticResource BotaoPerfilStyle}"
-                                ToolTip="Configurações da conta"
-                                Click="BtnUsuario_Click">
-                            <Grid Width="40" Height="40">
-                                <Ellipse x:Name="elipsePerfil" Fill="#E4E8EE"
-                                         Stroke="#D3D9E2" StrokeThickness="1"/>
-                                <TextBlock x:Name="iconePerfil" Text="&#xE77B;"
-                                           FontFamily="Segoe MDL2 Assets" FontSize="18"
-                                           Foreground="#1F2933"
-                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Grid>
-                        </Button>
+                        <Button Content="&#xE77B;" Style="{StaticResource BotaoIconeStyle}"
+                                ToolTip="Usuário"/>
                     </StackPanel>
                 </Grid>
             </Border>
