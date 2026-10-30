@@ -16,7 +16,8 @@ namespace SaciGestao.Service
     //   1. Ao iniciar, cada service lê o seu arquivo da pasta "Json" e guarda tudo em memória.
     //   2. Enquanto o sistema está aberto, tudo fica SOMENTE em memória.
     //   3. Ao fechar (botão Sair ou fechando a janela), o App chama Salvar() de cada service
-    //      e os arquivos da pasta "Json" são reescritos.
+    //      e os JSON novos são gravados em "Json\Comparacao". Os arquivos da pasta "Json"
+    //      (entrada) ficam intactos, para comparar antes e depois.
     // ============================================================
     public static class Persistencia
     {
@@ -24,6 +25,10 @@ namespace SaciGestao.Service
 
         // Pasta onde ficam todos os arquivos .json (clientes.json, imoveis.json, ...)
         public static string PastaJson { get; } = Path.Combine(_raiz, "Json");
+
+        // Pasta onde o sistema grava os JSON novos ao fechar. Os arquivos de PastaJson são só de
+        // entrada (dados pré-prontos) e nunca são alterados; aqui ficam apenas os dados finais.
+        public static string PastaComparacao { get; } = Path.Combine(PastaJson, "Comparacao");
 
         // Pasta das fotos dos imóveis (o JSON guarda só o nome do arquivo de cada foto)
         public static string PastaFotos { get; } = Path.Combine(_raiz, "Fotos");
@@ -86,8 +91,8 @@ namespace SaciGestao.Service
         {
             try
             {
-                Directory.CreateDirectory(PastaJson);
-                string caminho = CaminhoArquivo(nomeArquivo);
+                Directory.CreateDirectory(PastaComparacao);
+                string caminho = Path.Combine(PastaComparacao, nomeArquivo);
                 string temporario = caminho + ".tmp";
 
                 File.WriteAllText(temporario, JsonSerializer.Serialize(itens.ToList(), _opcoes));

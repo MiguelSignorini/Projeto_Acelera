@@ -1,6 +1,7 @@
 <Window x:Class="SaciGestao.Views.ImovelFormWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:h="clr-namespace:SaciGestao.Helpers"
         Title="Imóvel" Width="480" SizeToContent="Height"
         WindowStartupLocation="CenterOwner" ResizeMode="NoResize"
         ShowInTaskbar="False" Background="#F1F3F6" FontFamily="Segoe UI">
@@ -66,7 +67,7 @@
         <TextBox x:Name="txtBairro"/>
 
         <TextBlock Text="Valor (R$)" Style="{StaticResource Rotulo}"/>
-        <TextBox x:Name="txtValor"/>
+        <TextBox h:Mascara.Tipo="Decimal" x:Name="txtValor"/>
 
         <Grid>
             <Grid.ColumnDefinitions>
@@ -76,11 +77,11 @@
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Column="0">
                 <TextBlock Text="Quartos" Style="{StaticResource Rotulo}"/>
-                <TextBox x:Name="txtQuartos"/>
+                <TextBox h:Mascara.Tipo="Inteiro" MaxLength="2" x:Name="txtQuartos"/>
             </StackPanel>
             <StackPanel Grid.Column="2">
                 <TextBlock Text="Vagas" Style="{StaticResource Rotulo}"/>
-                <TextBox x:Name="txtVagas"/>
+                <TextBox h:Mascara.Tipo="Inteiro" MaxLength="2" x:Name="txtVagas"/>
             </StackPanel>
         </Grid>
 

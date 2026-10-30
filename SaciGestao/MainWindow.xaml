@@ -217,8 +217,23 @@
                             </Grid>
                         </Border>
 
-                        <Button Content="&#xE77B;" Style="{StaticResource BotaoIconeStyle}"
-                                ToolTip="Usuário"/>
+                        <!-- Foto do usuário logado: clique abre as configurações do perfil -->
+                        <Button x:Name="btnPerfil" Click="Perfil_Click" Margin="14,0,0,0"
+                                Width="44" Height="44" Cursor="Hand" ToolTip="Meu perfil">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <ContentPresenter/>
+                                </ControlTemplate>
+                            </Button.Template>
+                            <Grid Width="44" Height="44">
+                                <Ellipse x:Name="fundoPerfil" Fill="#E4E8EE"
+                                         Stroke="{StaticResource Primaria}" StrokeThickness="2"/>
+                                <TextBlock x:Name="iconePerfil" Text="&#xE77B;" FontFamily="Segoe MDL2 Assets"
+                                           FontSize="20" Foreground="{StaticResource CorTexto}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <Ellipse x:Name="fotoPerfil" Margin="2"/>
+                            </Grid>
+                        </Button>
                     </StackPanel>
                 </Grid>
             </Border>

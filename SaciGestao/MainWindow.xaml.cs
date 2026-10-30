@@ -1,6 +1,11 @@
+using System;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using SaciGestao.Models;
+using SaciGestao.Service;
 using SaciGestao.Views;
 
 namespace SaciGestao
@@ -15,8 +20,8 @@ namespace SaciGestao
 
             _usuarioLogado = usuarioLogado;
 
-            // Mostra o nome de quem está logado na barra superior
-            runNomeUsuario.Text = _usuarioLogado.NomeCompleto;
+            // Mostra o nome e a foto de quem está logado na barra superior
+            AtualizarCabecalho();
 
             // Abre direto no Dashboard
             Loaded += (s, e) => rbDashboard.IsChecked = true;
@@ -74,6 +79,49 @@ namespace SaciGestao
             {
                 novo.Execute(null);
             }
+        }
+
+        // Nome e foto do usuário logado na barra superior
+        private void AtualizarCabecalho()
+        {
+            runNomeUsuario.Text = _usuarioLogado.NomeCompleto;
+
+            string? foto = _usuarioLogado.FotoCaminho;
+            fotoPerfil.Fill = null;
+            iconePerfil.Visibility = Visibility.Visible;
+
+            if (string.IsNullOrEmpty(foto) || !File.Exists(Persistencia.CaminhoDaFoto(foto))) return;
+
+            try
+            {
+                var imagem = new BitmapImage();
+                imagem.BeginInit();
+                imagem.CacheOption = BitmapCacheOption.OnLoad;
+                imagem.DecodePixelWidth = 120;
+                imagem.UriSource = new Uri(Persistencia.CaminhoDaFoto(foto));
+                imagem.EndInit();
+                imagem.Freeze();
+
+                fotoPerfil.Fill = new ImageBrush(imagem) { Stretch = Stretch.UniformToFill };
+                iconePerfil.Visibility = Visibility.Collapsed;
+            }
+            catch { }
+        }
+
+        // Abre as configurações do perfil (foto, nome, senha, recuperação, sair da conta)
+        private void Perfil_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (var rb in new[] { rbDashboard, rbImoveis, rbClientes, rbContratos, rbFinanceiro })
+                rb.IsChecked = false;
+
+            var configuracoes = new ConfiguracoesView(_usuarioLogado);
+            configuracoes.PerfilAlterado += AtualizarCabecalho;
+            configuracoes.SairContaSolicitado += () =>
+            {
+                new LoginWindow().Show();
+                Close();
+            };
+            AreaConteudo.Content = configuracoes;
         }
 
         // Sair fecha o programa

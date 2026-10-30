@@ -1,6 +1,7 @@
 <UserControl x:Class="SaciGestao.Views.ContratosView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:h="clr-namespace:SaciGestao.Helpers"
              xmlns:conv="clr-namespace:SaciGestao.Converters"
              xml:lang="pt-BR"
              FontFamily="Segoe UI">
@@ -792,16 +793,16 @@
                             </StackPanel>
                             <StackPanel Grid.Column="4">
                                 <TextBlock Text="Valor (R$)" Style="{StaticResource RotuloForm}"/>
-                                <TextBox Style="{StaticResource CampoForm}"
+                                <TextBox h:Mascara.Tipo="Decimal" Style="{StaticResource CampoForm}"
                                          Text="{Binding ContratoForm.ValorMensal, StringFormat=N2}"/>
                             </StackPanel>
                             <StackPanel Grid.Column="6">
                                 <TextBlock Text="Prazo (meses)" Style="{StaticResource RotuloForm}"/>
-                                <TextBox Style="{StaticResource CampoForm}" Text="{Binding ContratoForm.PrazoMeses}"/>
+                                <TextBox h:Mascara.Tipo="Inteiro" MaxLength="3" Style="{StaticResource CampoForm}" Text="{Binding ContratoForm.PrazoMeses}"/>
                             </StackPanel>
                             <StackPanel Grid.Column="8">
                                 <TextBlock Text="Dia de vencimento" Style="{StaticResource RotuloForm}"/>
-                                <TextBox Style="{StaticResource CampoForm}" Text="{Binding ContratoForm.DiaVencimento}"/>
+                                <TextBox h:Mascara.Tipo="Inteiro" MaxLength="2" Style="{StaticResource CampoForm}" Text="{Binding ContratoForm.DiaVencimento}"/>
                             </StackPanel>
                         </Grid>
 
@@ -839,11 +840,11 @@
 
                             <StackPanel Grid.Column="6">
                                 <TextBlock Text="Multa por atraso (%)" Style="{StaticResource RotuloForm}"/>
-                                <TextBox Style="{StaticResource CampoForm}" Text="{Binding ContratoForm.PercentualMultaAtraso}"/>
+                                <TextBox h:Mascara.Tipo="Decimal" Style="{StaticResource CampoForm}" Text="{Binding ContratoForm.PercentualMultaAtraso}"/>
                             </StackPanel>
                             <StackPanel Grid.Column="8">
                                 <TextBlock Text="Isenção de multa rescisória (meses)" Style="{StaticResource RotuloForm}"/>
-                                <TextBox Style="{StaticResource CampoForm}" Text="{Binding ContratoForm.MesesIsencaoMultaRescisao}"/>
+                                <TextBox h:Mascara.Tipo="Inteiro" MaxLength="3" Style="{StaticResource CampoForm}" Text="{Binding ContratoForm.MesesIsencaoMultaRescisao}"/>
                             </StackPanel>
                         </Grid>
                         <TextBlock Text="A data de término é calculada automaticamente (início + prazo)."

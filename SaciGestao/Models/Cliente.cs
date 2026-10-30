@@ -31,6 +31,9 @@ namespace SaciGestao.Models
         public string TelefoneSecundario { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
 
+        // Nome do arquivo da foto dentro da pasta Fotos (null = sem foto, a tela mostra as iniciais)
+        public string? FotoCaminho { get; set; }
+
         public TipoCliente Tipo { get; set; }
         public StatusCliente Status { get; set; } = StatusCliente.Ativo;
 
@@ -188,6 +191,7 @@ namespace SaciGestao.Service
             existente.Bairro = editado.Bairro;
             existente.Cep = editado.Cep;
             existente.Cidade = editado.Cidade;
+            existente.FotoCaminho = editado.FotoCaminho;
         }
 
         public void Excluir(int id)

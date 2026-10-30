@@ -1,6 +1,7 @@
 ﻿<UserControl x:Class="SaciGestao.Views.ImoveisView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:h="clr-namespace:SaciGestao.Helpers"
              xmlns:conv="clr-namespace:SaciGestao.Converters"
              xml:lang="pt-BR"
              FontFamily="Segoe UI">
@@ -890,7 +891,7 @@
 
                                 <StackPanel Grid.Column="2">
                                     <TextBlock Text="Número" Style="{StaticResource RotuloForm}"/>
-                                    <TextBox Style="{StaticResource CampoForm}"
+                                    <TextBox h:Mascara.Tipo="Inteiro" MaxLength="6" Style="{StaticResource CampoForm}"
                                          Text="{Binding NumeroForm, UpdateSourceTrigger=PropertyChanged}"/>
                                 </StackPanel>
 
@@ -928,13 +929,13 @@
 
                                 <StackPanel Grid.Column="4">
                                     <TextBlock Text="CEP" Style="{StaticResource RotuloForm}"/>
-                                    <TextBox Style="{StaticResource CampoForm}"
+                                    <TextBox h:Mascara.Tipo="Cep" Style="{StaticResource CampoForm}"
                                          Text="{Binding CepForm, UpdateSourceTrigger=PropertyChanged}"/>
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="6">
                                     <TextBlock Text="Valor (R$)" Style="{StaticResource RotuloForm}"/>
-                                    <TextBox Style="{StaticResource CampoForm}"
+                                    <TextBox h:Mascara.Tipo="Decimal" Style="{StaticResource CampoForm}"
                                          Text="{Binding ValorForm, UpdateSourceTrigger=PropertyChanged}"/>
                                 </StackPanel>
                             </Grid>
@@ -1016,27 +1017,27 @@
 
                                 <StackPanel Grid.Column="0">
                                     <TextBlock Text="Quartos" Style="{StaticResource RotuloForm}"/>
-                                    <TextBox Style="{StaticResource CampoForm}" Text="{Binding QuartosForm, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <TextBox h:Mascara.Tipo="Inteiro" MaxLength="2" Style="{StaticResource CampoForm}" Text="{Binding QuartosForm, UpdateSourceTrigger=PropertyChanged}"/>
                                 </StackPanel>
                                 <StackPanel Grid.Column="2">
                                     <TextBlock Text="Suítes" Style="{StaticResource RotuloForm}"/>
-                                    <TextBox Style="{StaticResource CampoForm}" Text="{Binding SuitesForm, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <TextBox h:Mascara.Tipo="Inteiro" MaxLength="2" Style="{StaticResource CampoForm}" Text="{Binding SuitesForm, UpdateSourceTrigger=PropertyChanged}"/>
                                 </StackPanel>
                                 <StackPanel Grid.Column="4">
                                     <TextBlock Text="Banheiros" Style="{StaticResource RotuloForm}"/>
-                                    <TextBox Style="{StaticResource CampoForm}" Text="{Binding BanheirosForm, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <TextBox h:Mascara.Tipo="Inteiro" MaxLength="2" Style="{StaticResource CampoForm}" Text="{Binding BanheirosForm, UpdateSourceTrigger=PropertyChanged}"/>
                                 </StackPanel>
                                 <StackPanel Grid.Column="6">
                                     <TextBlock Text="Cozinhas" Style="{StaticResource RotuloForm}"/>
-                                    <TextBox Style="{StaticResource CampoForm}" Text="{Binding CozinhasForm, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <TextBox h:Mascara.Tipo="Inteiro" MaxLength="2" Style="{StaticResource CampoForm}" Text="{Binding CozinhasForm, UpdateSourceTrigger=PropertyChanged}"/>
                                 </StackPanel>
                                 <StackPanel Grid.Column="8">
                                     <TextBlock Text="Salas" Style="{StaticResource RotuloForm}"/>
-                                    <TextBox Style="{StaticResource CampoForm}" Text="{Binding SalasForm, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <TextBox h:Mascara.Tipo="Inteiro" MaxLength="2" Style="{StaticResource CampoForm}" Text="{Binding SalasForm, UpdateSourceTrigger=PropertyChanged}"/>
                                 </StackPanel>
                                 <StackPanel Grid.Column="10">
                                     <TextBlock Text="Vagas" Style="{StaticResource RotuloForm}"/>
-                                    <TextBox Style="{StaticResource CampoForm}" Text="{Binding VagasForm, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <TextBox h:Mascara.Tipo="Inteiro" MaxLength="2" Style="{StaticResource CampoForm}" Text="{Binding VagasForm, UpdateSourceTrigger=PropertyChanged}"/>
                                 </StackPanel>
                             </Grid>
 

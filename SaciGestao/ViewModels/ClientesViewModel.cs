@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Windows.Input;
+using Microsoft.Win32;
 using SaciGestao.Models;
 using SaciGestao.Service;
 
@@ -71,6 +73,23 @@ namespace SaciGestao.ViewModels
             get => _statusForm;
             set => SetProperty(ref _statusForm, value);
         }
+
+        // Foto do cliente: nome de um arquivo já salvo em Fotos, ou o caminho completo de uma
+        // imagem recém-escolhida (só é copiada para a pasta Fotos quando o cliente é salvo)
+        private string? _fotoForm;
+        public string? FotoForm
+        {
+            get => _fotoForm;
+            set
+            {
+                if (SetProperty(ref _fotoForm, value))
+                    OnPropertyChanged(nameof(TemFotoForm));
+            }
+        }
+        public bool TemFotoForm => !string.IsNullOrEmpty(FotoForm);
+
+        public ICommand EscolherFotoCommand { get; }
+        public ICommand RemoverFotoCommand { get; }
 
         private string _nomeForm = string.Empty;
         public string NomeForm
@@ -268,6 +287,8 @@ namespace SaciGestao.ViewModels
             EditarDoDetalheCommand = new RelayCommand(_ => AbrirEditar(ClienteDetalhe));
             ExcluirDoDetalheCommand = new RelayCommand(_ => { ExcluirCliente(ClienteDetalhe); VoltarParaLista(); });
             ExcluirDoFormCommand = new RelayCommand(_ => { ExcluirPorId(_idEmEdicao); VoltarParaLista(); });
+            EscolherFotoCommand = new RelayCommand(_ => EscolherFoto());
+            RemoverFotoCommand = new RelayCommand(_ => FotoForm = null);
 
             FiltrarClientes();
         }
@@ -297,6 +318,7 @@ namespace SaciGestao.ViewModels
         {
             _idEmEdicao = c.Id;
             NomeForm = c.Nome;
+            FotoForm = c.FotoCaminho;
             CpfForm = c.Cpf;
             RgForm = c.Rg;
             OrgaoEmissorRgForm = c.OrgaoEmissorRg;
@@ -317,6 +339,20 @@ namespace SaciGestao.ViewModels
             StatusForm = c.Status;
             ErroForm = string.Empty;
         }
+
+        private void EscolherFoto()
+        {
+            var dialogo = new OpenFileDialog
+            {
+                Title = "Selecione a foto do cliente",
+                Filter = "Imagens|*.jpg;*.jpeg;*.png;*.bmp;*.webp"
+            };
+
+            if (dialogo.ShowDialog() == true)
+                FotoForm = dialogo.FileName;
+        }
+
+        private static string Digitos(string? texto) => new((texto ?? string.Empty).Where(char.IsDigit).ToArray());
 
         private static void ExcluirPorId(int id)
         {
@@ -392,9 +428,43 @@ namespace SaciGestao.ViewModels
                 return;
             }
 
+            // Documentos e contatos precisam estar completos (a tela já só deixa digitar números)
+            var invalidos = new List<string>();
+            if (Digitos(CpfForm).Length != 11) invalidos.Add("CPF (11 números)");
+            if (Digitos(RgForm).Length != 9) invalidos.Add("RG (9 números)");
+            if (Digitos(TelefonePrincipalForm).Length < 10) invalidos.Add("Telefone Principal (DDD + número)");
+            if (!string.IsNullOrWhiteSpace(TelefoneSecundarioForm) && Digitos(TelefoneSecundarioForm).Length < 10)
+                invalidos.Add("Telefone Secundário (DDD + número)");
+            if (Digitos(CepForm).Length != 8) invalidos.Add("CEP (8 números)");
+
+            if (invalidos.Count > 0)
+            {
+                ErroForm = "Confira os campos: " + string.Join(", ", invalidos) + ".";
+                return;
+            }
+
+            // Foto nova escolhida: copia para a pasta Fotos (o JSON guarda só o nome do arquivo)
+            string? foto = FotoForm;
+            if (!string.IsNullOrEmpty(foto) && Path.IsPathRooted(foto))
+            {
+                try
+                {
+                    Directory.CreateDirectory(Persistencia.PastaFotos);
+                    string nomeArquivo = Guid.NewGuid().ToString("N") + Path.GetExtension(foto);
+                    File.Copy(foto, Path.Combine(Persistencia.PastaFotos, nomeArquivo));
+                    foto = nomeArquivo;
+                }
+                catch (Exception ex)
+                {
+                    ErroForm = "Não foi possível salvar a foto: " + ex.Message;
+                    return;
+                }
+            }
+
             var cliente = new Cliente
             {
                 Id = _idEmEdicao,
+                FotoCaminho = foto,
                 Nome = NomeForm.Trim(),
                 Cpf = CpfForm.Trim(),
                 Rg = RgForm.Trim(),

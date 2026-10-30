@@ -12,26 +12,132 @@
             <Setter Property="BorderThickness" Value="1"/>
         </Style>
 
+        <!-- Círculo com ícone dos indicadores -->
+        <Style x:Key="IconeIndicador" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="RotuloIndicador" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{StaticResource TextoSuave}"/>
+        </Style>
+
+        <Style x:Key="ValorIndicador" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="24"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="0,4,0,0"/>
+        </Style>
+
         <Style x:Key="CabecalhoColuna" TargetType="DataGridColumnHeader">
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="DataGridColumnHeader">
-                        <Border Background="White" BorderBrush="{StaticResource Primaria}"
-                                BorderThickness="0,0,0,2" Padding="8,10">
+                        <Border Background="#F7F9FC" Padding="8,11">
+                            <ContentPresenter VerticalAlignment="Center"
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Foreground" Value="{StaticResource TextoSuave}"/>
+        </Style>
+
+        <Style x:Key="CabecalhoColunaDireita" TargetType="DataGridColumnHeader" BasedOn="{StaticResource CabecalhoColuna}">
+            <Setter Property="HorizontalContentAlignment" Value="Right"/>
+        </Style>
+
+        <Style x:Key="CelulaGrid" TargetType="DataGridCell">
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="DataGridCell">
+                        <Border Background="Transparent" BorderBrush="#EEF0F3" BorderThickness="0,0,0,1">
                             <ContentPresenter VerticalAlignment="Center"/>
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="FontSize" Value="14"/>
+        </Style>
+
+        <Style x:Key="LinhaGrid" TargetType="DataGridRow">
+            <Setter Property="Background" Value="White"/>
             <Setter Property="Foreground" Value="{StaticResource Texto}"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#F4F7FC"/>
+                </Trigger>
+            </Style.Triggers>
         </Style>
 
         <Style x:Key="TextoCelula" TargetType="TextBlock">
             <Setter Property="Margin" Value="8,0"/>
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+        </Style>
+
+        <Style x:Key="TextoValor" TargetType="TextBlock" BasedOn="{StaticResource TextoCelula}">
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="TextAlignment" Value="Right"/>
+            <Setter Property="Foreground" Value="{StaticResource Sucesso}"/>
+        </Style>
+
+        <!-- Etiquetas (pílulas) de Tipo e Status -->
+        <Style x:Key="Pilula" TargetType="Border">
+            <Setter Property="CornerRadius" Value="11"/>
+            <Setter Property="Padding" Value="10,3"/>
+            <Setter Property="Margin" Value="8,0"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="Background" Value="{StaticResource PrimariaClara}"/>
+        </Style>
+
+        <Style x:Key="PilulaTipo" TargetType="Border" BasedOn="{StaticResource Pilula}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Tipo}" Value="Entrada (Venda)">
+                    <Setter Property="Background" Value="{StaticResource AtencaoClara}"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="TextoPilulaTipo" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{StaticResource Primaria}"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Tipo}" Value="Entrada (Venda)">
+                    <Setter Property="Foreground" Value="{StaticResource Atencao}"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="PilulaStatus" TargetType="Border" BasedOn="{StaticResource Pilula}">
+            <Setter Property="Background" Value="{StaticResource SucessoClaro}"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Status}" Value="Encerrado">
+                    <Setter Property="Background" Value="#EDF0F4"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Status}" Value="Cancelado">
+                    <Setter Property="Background" Value="{StaticResource PerigoClaro}"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="TextoPilulaStatus" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{StaticResource Sucesso}"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Status}" Value="Encerrado">
+                    <Setter Property="Foreground" Value="{StaticResource TextoSuave}"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Status}" Value="Cancelado">
+                    <Setter Property="Foreground" Value="{StaticResource Perigo}"/>
+                </DataTrigger>
+            </Style.Triggers>
         </Style>
     </UserControl.Resources>
 
@@ -50,44 +156,136 @@
         </StackPanel>
 
         <!-- Cards de Indicadores -->
-        <UniformGrid Grid.Row="1" Columns="3" Margin="0,0,0,18">
-            <Border Style="{StaticResource Cartao}" Padding="20,16" Margin="0,0,12,0">
-                <StackPanel>
-                    <TextBlock Text="RECEITA TOTAL (CONTRATOS ATIVOS)" FontSize="12.5" FontWeight="SemiBold" Foreground="{StaticResource TextoSuave}"/>
-                    <TextBlock Text="{Binding ReceitaTotal, StringFormat=C2}" FontSize="26" FontWeight="Bold" Foreground="{StaticResource Primaria}" Margin="0,4,0,0"/>
-                </StackPanel>
+        <UniformGrid Grid.Row="1" Columns="4" Margin="0,0,0,18">
+
+            <!-- Receita total (destaque) -->
+            <Border Style="{StaticResource Cartao}" Background="{StaticResource Primaria}"
+                    BorderBrush="{StaticResource Primaria}" Padding="18,16" Margin="0,0,12,0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Width="44" Height="44" CornerRadius="22" Background="#33FFFFFF" VerticalAlignment="Center">
+                        <TextBlock Text="&#xE825;" Style="{StaticResource IconeIndicador}" Foreground="White"/>
+                    </Border>
+                    <StackPanel Grid.Column="1" Margin="14,0,0,0" VerticalAlignment="Center">
+                        <TextBlock Text="RECEITA TOTAL" Style="{StaticResource RotuloIndicador}" Foreground="#D6E4F8"/>
+                        <TextBlock Text="{Binding ReceitaTotal, StringFormat=C2}" Style="{StaticResource ValorIndicador}"
+                                   Foreground="White"/>
+                    </StackPanel>
+                </Grid>
             </Border>
-            <Border Style="{StaticResource Cartao}" Padding="20,16" Margin="0,0,12,0">
-                <StackPanel>
-                    <TextBlock Text="TOTAL DE ENTRADAS" FontSize="12.5" FontWeight="SemiBold" Foreground="{StaticResource TextoSuave}"/>
-                    <TextBlock Text="{Binding TotalEntradas, StringFormat=C2}" FontSize="26" FontWeight="Bold" Foreground="#2E9E5B" Margin="0,4,0,0"/>
-                </StackPanel>
+
+            <!-- Locação -->
+            <Border Style="{StaticResource Cartao}" Padding="18,16" Margin="0,0,12,0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Width="44" Height="44" CornerRadius="22" Background="{StaticResource PrimariaClara}" VerticalAlignment="Center">
+                        <TextBlock Text="&#xE80F;" Style="{StaticResource IconeIndicador}" Foreground="{StaticResource Primaria}"/>
+                    </Border>
+                    <StackPanel Grid.Column="1" Margin="14,0,0,0" VerticalAlignment="Center">
+                        <TextBlock Text="LOCAÇÃO" Style="{StaticResource RotuloIndicador}"/>
+                        <TextBlock Text="{Binding TotalLocacao, StringFormat=C2}" Style="{StaticResource ValorIndicador}"
+                                   Foreground="{StaticResource Texto}"/>
+                    </StackPanel>
+                </Grid>
             </Border>
-            <Border Style="{StaticResource Cartao}" Padding="20,16">
-                <StackPanel>
-                    <TextBlock Text="TOTAL DE SAÍDAS" FontSize="12.5" FontWeight="SemiBold" Foreground="{StaticResource TextoSuave}"/>
-                    <TextBlock Text="{Binding TotalSaidas, StringFormat=C2}" FontSize="26" FontWeight="Bold" Foreground="{StaticResource TextoSuave}" Margin="0,4,0,0"/>
-                </StackPanel>
+
+            <!-- Venda -->
+            <Border Style="{StaticResource Cartao}" Padding="18,16" Margin="0,0,12,0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Width="44" Height="44" CornerRadius="22" Background="{StaticResource AtencaoClara}" VerticalAlignment="Center">
+                        <TextBlock Text="&#xE8A5;" Style="{StaticResource IconeIndicador}" Foreground="{StaticResource Atencao}"/>
+                    </Border>
+                    <StackPanel Grid.Column="1" Margin="14,0,0,0" VerticalAlignment="Center">
+                        <TextBlock Text="VENDA" Style="{StaticResource RotuloIndicador}"/>
+                        <TextBlock Text="{Binding TotalVenda, StringFormat=C2}" Style="{StaticResource ValorIndicador}"
+                                   Foreground="{StaticResource Texto}"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Saídas -->
+            <Border Style="{StaticResource Cartao}" Padding="18,16">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Width="44" Height="44" CornerRadius="22" Background="{StaticResource PerigoClaro}" VerticalAlignment="Center">
+                        <TextBlock Text="&#xE74B;" Style="{StaticResource IconeIndicador}" Foreground="{StaticResource Perigo}"/>
+                    </Border>
+                    <StackPanel Grid.Column="1" Margin="14,0,0,0" VerticalAlignment="Center">
+                        <TextBlock Text="SAÍDAS" Style="{StaticResource RotuloIndicador}"/>
+                        <TextBlock Text="{Binding TotalSaidas, StringFormat=C2}" Style="{StaticResource ValorIndicador}"
+                                   Foreground="{StaticResource Texto}"/>
+                    </StackPanel>
+                </Grid>
             </Border>
         </UniformGrid>
 
         <!-- Tabela de Movimentações -->
-        <Border Grid.Row="2" Style="{StaticResource Cartao}" Padding="20,8">
-            <DataGrid ItemsSource="{Binding Movimentacoes}"
-                      AutoGenerateColumns="False" IsReadOnly="True"
-                      CanUserAddRows="False" CanUserDeleteRows="False"
-                      HeadersVisibility="Column" GridLinesVisibility="None"
-                      RowHeight="52" Background="Transparent" BorderThickness="0"
-                      ColumnHeaderStyle="{StaticResource CabecalhoColuna}">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Data" Binding="{Binding DataTexto}" Width="110" ElementStyle="{StaticResource TextoCelula}"/>
-                    <DataGridTextColumn Header="Descrição" Binding="{Binding Descricao}" Width="2*" ElementStyle="{StaticResource TextoCelula}"/>
-                    <DataGridTextColumn Header="Categoria" Binding="{Binding Categoria}" Width="120" ElementStyle="{StaticResource TextoCelula}"/>
-                    <DataGridTextColumn Header="Tipo" Binding="{Binding Tipo}" Width="150" ElementStyle="{StaticResource TextoCelula}"/>
-                    <DataGridTextColumn Header="Valor" Binding="{Binding ValorTexto}" Width="130" ElementStyle="{StaticResource TextoCelula}"/>
-                    <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="120" ElementStyle="{StaticResource TextoCelula}"/>
-                </DataGrid.Columns>
-            </DataGrid>
+        <Border Grid.Row="2" Style="{StaticResource Cartao}" Padding="0" ClipToBounds="True">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Grid Margin="22,16,22,12">
+                    <TextBlock Text="Movimentações" FontSize="17" FontWeight="Bold" Foreground="{StaticResource Texto}"/>
+                    <TextBlock HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="13"
+                               Foreground="{StaticResource TextoSuave}"
+                               Text="{Binding QuantidadeMovimentacoes, StringFormat='{}{0} registro(s)'}"/>
+                </Grid>
+
+                <DataGrid Grid.Row="1" ItemsSource="{Binding Movimentacoes}"
+                          AutoGenerateColumns="False" IsReadOnly="True"
+                          CanUserAddRows="False" CanUserDeleteRows="False"
+                          CanUserResizeColumns="False" CanUserReorderColumns="False" CanUserSortColumns="False"
+                          HeadersVisibility="Column" GridLinesVisibility="None"
+                          RowHeaderWidth="0" RowHeight="54"
+                          SelectionMode="Single" SelectionUnit="FullRow"
+                          Background="Transparent" BorderThickness="0"
+                          ColumnHeaderStyle="{StaticResource CabecalhoColuna}"
+                          CellStyle="{StaticResource CelulaGrid}"
+                          RowStyle="{StaticResource LinhaGrid}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="DATA" Binding="{Binding DataTexto}" Width="110" ElementStyle="{StaticResource TextoCelula}"/>
+                        <DataGridTextColumn Header="DESCRIÇÃO" Binding="{Binding Descricao}" Width="2*" ElementStyle="{StaticResource TextoCelula}"/>
+                        <DataGridTextColumn Header="CATEGORIA" Binding="{Binding Categoria}" Width="110" ElementStyle="{StaticResource TextoCelula}"/>
+                        <DataGridTemplateColumn Header="TIPO" Width="150">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Border Style="{StaticResource PilulaTipo}">
+                                        <TextBlock Text="{Binding Tipo}" Style="{StaticResource TextoPilulaTipo}"/>
+                                    </Border>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="VALOR" Binding="{Binding ValorTexto}" Width="140"
+                                            HeaderStyle="{StaticResource CabecalhoColunaDireita}"
+                                            ElementStyle="{StaticResource TextoValor}"/>
+                        <DataGridTemplateColumn Header="STATUS" Width="120">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Border Style="{StaticResource PilulaStatus}">
+                                        <TextBlock Text="{Binding Status}" Style="{StaticResource TextoPilulaStatus}"/>
+                                    </Border>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
         </Border>
     </Grid>
 </UserControl>

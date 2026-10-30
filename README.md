@@ -55,7 +55,7 @@ O salvamento segue sempre este fluxo:
 
 1. **Ao iniciar**, o sistema lê os arquivos da pasta `Json/` e carrega tudo na memória.
 2. **Enquanto está aberto**, tudo fica **somente na memória** (nada é gravado a cada alteração).
-3. **Ao fechar** (botão *Sair*, botão X da janela ou desligamento do Windows), o sistema grava as informações novas nos arquivos JSON.
+3. **Ao fechar** (botão *Sair*, botão X da janela ou desligamento do Windows), o sistema grava os dados finais em JSON novos na pasta `Json/Comparacao/`. Os arquivos de `Json/` (entrada) **nunca são alterados**, então dá para comparar o antes (`Json/`) com o depois (`Json/Comparacao/`).
 
 Se o sistema for encerrado de forma abrupta (queda de energia, processo finalizado pelo gerenciador de tarefas), as alterações feitas naquela sessão **não são salvas**.
 
@@ -67,11 +67,12 @@ Se o sistema for encerrado de forma abrupta (queda de energia, processo finaliza
 | `SaciGestao/Json/clientes.json` | Clientes |
 | `SaciGestao/Json/contratos.json` | Contratos |
 | `SaciGestao/Json/usuarios.json` | Usuários do sistema |
+| `SaciGestao/Json/Comparacao/*.json` | Mesmos arquivos, com os dados no momento em que o sistema foi fechado |
 | `SaciGestao/Fotos/` | Fotos dos imóveis (as imagens escolhidas são copiadas para cá) |
 
-- Se um arquivo não existir (primeira execução), o sistema cria os dados de exemplo e o grava ao fechar.
+- Se um arquivo não existir (primeira execução), o sistema cria os dados de exemplo e o grava em `Json/Comparacao/` ao fechar.
 - Se um arquivo estiver corrompido, uma cópia dele é guardada como `*.json.corrompido` e o sistema recomeça com os dados de exemplo.
-- Para **restaurar os dados de exemplo**, feche o sistema e apague os arquivos da pasta `Json/`.
+- Para **restaurar os dados de exemplo**, feche o sistema e apague os arquivos da pasta `Json/`. Para recomeçar uma apresentação, basta apagar `Json/Comparacao/`.
 
 ---
 

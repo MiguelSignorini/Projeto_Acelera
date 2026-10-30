@@ -35,6 +35,22 @@ namespace SaciGestao.ViewModels
             set => SetProperty(ref _totalSaidas, value);
         }
 
+        private decimal _totalLocacao;
+        public decimal TotalLocacao
+        {
+            get => _totalLocacao;
+            set => SetProperty(ref _totalLocacao, value);
+        }
+
+        private decimal _totalVenda;
+        public decimal TotalVenda
+        {
+            get => _totalVenda;
+            set => SetProperty(ref _totalVenda, value);
+        }
+
+        public int QuantidadeMovimentacoes => Movimentacoes.Count;
+
         public FinanceiroViewModel()
         {
             CarregarDadosFinanceiros();
@@ -52,6 +68,10 @@ namespace SaciGestao.ViewModels
                 Movimentacoes.Add(mov);
                 receitaCalculada += mov.Valor;
             }
+
+            TotalLocacao = listaMovimentacoes.Where(m => m.Tipo.Contains("Locação")).Sum(m => m.Valor);
+            TotalVenda = listaMovimentacoes.Where(m => m.Tipo.Contains("Venda")).Sum(m => m.Valor);
+            OnPropertyChanged(nameof(QuantidadeMovimentacoes));
 
             ReceitaTotal = receitaCalculada;
             TotalEntradas = receitaCalculada;
