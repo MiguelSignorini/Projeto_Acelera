@@ -24,6 +24,8 @@ namespace SaciGestao.Service
             return _imoveis.Where(i => i.Ativo).ToList();
         }
 
+        public Imovel? ObterPorId(int id) => _imoveis.FirstOrDefault(i => i.Id == id);
+
         public void Adicionar(Imovel imovel)
         {
             AdicionarSemSalvar(imovel);
@@ -48,6 +50,7 @@ namespace SaciGestao.Service
             existente.Finalidade = editado.Finalidade;
             existente.Status = editado.Status;
             existente.Valor = editado.Valor;
+            existente.PercentualEmpresa = editado.PercentualEmpresa;
             existente.Quartos = editado.Quartos;
             existente.Suites = editado.Suites;
             existente.Banheiros = editado.Banheiros;
@@ -85,10 +88,19 @@ namespace SaciGestao.Service
             {
                 _imoveis.AddRange(lista);
                 _proximoId = _imoveis.Max(i => i.Id) + 1;
+                AplicarPercentualPadrao();
                 return;
             }
 
             CarregarExemplos();
+            AplicarPercentualPadrao();
+        }
+
+        // Imóveis cadastrados antes do campo existir (ou exemplos) vêm com 0%: sugere o padrão de mercado
+        private void AplicarPercentualPadrao()
+        {
+            foreach (var i in _imoveis.Where(i => i.PercentualEmpresa == 0))
+                i.PercentualEmpresa = i.Finalidade == FinalidadeImovel.Venda ? 6m : 10m;
         }
 
         // Chamado pelo App quando o sistema é encerrado

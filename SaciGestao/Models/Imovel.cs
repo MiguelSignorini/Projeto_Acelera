@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
@@ -29,6 +30,9 @@ namespace SaciGestao.Models
         public FinalidadeImovel Finalidade { get; set; }
         public StatusImovel Status { get; set; } = StatusImovel.Disponível;
         public decimal Valor { get; set; }
+
+        // % que a empresa ganha: comissão sobre o valor da venda ou taxa de administração sobre o aluguel mensal
+        public decimal PercentualEmpresa { get; set; }
 
         // ---------- Cômodos Específicos ----------
         public int Quartos { get; set; }
@@ -86,6 +90,13 @@ namespace SaciGestao.Models
 
         // Usado pelas listas de seleção (ComboBox) para mostrar o nome
         public override string ToString() => Titulo;
+
+        [JsonIgnore] public decimal GanhoEmpresa => Math.Round(Valor * PercentualEmpresa / 100m, 2);
+        [JsonIgnore] public string PercentualEmpresaTexto => PercentualEmpresa.ToString("0.##", new System.Globalization.CultureInfo("pt-BR")) + "%";
+        [JsonIgnore] public string GanhoEmpresaTexto => GanhoEmpresa.ToString("C2", new System.Globalization.CultureInfo("pt-BR"))
+            + (Finalidade == FinalidadeImovel.Aluguel ? " /mês" : "");
+        [JsonIgnore] public string RotuloPercentual => Finalidade == FinalidadeImovel.Venda
+            ? "Comissão da empresa (venda)" : "Taxa da empresa (aluguel)";
 
         public Imovel Clonar()
         {

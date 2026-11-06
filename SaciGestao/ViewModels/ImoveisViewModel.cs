@@ -173,7 +173,30 @@ namespace SaciGestao.ViewModels
         public string CepForm { get => _cepForm; set => SetProperty(ref _cepForm, value); }
 
         private string _valorForm = string.Empty;
-        public string ValorForm { get => _valorForm; set => SetProperty(ref _valorForm, value); }
+        public string ValorForm { get => _valorForm; set { if (SetProperty(ref _valorForm, value)) OnPropertyChanged(nameof(GanhoEstimadoForm)); } }
+
+        // % da empresa: comissão (venda) ou taxa de administração (aluguel)
+        private string _percentualForm = string.Empty;
+        public string PercentualForm { get => _percentualForm; set { if (SetProperty(ref _percentualForm, value)) OnPropertyChanged(nameof(GanhoEstimadoForm)); } }
+
+        public const decimal PercentualPadraoVenda = 6m;
+        public const decimal PercentualPadraoAluguel = 10m;
+
+        public string RotuloPercentualForm => FinalidadeForm == FinalidadeImovel.Venda
+            ? "% da empresa (comissão da venda)" : "% da empresa (taxa do aluguel)";
+
+        // Quanto a empresa ganha com o valor e o percentual digitados
+        public string GanhoEstimadoForm
+        {
+            get
+            {
+                if (!decimal.TryParse(ValorForm, NumberStyles.Number, PtBr, out decimal valor) ||
+                    !decimal.TryParse(PercentualForm, NumberStyles.Number, PtBr, out decimal pct))
+                    return "—";
+                string texto = Math.Round(valor * pct / 100m, 2).ToString("C2", PtBr);
+                return FinalidadeForm == FinalidadeImovel.Aluguel ? texto + " /mês" : texto;
+            }
+        }
 
         private string _quartosForm = "0";
         public string QuartosForm { get => _quartosForm; set => SetProperty(ref _quartosForm, value); }
@@ -229,7 +252,25 @@ namespace SaciGestao.ViewModels
         public TipoImovel TipoForm { get => _tipoForm; set => SetProperty(ref _tipoForm, value); }
 
         private FinalidadeImovel _finalidadeForm;
-        public FinalidadeImovel FinalidadeForm { get => _finalidadeForm; set => SetProperty(ref _finalidadeForm, value); }
+        public FinalidadeImovel FinalidadeForm
+        {
+            get => _finalidadeForm;
+            set
+            {
+                var anterior = _finalidadeForm;
+                if (!SetProperty(ref _finalidadeForm, value)) return;
+
+                // Trocar venda <-> aluguel sugere o percentual típico, se o campo está vazio ou ainda no padrão do outro
+                decimal padraoAnterior = anterior == FinalidadeImovel.Venda ? PercentualPadraoVenda : PercentualPadraoAluguel;
+                decimal padraoNovo = value == FinalidadeImovel.Venda ? PercentualPadraoVenda : PercentualPadraoAluguel;
+                if (string.IsNullOrWhiteSpace(_percentualForm) ||
+                    (decimal.TryParse(_percentualForm, NumberStyles.Number, PtBr, out decimal atual) && atual == padraoAnterior))
+                    PercentualForm = padraoNovo.ToString("0.##", PtBr);
+
+                OnPropertyChanged(nameof(RotuloPercentualForm));
+                OnPropertyChanged(nameof(GanhoEstimadoForm));
+            }
+        }
 
         private StatusImovel _statusForm;
         public StatusImovel StatusForm { get => _statusForm; set => SetProperty(ref _statusForm, value); }
@@ -427,6 +468,7 @@ namespace SaciGestao.ViewModels
             EstadoForm = string.Empty;
             CepForm = string.Empty;
             ValorForm = string.Empty;
+            PercentualForm = PercentualPadraoVenda.ToString("0.##", PtBr);
             QuartosForm = "0";
             SuitesForm = "0";
             BanheirosForm = "0";
@@ -469,6 +511,8 @@ namespace SaciGestao.ViewModels
             EstadoForm = imovel.Estado;
             CepForm = imovel.Cep;
             ValorForm = imovel.Valor > 0 ? imovel.Valor.ToString("N2", PtBr) : string.Empty;
+            _finalidadeForm = imovel.Finalidade; // evita sugerir o padrão por cima do percentual gravado
+            PercentualForm = imovel.PercentualEmpresa.ToString("0.##", PtBr);
             QuartosForm = imovel.Quartos.ToString();
             SuitesForm = imovel.Suites.ToString();
             BanheirosForm = imovel.Banheiros.ToString();
@@ -515,6 +559,13 @@ namespace SaciGestao.ViewModels
                 return;
             }
 
+            if (!decimal.TryParse(PercentualForm, NumberStyles.Number, PtBr, out decimal percentual) ||
+                percentual < 0 || percentual > 100)
+            {
+                ErroForm = "Informe o percentual da empresa entre 0 e 100. Exemplo: 6,5";
+                return;
+            }
+
             if (!int.TryParse(QuartosForm, out int quartos) || quartos < 0 ||
                 !int.TryParse(SuitesForm, out int suites) || suites < 0 ||
                 !int.TryParse(BanheirosForm, out int banheiros) || banheiros < 0 ||
@@ -550,6 +601,7 @@ namespace SaciGestao.ViewModels
                 Finalidade = FinalidadeForm,
                 Status = StatusForm,
                 Valor = valor,
+                PercentualEmpresa = percentual,
                 Quartos = quartos,
                 Suites = suites,
                 Banheiros = banheiros,

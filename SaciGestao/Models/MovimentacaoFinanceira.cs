@@ -1,18 +1,71 @@
 using System;
+using System.Globalization;
 
 namespace SaciGestao.Models
 {
+    // Uma linha da tabela do Financeiro: ou um pagamento já registrado (Pago) ou uma parcela esperada (Pendente).
+    // Não é gravada em arquivo; é montada pelo FinanceiroService a partir dos contratos e dos pagamentos.
     public class MovimentacaoFinanceira
     {
-        public int Id { get; set; }
-        public DateTime Data { get; set; } = DateTime.Today;
-        public string Descricao { get; set; } = string.Empty;
-        public string Categoria { get; set; } = string.Empty;
-        public string Tipo { get; set; } = string.Empty; // Entrada (Locação), Entrada (Venda), Saída
-        public decimal Valor { get; set; }
-        public string Status { get; set; } = "Confirmado";
+        private static readonly CultureInfo PtBr = new CultureInfo("pt-BR");
 
+        public int PagamentoId { get; set; }          // 0 = ainda pendente (nada registrado)
+        public int ContratoId { get; set; }
+        public string ContratoCodigo { get; set; } = string.Empty;
+        public string Inquilino { get; set; } = string.Empty;
+        public string Descricao { get; set; } = string.Empty;
+        public bool EhLocacao { get; set; }
+
+        public DateTime Competencia { get; set; }
+        public DateTime Vencimento { get; set; }
+        public DateTime? DataPagamento { get; set; }
+
+        public bool Pago { get; set; }
+        public bool CaiuNaConta { get; set; }
+
+        public decimal ValorPrevisto { get; set; }
+        public decimal ValorRecebido { get; set; }
+        public decimal Percentual { get; set; }
+
+        // ---------- Cálculos ----------
+        // Data usada nos filtros e na ordenação: dia do pagamento, se já foi pago; senão o vencimento
+        public DateTime Data => Pago && DataPagamento.HasValue ? DataPagamento.Value.Date : Vencimento.Date;
+
+        // Valor que vale na linha: o recebido (se pago) ou o previsto (se pendente)
+        public decimal Valor => Pago ? ValorRecebido : ValorPrevisto;
+
+        public decimal ValorEmpresa => Math.Round(Valor * Percentual / 100m, 2);
+        public decimal ValorRepasse => Valor - ValorEmpresa;
+
+        // Entra nos totais "na conta": venda paga, ou locação paga com o check "caiu na conta"
+        public bool NaConta => Pago && (!EhLocacao || CaiuNaConta);
+        public bool AguardandoConta => Pago && EhLocacao && !CaiuNaConta;
+        public bool Atrasado => !Pago && Vencimento.Date < DateTime.Today;
+
+        // ---------- Textos para a tela ----------
+        public string TipoTexto => EhLocacao ? "Locação" : "Venda";
         public string DataTexto => Data.ToString("dd/MM/yyyy");
-        public string ValorTexto => Valor.ToString("C2", new System.Globalization.CultureInfo("pt-BR"));
+        public string ValorTexto => Valor.ToString("C2", PtBr);
+        public string EmpresaTexto => ValorEmpresa.ToString("C2", PtBr);
+        public string PercentualTexto => Percentual.ToString("0.##", PtBr) + "%";
+
+        public string PagamentoTexto => Pago ? "Pago" : (Atrasado ? "Pendente • atrasado" : "Pendente");
+        public string PagamentoDetalhe => Pago
+            ? "Recebido em " + (DataPagamento ?? Vencimento).ToString("dd/MM/yyyy")
+            : "Vence em " + Vencimento.ToString("dd/MM/yyyy");
+
+        public string ReferenciaTexto => EhLocacao
+            ? "Ref. " + Competencia.ToString("MM/yyyy")
+            : "Venda";
+
+        // Texto usado na lista de parcelas do diálogo "Registrar pagamento"
+        public string ParcelaTexto => (EhLocacao ? Competencia.ToString("MM/yyyy") : "Valor da venda")
+            + " • " + ValorPrevisto.ToString("C2", PtBr) + " • vence " + Vencimento.ToString("dd/MM/yyyy")
+            + (Atrasado ? " (atrasado)" : "");
+
+        // Visibilidade de controles na linha
+        public bool MostrarRegistrar => !Pago;
+        public bool MostrarDesfazer => Pago;
+        public bool MostrarCheckNaConta => Pago && EhLocacao;
     }
 }

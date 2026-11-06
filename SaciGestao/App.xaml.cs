@@ -1,3 +1,4 @@
+using System;
 using System.Windows;
 using SaciGestao.Service;
 
@@ -8,6 +9,14 @@ namespace SaciGestao
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+
+            // Erro inesperado: grava o detalhe em um arquivo e avisa, em vez de fechar o sistema sem explicação
+            DispatcherUnhandledException += (s, ev) =>
+            {
+                try { System.IO.File.AppendAllText(System.IO.Path.Combine(System.IO.Path.GetTempPath(), "SaciGestao_erro.log"), DateTime.Now + "\n" + ev.Exception + "\n\n"); } catch { }
+                MessageBox.Show("Ocorreu um erro inesperado:\n\n" + ev.Exception.Message, "SaciGestao", MessageBoxButton.OK, MessageBoxImage.Error);
+                ev.Handled = true;
+            };
 
             // Os services leem os arquivos da pasta Json na primeira vez que são usados.
             // Daqui em diante tudo fica só em memória até o sistema ser fechado.
@@ -37,6 +46,7 @@ namespace SaciGestao
         private static void SalvarTudo()
         {
             ImovelService.Instancia.Salvar();
+            FinanceiroService.Instancia.Salvar();
             ClienteService.Instancia.Salvar();
             ContratoService.Instancia.Salvar();
             UsuarioService.Instancia.Salvar();

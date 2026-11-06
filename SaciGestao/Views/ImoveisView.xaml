@@ -927,6 +927,29 @@
                                 </StackPanel>
                             </Grid>
 
+                            <!-- Ganho da empresa: o % varia conforme a finalidade (venda = comissão, aluguel = taxa de administração) -->
+                            <Grid h:Adaptavel.LarguraMinima="200">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="14"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="{Binding RotuloPercentualForm}" Style="{StaticResource RotuloForm}"/>
+                                    <TextBox h:Mascara.Tipo="Decimal" Style="{StaticResource CampoForm}" MaxLength="6"
+                                         Text="{Binding PercentualForm, UpdateSourceTrigger=PropertyChanged}"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="Ganho estimado da empresa" Style="{StaticResource RotuloForm}"/>
+                                    <Border Height="38" CornerRadius="4" Background="#EEF4FF" BorderBrush="{StaticResource Borda}" BorderThickness="1">
+                                        <TextBlock Text="{Binding GanhoEstimadoForm}" FontSize="14" FontWeight="SemiBold"
+                                                   Foreground="{StaticResource Primaria}" VerticalAlignment="Center" Margin="10,0"/>
+                                    </Border>
+                                </StackPanel>
+                            </Grid>
+
                             <!-- Fotos -->
                             <TextBlock Text="FOTOS" FontSize="12" FontWeight="Bold"
                                    Foreground="{StaticResource Primaria}" Margin="0,20,0,0"/>
@@ -1439,6 +1462,16 @@
                                                 </TextBlock.Style>
                                             </TextBlock>
                                         </StackPanel>
+
+                                        <Border Background="#EEF4FF" CornerRadius="8" Padding="12,8" Margin="0,12,0,0">
+                                            <StackPanel>
+                                                <TextBlock Style="{StaticResource RotuloDetalhe}">
+                                                    <Run Text="{Binding RotuloPercentual, Mode=OneWay}"/><Run Text=" • "/><Run Text="{Binding PercentualEmpresaTexto, Mode=OneWay}"/>
+                                                </TextBlock>
+                                                <TextBlock Text="{Binding GanhoEmpresaTexto}" FontSize="16" FontWeight="Bold"
+                                                           Foreground="{StaticResource Primaria}"/>
+                                            </StackPanel>
+                                        </Border>
 
                                         <WrapPanel Margin="0,14,0,0">
                                             <Border Style="{StaticResource ChipImovel}">
