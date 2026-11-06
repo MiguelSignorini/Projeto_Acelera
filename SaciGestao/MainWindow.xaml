@@ -1,13 +1,17 @@
 ﻿<Window x:Class="SaciGestao.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:h="clr-namespace:SaciGestao.Helpers"
+        xmlns:v="clr-namespace:SaciGestao.Views"
         Title="SaciGestao - Sacilotti Imóveis"
-        Width="1280" Height="780" MinWidth="1000" MinHeight="600"
+        Width="1280" Height="780" MinWidth="360" MinHeight="520"
         WindowStartupLocation="CenterScreen"
         xml:lang="pt-BR"
         FontFamily="Segoe UI">
 
     <Window.Resources>
+
+        <h:CompactoParaAlinhamentoConverter x:Key="CompactoParaAlinhamento"/>
 
         <!-- Cores do mockup -->
         <SolidColorBrush x:Key="CorMenuHover" Color="#2C3742"/>
@@ -17,7 +21,7 @@
         <SolidColorBrush x:Key="CorFundo" Color="#F1F3F6"/>
         <SolidColorBrush x:Key="CorTexto" Color="#1F2933"/>
 
-        <!-- Item do menu lateral -->
+        <!-- Item do menu lateral (no modo compacto mostra só o ícone) -->
         <Style x:Key="MenuItemStyle" TargetType="RadioButton">
             <Setter Property="GroupName" Value="Menu"/>
             <Setter Property="Foreground" Value="{StaticResource CorTextoMenu}"/>
@@ -29,16 +33,21 @@
                     <ControlTemplate TargetType="RadioButton">
                         <Border x:Name="fundo" CornerRadius="6"
                                 Background="Transparent" Padding="14,0">
-                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center"
+                                        HorizontalAlignment="{Binding (h:Responsivo.Compacto), RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource CompactoParaAlinhamento}}">
                                 <TextBlock Text="{TemplateBinding Tag}"
                                            FontFamily="Segoe MDL2 Assets" FontSize="18"
                                            Width="28" VerticalAlignment="Center"/>
-                                <TextBlock Text="{TemplateBinding Content}"
+                                <TextBlock x:Name="texto" Text="{TemplateBinding Content}"
                                            FontSize="15" Margin="8,0,0,0"
                                            VerticalAlignment="Center"/>
                             </StackPanel>
                         </Border>
                         <ControlTemplate.Triggers>
+                            <Trigger Property="h:Responsivo.Compacto" Value="True">
+                                <Setter TargetName="texto" Property="Visibility" Value="Collapsed"/>
+                                <Setter TargetName="fundo" Property="Padding" Value="0"/>
+                            </Trigger>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="fundo" Property="Background"
                                         Value="{StaticResource CorMenuHover}"/>
@@ -54,26 +63,31 @@
             </Setter>
         </Style>
 
-        <!-- Botão Sair no rodapé do menu lateral -->
-        <Style x:Key="MenuSairStyle" TargetType="Button">
+        <!-- Botões de ação no rodapé do menu lateral (Salvar / Sair): ícone na Tag, texto no Content -->
+        <Style x:Key="MenuAcaoStyle" TargetType="Button">
             <Setter Property="Foreground" Value="{StaticResource CorTextoMenu}"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Height" Value="46"/>
-            <Setter Property="Margin" Value="10,3,10,16"/>
+            <Setter Property="Margin" Value="10,3"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border x:Name="fundo" CornerRadius="6"
                                 Background="Transparent" Padding="14,0">
-                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBlock Text="&#xE7E8;"
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center"
+                                        HorizontalAlignment="{Binding (h:Responsivo.Compacto), RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource CompactoParaAlinhamento}}">
+                                <TextBlock Text="{TemplateBinding Tag}"
                                            FontFamily="Segoe MDL2 Assets" FontSize="18"
                                            Width="28" VerticalAlignment="Center"/>
-                                <TextBlock Text="Sair" FontSize="15" Margin="8,0,0,0"
-                                           VerticalAlignment="Center"/>
+                                <TextBlock x:Name="texto" Text="{TemplateBinding Content}"
+                                           FontSize="15" Margin="8,0,0,0" VerticalAlignment="Center"/>
                             </StackPanel>
                         </Border>
                         <ControlTemplate.Triggers>
+                            <Trigger Property="h:Responsivo.Compacto" Value="True">
+                                <Setter TargetName="texto" Property="Visibility" Value="Collapsed"/>
+                                <Setter TargetName="fundo" Property="Padding" Value="0"/>
+                            </Trigger>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="fundo" Property="Background"
                                         Value="{StaticResource CorMenuHover}"/>
@@ -114,132 +128,157 @@
     </Window.Resources>
 
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="240"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
 
-        <!-- ================= MENU LATERAL ================= -->
-        <Grid Grid.Column="0" Background="{StaticResource CorMenu}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
+        <!-- ================= SISTEMA (aparece depois do login) ================= -->
+        <Grid x:Name="shell" Visibility="Collapsed">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition x:Name="colMenu" Width="240"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
+            <!-- ================= MENU LATERAL ================= -->
+            <Grid x:Name="menuLateral" Grid.Column="0" Background="{StaticResource CorMenu}"
+                  Panel.ZIndex="20">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-            <!-- Bloco branco com o Logo reduzido -->
-            <Border Height="160"
-        Padding="10" 
-        Margin="-10,-10,0,-15">
-                <Image Source="Resources/logo3.png" 
-           MaxHeight="150" 
-           MaxWidth="200"
-           Stretch="Uniform" 
-           HorizontalAlignment="Center"
-           VerticalAlignment="Center"
-           RenderOptions.BitmapScalingMode="HighQuality"/>
-            </Border>
+                <!-- Bloco branco com o Logo reduzido -->
+                <Border x:Name="blocoLogo" Height="160" Padding="10" Margin="-10,-10,0,-15">
+                    <Image Source="Resources/logo3.png"
+                           MaxHeight="150" MaxWidth="200"
+                           Stretch="Uniform"
+                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                           RenderOptions.BitmapScalingMode="HighQuality"/>
+                </Border>
 
-            <!-- 2. Itens do menu -->
-            <StackPanel Grid.Row="1">
-                <RadioButton x:Name="rbDashboard" Content="Dashboard" Tag="&#xF0E2;"
-                             Style="{StaticResource MenuItemStyle}" Checked="Menu_Checked"/>
-                <RadioButton x:Name="rbImoveis" Content="Imóveis" Tag="&#xE80F;"
-                             Style="{StaticResource MenuItemStyle}" Checked="Menu_Checked"/>
-                <RadioButton x:Name="rbClientes" Content="Clientes" Tag="&#xE716;"
-                             Style="{StaticResource MenuItemStyle}" Checked="Menu_Checked"/>
-                <RadioButton x:Name="rbContratos" Content="Contratos" Tag="&#xE8A5;"
-                             Style="{StaticResource MenuItemStyle}" Checked="Menu_Checked"/>
-                <RadioButton x:Name="rbFinanceiro" Content="Financeiro" Tag="&#xE825;"
-                             Style="{StaticResource MenuItemStyle}" Checked="Menu_Checked"/>
-            </StackPanel>
-
-            <!-- 3. Botão Sair fixo no rodapé -->
-            <Button Grid.Row="2" Style="{StaticResource MenuSairStyle}"
-                    Click="Sair_Click"/>
-        </Grid>
-
-        <!-- ================= ÁREA DIREITA ================= -->
-        <Grid Grid.Column="1" Background="{StaticResource CorFundo}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="72"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-
-            <!-- Barra superior -->
-            <Border Grid.Row="0" Background="White"
-                    BorderBrush="#E1E5EA" BorderThickness="0,0,0,1">
-                <Grid Margin="28,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-
-                    <TextBlock Grid.Column="0" FontSize="20" VerticalAlignment="Center"
-                               Foreground="{StaticResource CorTexto}">
-                        <Run Text="Bem-vindo,"/>
-                        <Run x:Name="runNomeUsuario" Text="Administrador" FontWeight="Bold"/>
-                    </TextBlock>
-
-                    <StackPanel Grid.Column="1" Orientation="Horizontal"
-                                VerticalAlignment="Center">
-
-                        <!-- Campo de busca com placeholder -->
-                        <Border Width="270" Height="40" CornerRadius="6" Background="#E9ECF0">
-                            <Grid Margin="12,0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Text="&#xE721;" FontFamily="Segoe MDL2 Assets"
-                                           FontSize="16" Foreground="#5B6570"
-                                           VerticalAlignment="Center"/>
-                                <Grid Grid.Column="1" Margin="10,0,0,0">
-                                    <TextBox x:Name="txtBusca" BorderThickness="0"
-                                             Background="Transparent" FontSize="14"
-                                             VerticalContentAlignment="Center"/>
-                                    <TextBlock Text="Buscar..." Foreground="#5F6B7A" FontSize="14"
-                                               IsHitTestVisible="False" VerticalAlignment="Center"
-                                               Margin="2,0,0,0">
-                                        <TextBlock.Style>
-                                            <Style TargetType="TextBlock">
-                                                <Setter Property="Visibility" Value="Collapsed"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Text, ElementName=txtBusca}" Value="">
-                                                        <Setter Property="Visibility" Value="Visible"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </TextBlock.Style>
-                                    </TextBlock>
-                                </Grid>
-                            </Grid>
-                        </Border>
-
-                        <!-- Foto do usuário logado: clique abre as configurações do perfil -->
-                        <Button x:Name="btnPerfil" Click="Perfil_Click" Margin="14,0,0,0"
-                                Width="44" Height="44" Cursor="Hand" ToolTip="Meu perfil">
-                            <Button.Template>
-                                <ControlTemplate TargetType="Button">
-                                    <ContentPresenter/>
-                                </ControlTemplate>
-                            </Button.Template>
-                            <Grid Width="44" Height="44">
-                                <Ellipse x:Name="fundoPerfil" Fill="#E4E8EE"
-                                         Stroke="{StaticResource Primaria}" StrokeThickness="2"/>
-                                <TextBlock x:Name="iconePerfil" Text="&#xE77B;" FontFamily="Segoe MDL2 Assets"
-                                           FontSize="20" Foreground="{StaticResource CorTexto}"
-                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                <Ellipse x:Name="fotoPerfil" Margin="2"/>
-                            </Grid>
-                        </Button>
+                <!-- Itens do menu -->
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto"
+                              HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel>
+                        <RadioButton x:Name="rbDashboard" Content="Dashboard" Tag="&#xF0E2;" ToolTip="Dashboard"
+                                     Style="{StaticResource MenuItemStyle}" Checked="Menu_Checked"/>
+                        <RadioButton x:Name="rbImoveis" Content="Imóveis" Tag="&#xE80F;" ToolTip="Imóveis"
+                                     Style="{StaticResource MenuItemStyle}" Checked="Menu_Checked"/>
+                        <RadioButton x:Name="rbClientes" Content="Clientes" Tag="&#xE716;" ToolTip="Clientes"
+                                     Style="{StaticResource MenuItemStyle}" Checked="Menu_Checked"/>
+                        <RadioButton x:Name="rbContratos" Content="Contratos" Tag="&#xE8A5;" ToolTip="Contratos"
+                                     Style="{StaticResource MenuItemStyle}" Checked="Menu_Checked"/>
+                        <RadioButton x:Name="rbFinanceiro" Content="Financeiro" Tag="&#xE825;" ToolTip="Financeiro"
+                                     Style="{StaticResource MenuItemStyle}" Checked="Menu_Checked"/>
                     </StackPanel>
-                </Grid>
-            </Border>
+                </ScrollViewer>
 
-            <!-- Conteúdo da tela -->
-            <ContentControl x:Name="AreaConteudo" Grid.Row="1" Margin="24"/>
+                <!-- Salvar (grava nos JSON principais e fecha o sistema) e Sair, fixos no rodapé -->
+                <StackPanel Grid.Row="2" Margin="0,0,0,16">
+                    <Button Content="Salvar" Tag="&#xE74E;" ToolTip="Salvar nos JSON principais e fechar"
+                            Style="{StaticResource MenuAcaoStyle}" Click="Salvar_Click"/>
+                    <Button Content="Sair" Tag="&#xE7E8;" ToolTip="Sair"
+                            Style="{StaticResource MenuAcaoStyle}" Click="Sair_Click"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- ================= ÁREA DIREITA ================= -->
+            <Grid Grid.Column="1" Background="{StaticResource CorFundo}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="72"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Barra superior -->
+                <Border Grid.Row="0" Background="White"
+                        BorderBrush="#E1E5EA" BorderThickness="0,0,0,1">
+                    <Grid x:Name="barraTopo" Margin="28,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Hambúrguer: só aparece em telas estreitas, abre o menu lateral -->
+                        <Button x:Name="btnMenu" Grid.Column="0" Content="&#xE700;" Visibility="Collapsed"
+                                Style="{StaticResource BotaoIconeStyle}" Margin="0,0,12,0"
+                                Click="AbrirMenu_Click"/>
+
+                        <TextBlock x:Name="txtBemVindo" Grid.Column="1" FontSize="20" VerticalAlignment="Center"
+                                   TextTrimming="CharacterEllipsis"
+                                   Foreground="{StaticResource CorTexto}">
+                            <Run Text="Bem-vindo,"/>
+                            <Run x:Name="runNomeUsuario" Text="Administrador" FontWeight="Bold"/>
+                        </TextBlock>
+
+                        <StackPanel Grid.Column="2" Orientation="Horizontal"
+                                    VerticalAlignment="Center">
+
+                            <!-- Campo de busca com placeholder -->
+                            <Border x:Name="caixaBusca" Width="270" Height="40" CornerRadius="6" Background="#E9ECF0">
+                                <Grid Margin="12,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="&#xE721;" FontFamily="Segoe MDL2 Assets"
+                                               FontSize="16" Foreground="#5B6570"
+                                               VerticalAlignment="Center"/>
+                                    <Grid Grid.Column="1" Margin="10,0,0,0">
+                                        <TextBox x:Name="txtBusca" BorderThickness="0"
+                                                 Background="Transparent" FontSize="14"
+                                                 VerticalContentAlignment="Center"/>
+                                        <TextBlock Text="Buscar..." Foreground="#5F6B7A" FontSize="14"
+                                                   IsHitTestVisible="False" VerticalAlignment="Center"
+                                                   Margin="2,0,0,0">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Text, ElementName=txtBusca}" Value="">
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </Grid>
+                                </Grid>
+                            </Border>
+
+                            <!-- Foto do usuário logado: clique abre as configurações do perfil -->
+                            <Button x:Name="btnPerfil" Click="Perfil_Click" Margin="14,0,0,0"
+                                    Width="44" Height="44" Cursor="Hand" ToolTip="Meu perfil">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <ContentPresenter/>
+                                    </ControlTemplate>
+                                </Button.Template>
+                                <Grid Width="44" Height="44">
+                                    <Ellipse x:Name="fundoPerfil" Fill="#E4E8EE"
+                                             Stroke="{StaticResource Primaria}" StrokeThickness="2"/>
+                                    <TextBlock x:Name="iconePerfil" Text="&#xE77B;" FontFamily="Segoe MDL2 Assets"
+                                               FontSize="20" Foreground="{StaticResource CorTexto}"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    <Ellipse x:Name="fotoPerfil" Margin="2"/>
+                                </Grid>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- Conteúdo da tela: ocupa exatamente a largura disponível; cada tela se reorganiza sozinha -->
+                <Grid x:Name="rolagemConteudo" Grid.Row="1" Margin="24">
+                    <ContentControl x:Name="AreaConteudo" HorizontalContentAlignment="Stretch"
+                                    VerticalContentAlignment="Stretch"/>
+                </Grid>
+            </Grid>
+
+            <!-- Fundo escurecido atrás do menu em modo celular -->
+            <Border x:Name="cortina" Grid.ColumnSpan="2" Background="#99000000" Visibility="Collapsed"
+                    Panel.ZIndex="10" MouseDown="Cortina_MouseDown"/>
         </Grid>
+
+        <!-- ================= LOGIN (mesma janela) ================= -->
+        <v:LoginView x:Name="loginView" Panel.ZIndex="50"/>
+
     </Grid>
 </Window>

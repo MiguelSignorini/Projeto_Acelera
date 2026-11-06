@@ -1,6 +1,7 @@
 <UserControl x:Class="SaciGestao.Views.FinanceiroView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:h="clr-namespace:SaciGestao.Helpers"
              xml:lang="pt-BR"
              FontFamily="Segoe UI">
 
@@ -156,7 +157,7 @@
         </StackPanel>
 
         <!-- Cards de Indicadores -->
-        <UniformGrid Grid.Row="1" Columns="4" Margin="0,0,0,18">
+        <h:PainelAdaptavel Grid.Row="1" LarguraMinima="220" EspacamentoVertical="12" Margin="0,0,0,18">
 
             <!-- Receita total (destaque) -->
             <Border Style="{StaticResource Cartao}" Background="{StaticResource Primaria}"
@@ -230,7 +231,7 @@
                     </StackPanel>
                 </Grid>
             </Border>
-        </UniformGrid>
+        </h:PainelAdaptavel>
 
         <!-- Tabela de Movimentações -->
         <Border Grid.Row="2" Style="{StaticResource Cartao}" Padding="0" ClipToBounds="True">
@@ -247,7 +248,7 @@
                                Text="{Binding QuantidadeMovimentacoes, StringFormat='{}{0} registro(s)'}"/>
                 </Grid>
 
-                <DataGrid Grid.Row="1" ItemsSource="{Binding Movimentacoes}"
+                <DataGrid h:Adaptavel.Tabela="True" Grid.Row="1" ItemsSource="{Binding Movimentacoes}"
                           AutoGenerateColumns="False" IsReadOnly="True"
                           CanUserAddRows="False" CanUserDeleteRows="False"
                           CanUserResizeColumns="False" CanUserReorderColumns="False" CanUserSortColumns="False"
@@ -261,7 +262,7 @@
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="DATA" Binding="{Binding DataTexto}" Width="110" ElementStyle="{StaticResource TextoCelula}"/>
                         <DataGridTextColumn Header="DESCRIÇÃO" Binding="{Binding Descricao}" Width="2*" ElementStyle="{StaticResource TextoCelula}"/>
-                        <DataGridTextColumn Header="CATEGORIA" Binding="{Binding Categoria}" Width="110" ElementStyle="{StaticResource TextoCelula}"/>
+                        <DataGridTextColumn Header="CATEGORIA" h:Adaptavel.OcultarAbaixo="760" Binding="{Binding Categoria}" Width="110" ElementStyle="{StaticResource TextoCelula}"/>
                         <DataGridTemplateColumn Header="TIPO" Width="150">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>

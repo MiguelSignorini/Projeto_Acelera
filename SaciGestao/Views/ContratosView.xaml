@@ -511,7 +511,10 @@
         </Style>
     </UserControl.Resources>
 
-    <Grid Margin="10">
+    <!-- Em janelas baixas a página rola (a tabela mantém uma altura mínima) em vez de espremer a lista -->
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+    <Grid Margin="10" MinHeight="620"
+          Height="{Binding ViewportHeight, RelativeSource={RelativeSource AncestorType=ScrollViewer}}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -519,7 +522,7 @@
         </Grid.RowDefinitions>
 
         <!-- ============ TÍTULO ============ -->
-        <Grid Grid.Row="0">
+        <Grid Grid.Row="0" h:Adaptavel.LarguraMinima="640">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
@@ -558,23 +561,23 @@
         <StackPanel Grid.Row="1" Margin="0,18,0,0"
                     Visibility="{Binding MostrandoLista, Converter={StaticResource BoolParaVisibilidade}}">
 
-            <UniformGrid Columns="4">
+            <h:PainelAdaptavel LarguraMinima="220" EspacamentoVertical="16">
                 <Border Style="{StaticResource CartaoIndicador}">
                     <StackPanel>
                         <TextBlock Text="CONTRATOS ATIVOS" Style="{StaticResource RotuloDetalhe}"/>
-                        <TextBlock Text="{Binding TotalAtivos}" Style="{StaticResource NumeroIndicador}"/>
+                        <Viewbox Stretch="Uniform" StretchDirection="DownOnly" HorizontalAlignment="Left"><TextBlock Text="{Binding TotalAtivos}" Style="{StaticResource NumeroIndicador}"/></Viewbox>
                     </StackPanel>
                 </Border>
                 <Border Style="{StaticResource CartaoIndicador}">
                     <StackPanel>
                         <TextBlock Text="LOCAÇÕES" Style="{StaticResource RotuloDetalhe}"/>
-                        <TextBlock Text="{Binding TotalLocacao}" Style="{StaticResource NumeroIndicador}"/>
+                        <Viewbox Stretch="Uniform" StretchDirection="DownOnly" HorizontalAlignment="Left"><TextBlock Text="{Binding TotalLocacao}" Style="{StaticResource NumeroIndicador}"/></Viewbox>
                     </StackPanel>
                 </Border>
                 <Border Style="{StaticResource CartaoIndicador}">
                     <StackPanel>
                         <TextBlock Text="VENDAS" Style="{StaticResource RotuloDetalhe}"/>
-                        <TextBlock Text="{Binding TotalVenda}" Style="{StaticResource NumeroIndicador}"/>
+                        <Viewbox Stretch="Uniform" StretchDirection="DownOnly" HorizontalAlignment="Left"><TextBlock Text="{Binding TotalVenda}" Style="{StaticResource NumeroIndicador}"/></Viewbox>
                     </StackPanel>
                 </Border>
                 <Border Style="{StaticResource CartaoIndicador}" Margin="0">
@@ -584,10 +587,10 @@
                                    Foreground="{StaticResource Primaria}"/>
                     </StackPanel>
                 </Border>
-            </UniformGrid>
+            </h:PainelAdaptavel>
 
             <Border Style="{StaticResource Cartao}" Margin="0,16,0,0" Padding="20,14">
-                <Grid>
+                <Grid h:Adaptavel.LarguraMinima="640">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="24"/>
@@ -643,7 +646,7 @@
             <Border Style="{StaticResource Cartao}" Padding="20,8"
                     Visibility="{Binding MostrandoLista, Converter={StaticResource BoolParaVisibilidade}}">
                 <Grid>
-                    <DataGrid ItemsSource="{Binding Contratos}"
+                    <DataGrid h:Adaptavel.Tabela="True" ItemsSource="{Binding Contratos}"
                               AutoGenerateColumns="False" IsReadOnly="True"
                               CanUserAddRows="False" CanUserDeleteRows="False"
                               CanUserResizeColumns="False" CanUserReorderColumns="False" CanUserSortColumns="False"
@@ -671,7 +674,7 @@
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
 
-                            <DataGridTextColumn Header="Inquilino / Comprador" Binding="{Binding LocatarioNome}" Width="1.3*" MinWidth="150"
+                            <DataGridTextColumn Header="Inquilino / Comprador" h:Adaptavel.OcultarAbaixo="780" Binding="{Binding LocatarioNome}" Width="1.3*" MinWidth="150"
                                                 ElementStyle="{StaticResource TextoCelula}"/>
 
                             <DataGridTextColumn Header="Tipo" Binding="{Binding TipoTexto}" Width="90"
@@ -680,7 +683,7 @@
                             <DataGridTextColumn Header="Valor" Binding="{Binding ValorTexto}" Width="140"
                                                 ElementStyle="{StaticResource TextoCelula}"/>
 
-                            <DataGridTextColumn Header="Período" Binding="{Binding PeriodoTexto}" Width="1.1*" MinWidth="170"
+                            <DataGridTextColumn Header="Período" h:Adaptavel.OcultarAbaixo="1000" Binding="{Binding PeriodoTexto}" Width="1.1*" MinWidth="170"
                                                 ElementStyle="{StaticResource TextoCelula}"/>
 
                             <DataGridTemplateColumn Header="Status" Width="120">
@@ -738,7 +741,7 @@
 
                         <TextBlock Text="VINCULAÇÃO" Style="{StaticResource TituloSecaoForm}" Margin="0"/>
                         <Border BorderBrush="#E6E9EE" BorderThickness="0,1,0,0" Margin="0,4,0,12"/>
-                        <Grid>
+                        <Grid h:Adaptavel.LarguraMinima="200">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="16"/>
@@ -768,7 +771,7 @@
 
                         <TextBlock Text="CONDIÇÕES FINANCEIRAS" Style="{StaticResource TituloSecaoForm}"/>
                         <Border BorderBrush="#E6E9EE" BorderThickness="0,1,0,0" Margin="0,4,0,12"/>
-                        <Grid>
+                        <Grid h:Adaptavel.LarguraMinima="150">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="16"/>
@@ -808,7 +811,7 @@
 
                         <TextBlock Text="DATAS E REAJUSTE" Style="{StaticResource TituloSecaoForm}"/>
                         <Border BorderBrush="#E6E9EE" BorderThickness="0,1,0,0" Margin="0,4,0,12"/>
-                        <Grid>
+                        <Grid h:Adaptavel.LarguraMinima="150">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="16"/>
@@ -852,7 +855,7 @@
 
                         <TextBlock Text="CONCESSIONÁRIAS" Style="{StaticResource TituloSecaoForm}"/>
                         <Border BorderBrush="#E6E9EE" BorderThickness="0,1,0,0" Margin="0,4,0,12"/>
-                        <Grid>
+                        <Grid h:Adaptavel.LarguraMinima="300">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="16"/>
@@ -914,7 +917,7 @@
                     <Border Grid.Row="0" DataContext="{Binding ContratoDetalhe}"
                             Background="#F7F8FA" CornerRadius="12,12,0,0"
                             BorderBrush="#E6E9EE" BorderThickness="0,0,0,1" Padding="28,20">
-                        <Grid>
+                        <Grid h:Adaptavel.LarguraMinima="640">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
@@ -955,7 +958,7 @@
                                     <TextBlock Text="PARTES" Style="{StaticResource TituloSecaoDetalhe}"/>
                                 </StackPanel>
                                 <Border Style="{StaticResource CaixaDetalhe}">
-                                    <Grid>
+                                    <Grid h:Adaptavel.LarguraMinima="300">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="16"/>
@@ -984,7 +987,7 @@
                                     <TextBlock Text="PRAZOS" Style="{StaticResource TituloSecaoDetalhe}"/>
                                 </StackPanel>
                                 <Border Style="{StaticResource CaixaDetalhe}">
-                                    <UniformGrid Columns="4">
+                                    <h:PainelAdaptavel LarguraMinima="140">
                                         <StackPanel>
                                             <TextBlock Text="Início" Style="{StaticResource RotuloDetalhe}"/>
                                             <TextBlock Text="{Binding DataInicio, StringFormat=dd/MM/yyyy}" Style="{StaticResource ValorDetalhe}"/>
@@ -1003,7 +1006,7 @@
                                                 <Run Text="dia "/><Run Text="{Binding DiaVencimento, Mode=OneWay}"/><Run Text=" • "/><Run Text="{Binding PrazoMeses, Mode=OneWay}"/><Run Text=" meses"/>
                                             </TextBlock>
                                         </StackPanel>
-                                    </UniformGrid>
+                                    </h:PainelAdaptavel>
                                 </Border>
                             </StackPanel>
 
@@ -1018,7 +1021,7 @@
                                     <TextBlock Text="CONDIÇÕES" Style="{StaticResource TituloSecaoDetalhe}"/>
                                 </StackPanel>
                                 <Border Style="{StaticResource CaixaDetalhe}">
-                                    <UniformGrid Columns="3">
+                                    <h:PainelAdaptavel LarguraMinima="170">
                                         <StackPanel>
                                             <TextBlock Text="Índice de reajuste" Style="{StaticResource RotuloDetalhe}"/>
                                             <TextBlock Text="{Binding IndiceReajuste}" Style="{StaticResource ValorDetalhe}"/>
@@ -1031,7 +1034,7 @@
                                             <TextBlock Text="Isenção de multa rescisória" Style="{StaticResource RotuloDetalhe}"/>
                                             <TextBlock Text="{Binding MesesIsencaoMultaRescisao, StringFormat='{}{0} meses'}" Style="{StaticResource ValorDetalhe}"/>
                                         </StackPanel>
-                                    </UniformGrid>
+                                    </h:PainelAdaptavel>
                                 </Border>
                             </StackPanel>
 
@@ -1047,7 +1050,7 @@
                                 </StackPanel>
                                 <Border Style="{StaticResource CaixaDetalhe}">
                                     <StackPanel>
-                                        <Grid>
+                                        <Grid h:Adaptavel.LarguraMinima="300">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="16"/>
@@ -1097,4 +1100,5 @@
             </Border>
         </Grid>
     </Grid>
+    </ScrollViewer>
 </UserControl>

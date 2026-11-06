@@ -75,7 +75,19 @@ namespace SaciGestao.Views
             elipseFoto.Fill = new SolidColorBrush(Color.FromRgb(0xE4, 0xE8, 0xEE));
         }
 
-        private void SalvarPerfil_Click(object sender, RoutedEventArgs e)
+        private void SalvarPerfil_Click(object sender, RoutedEventArgs e) => AplicarPerfil();
+
+        // Usada também pelo botão "Salvar" do menu: se há troca/remoção de foto ou nome ainda não aplicados,
+        // aplica antes de gravar. Devolve false se o perfil é inválido (aí o salvamento é cancelado).
+        public bool AplicarPendencias()
+        {
+            bool pendente = _removerFoto || _novaFotoOrigem != null ||
+                            txtNome.Text.Trim() != _usuario.NomeCompleto ||
+                            txtUsuario.Text.Trim() != _usuario.NomeUsuario;
+            return !pendente || AplicarPerfil();
+        }
+
+        private bool AplicarPerfil()
         {
             string nome = txtNome.Text.Trim();
             string nomeUsuario = txtUsuario.Text.Trim();
@@ -83,7 +95,7 @@ namespace SaciGestao.Views
             if (string.IsNullOrWhiteSpace(nome) || string.IsNullOrWhiteSpace(nomeUsuario))
             {
                 Mostrar(txtMsgPerfil, "Preencha o nome completo e o nome de usuário.", false);
-                return;
+                return false;
             }
 
             // Não deixa dois usuários com o mesmo nome de login (ignorando maiúsculas)
@@ -91,7 +103,7 @@ namespace SaciGestao.Views
             if (outro != null && outro != _usuario)
             {
                 Mostrar(txtMsgPerfil, "Esse nome de usuário já está em uso.", false);
-                return;
+                return false;
             }
 
             try
@@ -112,7 +124,7 @@ namespace SaciGestao.Views
             catch (Exception ex)
             {
                 Mostrar(txtMsgPerfil, "Não foi possível salvar a foto: " + ex.Message, false);
-                return;
+                return false;
             }
 
             _usuario.NomeCompleto = nome;
@@ -122,6 +134,7 @@ namespace SaciGestao.Views
 
             PerfilAlterado?.Invoke();
             Mostrar(txtMsgPerfil, "Perfil salvo.", true);
+            return true;
         }
 
         // ============================================================

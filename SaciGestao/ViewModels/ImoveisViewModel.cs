@@ -668,14 +668,7 @@ namespace SaciGestao.ViewModels
         {
             // "Todas" é o valor padrão mostrado no combo, não um texto de busca
             string texto = _buscaBairroFiltro == TodasBairros ? string.Empty : _buscaBairroFiltro;
-            string busca = SemAcento(texto ?? string.Empty).Trim();
-
-            BairrosFiltroFiltrados.Clear();
-            foreach (var bairro in Bairros)
-            {
-                if (busca.Length == 0 || SemAcento(bairro).StartsWith(busca, StringComparison.OrdinalIgnoreCase))
-                    BairrosFiltroFiltrados.Add(bairro);
-            }
+            Sincronizar(BairrosFiltroFiltrados, Bairros, texto);
         }
 
         private void Filtrar()
@@ -720,13 +713,32 @@ namespace SaciGestao.ViewModels
         // Ignora acentos e maiúsculas: "embau" encontra "Embaú".
         private void AtualizarBairrosFiltrados()
         {
-            string busca = SemAcento(_bairroForm ?? string.Empty).Trim();
+            Sincronizar(BairrosFiltrados, BairrosCadastro, _bairroForm);
+        }
 
-            BairrosFiltrados.Clear();
-            foreach (var bairro in BairrosCadastro)
+        // Atualiza a lista de sugestões SEM esvaziá-la: apagar tudo e recriar derrubava o item que a pessoa
+        // acabara de escolher no ComboBox (o campo Bairro ficava vazio). Aqui só entram/saem os itens que mudaram.
+        // Se o texto já é exatamente um bairro (acabou de ser escolhido), mostra a lista inteira.
+        private static void Sincronizar(ObservableCollection<string> destino, IEnumerable<string> origem, string? texto)
+        {
+            string busca = SemAcento(texto ?? string.Empty).Trim();
+            var todos = origem.ToList();
+
+            bool exato = todos.Any(b => string.Equals(SemAcento(b), busca, StringComparison.OrdinalIgnoreCase));
+            var desejados = todos
+                .Where(b => busca.Length == 0 || exato ||
+                            SemAcento(b).StartsWith(busca, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            for (int i = destino.Count - 1; i >= 0; i--)
+                if (!desejados.Contains(destino[i])) destino.RemoveAt(i);
+
+            for (int i = 0; i < desejados.Count; i++)
             {
-                if (busca.Length == 0 || SemAcento(bairro).StartsWith(busca, StringComparison.OrdinalIgnoreCase))
-                    BairrosFiltrados.Add(bairro);
+                if (i < destino.Count && destino[i] == desejados[i]) continue;
+                int atual = destino.IndexOf(desejados[i]);
+                if (atual >= 0) destino.Move(atual, i);
+                else destino.Insert(i, desejados[i]);
             }
         }
 

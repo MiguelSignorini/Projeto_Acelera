@@ -1,6 +1,7 @@
 <UserControl x:Class="SaciGestao.Views.ConfiguracoesView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:h="clr-namespace:SaciGestao.Helpers"
              xml:lang="pt-BR"
              FontFamily="Segoe UI">
 
@@ -113,7 +114,7 @@
                        FontSize="14" Foreground="{StaticResource TextoSuave}" Margin="0,4,0,0"/>
         </StackPanel>
 
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="1" h:Adaptavel.LarguraMinima="330">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="240"/>
                 <ColumnDefinition Width="*"/>

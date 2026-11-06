@@ -18,6 +18,7 @@ namespace SaciGestao.Service
     //   3. Ao fechar (botão Sair ou fechando a janela), o App chama Salvar() de cada service
     //      e os JSON novos são gravados em "Json\Comparacao". Os arquivos da pasta "Json"
     //      (entrada) ficam intactos, para comparar antes e depois.
+    //   4. O botão "Salvar" do menu faz o mesmo, mas grava direto nos JSON principais da pasta "Json".
     // ============================================================
     public static class Persistencia
     {
@@ -29,6 +30,9 @@ namespace SaciGestao.Service
         // Pasta onde o sistema grava os JSON novos ao fechar. Os arquivos de PastaJson são só de
         // entrada (dados pré-prontos) e nunca são alterados; aqui ficam apenas os dados finais.
         public static string PastaComparacao { get; } = Path.Combine(PastaJson, "Comparacao");
+
+        // true = o botão "Salvar" foi usado: grava nos JSON principais (pasta Json) em vez de Json\Comparacao
+        public static bool SalvarNoPrincipal { get; set; }
 
         // Pasta das fotos dos imóveis (o JSON guarda só o nome do arquivo de cada foto)
         public static string PastaFotos { get; } = Path.Combine(_raiz, "Fotos");
@@ -91,8 +95,9 @@ namespace SaciGestao.Service
         {
             try
             {
-                Directory.CreateDirectory(PastaComparacao);
-                string caminho = Path.Combine(PastaComparacao, nomeArquivo);
+                string destino = SalvarNoPrincipal ? PastaJson : PastaComparacao;
+                Directory.CreateDirectory(destino);
+                string caminho = Path.Combine(destino, nomeArquivo);
                 string temporario = caminho + ".tmp";
 
                 File.WriteAllText(temporario, JsonSerializer.Serialize(itens.ToList(), _opcoes));

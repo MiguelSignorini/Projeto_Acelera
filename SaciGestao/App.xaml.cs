@@ -1,6 +1,5 @@
 using System.Windows;
 using SaciGestao.Service;
-using SaciGestao.Views;
 
 namespace SaciGestao
 {
@@ -17,9 +16,8 @@ namespace SaciGestao
             ContratoService.Instancia.ToString();
             UsuarioService.Instancia.ToString();
 
-            // O sistema sempre começa pela tela de login
-            var login = new LoginWindow();
-            login.Show();
+            // Janela única: começa na tela de login e, ao entrar, mostra o sistema na mesma janela
+            new MainWindow().Show();
         }
 
         // Roda ao fechar o sistema por qualquer caminho (botão Sair, X da janela...)

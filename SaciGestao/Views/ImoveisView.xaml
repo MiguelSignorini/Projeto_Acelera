@@ -96,6 +96,8 @@
         <!-- ComboBox pesquisável: a pessoa digita e a lista filtra pelo começo do nome (usado no Bairro do formulário) -->
         <Style x:Key="ComboBuscaBairro" TargetType="ComboBox" BasedOn="{StaticResource ComboArredondado}">
             <Setter Property="IsEditable" Value="True"/>
+            <Setter Property="IsTextSearchEnabled" Value="False"/>
+            <Setter Property="StaysOpenOnEdit" Value="True"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ComboBox">
@@ -495,7 +497,7 @@
         </Grid.RowDefinitions>
 
         <!-- TÍTULO -->
-        <Grid Grid.Row="0">
+        <Grid Grid.Row="0" h:Adaptavel.LarguraMinima="640">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
@@ -536,19 +538,9 @@
         <!-- FILTROS: só na lista -->
         <Border Grid.Row="1" Style="{StaticResource Cartao}" Margin="0,18,0,0" Padding="20,16"
                 Visibility="{Binding MostrandoLista, Converter={StaticResource BoolParaVisibilidade}}">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
+            <h:PainelAdaptavel LarguraMinima="200" EspacamentoVertical="14">
 
-                <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,14,0">
+                <StackPanel Margin="0,0,14,0">
                     <TextBlock Text="Busca" Style="{StaticResource Rotulo}"/>
                     <Border Height="38" CornerRadius="8" Background="#E9ECF0">
                         <Grid Margin="12,0">
@@ -581,41 +573,37 @@
                     </Border>
                 </StackPanel>
 
-                <StackPanel Grid.Row="0" Grid.Column="1" Margin="0,0,14,0">
+                <StackPanel Margin="0,0,14,0">
                     <TextBlock Text="Tipo de imóvel" Style="{StaticResource Rotulo}"/>
                     <ComboBox Style="{StaticResource ComboArredondado}"
                               ItemsSource="{Binding Tipos}"
                               SelectedItem="{Binding TipoSelecionado, Mode=TwoWay}"/>
                 </StackPanel>
 
-                <StackPanel Grid.Row="0" Grid.Column="2" Margin="0,0,14,0">
+                <StackPanel Margin="0,0,14,0">
                     <TextBlock Text="Finalidade" Style="{StaticResource Rotulo}"/>
                     <ComboBox Style="{StaticResource ComboArredondado}"
                               ItemsSource="{Binding Finalidades}"
                               SelectedItem="{Binding FinalidadeSelecionada, Mode=TwoWay}"/>
                 </StackPanel>
 
-                <StackPanel Grid.Row="0" Grid.Column="3">
+                <StackPanel>
                     <TextBlock Text="Status" Style="{StaticResource Rotulo}"/>
                     <ComboBox Style="{StaticResource ComboArredondado}"
                               ItemsSource="{Binding Statuses}"
                               SelectedItem="{Binding StatusSelecionado, Mode=TwoWay}"/>
                 </StackPanel>
 
-                <Grid Grid.Row="1" Grid.Column="0" Margin="0,14,14,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
+                
 
-                    <StackPanel Grid.Column="0" Margin="0,0,14,0">
+                    <StackPanel Margin="0,0,14,0">
                         <TextBlock Text="Faixa de preço" Style="{StaticResource Rotulo}"/>
                         <ComboBox Style="{StaticResource ComboArredondado}"
                                   ItemsSource="{Binding Faixas}"
                                   SelectedItem="{Binding FaixaSelecionada, Mode=TwoWay}"/>
                     </StackPanel>
 
-                    <StackPanel Grid.Column="1">
+                    <StackPanel>
                         <TextBlock Text="Bairro" Style="{StaticResource Rotulo}"/>
                         <ComboBox Style="{StaticResource ComboBuscaBairro}"
                                   ItemsSource="{Binding BairrosFiltroFiltrados}"
@@ -623,13 +611,12 @@
                                   Text="{Binding BuscaBairroFiltro, UpdateSourceTrigger=PropertyChanged}"
                                   PreviewKeyUp="ComboBairro_PreviewKeyUp"/>
                     </StackPanel>
-                </Grid>
 
-                <Button Grid.Row="1" Grid.Column="3" Content="Limpar filtros"
+                <StackPanel VerticalAlignment="Bottom"><Button Content="Limpar filtros"
                         Style="{StaticResource BotaoContorno}"
                         Command="{Binding LimparFiltrosCommand}"
-                        HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
-            </Grid>
+                        HorizontalAlignment="Left" VerticalAlignment="Bottom"/></StackPanel>
+            </h:PainelAdaptavel>
         </Border>
 
         <!-- CONTEÚDO: lista OU formulário OU detalhes -->
@@ -641,7 +628,7 @@
                     <ItemsControl ItemsSource="{Binding Imoveis}" Margin="0,0,0,6">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <UniformGrid Columns="4" VerticalAlignment="Top"/>
+                                <h:PainelAdaptavel LarguraMinima="230" VerticalAlignment="Top"/>
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
@@ -792,7 +779,7 @@
                     <!-- Cabeçalho do cartão: ícone + título + excluir (só ao editar) -->
                     <Border Grid.Row="0" Background="#F7F8FA" CornerRadius="12,12,0,0"
                             BorderBrush="#E6E9EE" BorderThickness="0,0,0,1" Padding="24,18">
-                        <Grid>
+                        <Grid h:Adaptavel.LarguraMinima="640">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
@@ -828,7 +815,7 @@
                     <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
                         <StackPanel Margin="24,4,24,24">
 
-                            <Grid>
+                            <Grid h:Adaptavel.LarguraMinima="200">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="2*"/>
                                     <ColumnDefinition Width="16"/>
@@ -874,7 +861,7 @@
                                    Foreground="{StaticResource Primaria}" Margin="0,20,0,0"/>
                             <Border BorderBrush="#E6E9EE" BorderThickness="0,1,0,0" Margin="0,4,0,0"/>
 
-                            <Grid>
+                            <Grid h:Adaptavel.LarguraMinima="200">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="3*"/>
                                     <ColumnDefinition Width="14"/>
@@ -904,7 +891,7 @@
                                 </StackPanel>
                             </Grid>
 
-                            <Grid>
+                            <Grid h:Adaptavel.LarguraMinima="150">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="2*"/>
                                     <ColumnDefinition Width="14"/>
@@ -1000,7 +987,7 @@
                                    Foreground="{StaticResource Primaria}" Margin="0,20,0,0"/>
                             <Border BorderBrush="#E6E9EE" BorderThickness="0,1,0,0" Margin="0,4,0,0"/>
 
-                            <Grid>
+                            <Grid h:Adaptavel.LarguraMinima="150">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="10"/>
@@ -1046,7 +1033,7 @@
                                    Foreground="{StaticResource Primaria}" Margin="0,20,0,0"/>
                             <Border BorderBrush="#E6E9EE" BorderThickness="0,1,0,0" Margin="0,4,0,0"/>
 
-                            <Grid>
+                            <Grid h:Adaptavel.LarguraMinima="200">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="2*"/>
                                     <ColumnDefinition Width="14"/>
@@ -1075,7 +1062,7 @@
                                 </StackPanel>
                             </Grid>
 
-                            <Grid Margin="0,14,0,0">
+                            <Grid Margin="0,14,0,0" h:Adaptavel.LarguraMinima="300">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="14"/>
@@ -1148,7 +1135,7 @@
                     <Border Grid.Row="0" DataContext="{Binding ImovelDetalhe}"
                             Background="#F7F8FA" CornerRadius="12,12,0,0"
                             BorderBrush="#E6E9EE" BorderThickness="0,0,0,1" Padding="28,20">
-                        <Grid>
+                        <Grid h:Adaptavel.LarguraMinima="640">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
@@ -1179,7 +1166,7 @@
                     </Border>
 
                     <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-                        <Grid Margin="28,24,28,24">
+                        <Grid Margin="28,24,28,24" h:Adaptavel.LarguraMinima="340">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="24"/>
@@ -1284,7 +1271,7 @@
                                             <TextBlock Text="CARACTERÍSTICAS" Style="{StaticResource TituloSecaoDetalhe}"/>
                                         </StackPanel>
                                         <Border Style="{StaticResource CaixaDetalhe}">
-                                            <UniformGrid Columns="6">
+                                            <h:PainelAdaptavel LarguraMinima="90">
                                                 <StackPanel HorizontalAlignment="Center">
                                                     <TextBlock Text="{Binding Quartos}" FontSize="24" FontWeight="Bold"
                                                                Foreground="{StaticResource Texto}" HorizontalAlignment="Center"/>
@@ -1315,7 +1302,7 @@
                                                                Foreground="{StaticResource Texto}" HorizontalAlignment="Center"/>
                                                     <TextBlock Text="Vagas" Style="{StaticResource RotuloDetalhe}" HorizontalAlignment="Center"/>
                                                 </StackPanel>
-                                            </UniformGrid>
+                                            </h:PainelAdaptavel>
                                         </Border>
                                     </StackPanel>
 
@@ -1346,7 +1333,7 @@
                                             <TextBlock Text="LOCALIZAÇÃO" Style="{StaticResource TituloSecaoDetalhe}"/>
                                         </StackPanel>
                                         <Border Style="{StaticResource CaixaDetalhe}">
-                                            <Grid>
+                                            <Grid h:Adaptavel.LarguraMinima="200">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="2*"/>
                                                     <ColumnDefinition Width="16"/>
@@ -1381,7 +1368,7 @@
                                             <TextBlock Text="REGISTRO DO IMÓVEL" Style="{StaticResource TituloSecaoDetalhe}"/>
                                         </StackPanel>
                                         <Border Style="{StaticResource CaixaDetalhe}">
-                                            <Grid>
+                                            <Grid h:Adaptavel.LarguraMinima="300">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="*"/>
                                                     <ColumnDefinition Width="16"/>
@@ -1410,7 +1397,7 @@
                                             <TextBlock Text="CONCESSIONÁRIAS" Style="{StaticResource TituloSecaoDetalhe}"/>
                                         </StackPanel>
                                         <Border Style="{StaticResource CaixaDetalhe}">
-                                            <Grid>
+                                            <Grid h:Adaptavel.LarguraMinima="300">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="*"/>
                                                     <ColumnDefinition Width="16"/>

@@ -136,28 +136,5 @@
     "Bairro": "Bela Vista",
     "Cep": "01310-200",
     "Cidade": "São Paulo"
-  },
-  {
-    "Id": 7,
-    "Nome": "Miguel",
-    "Cpf": "123.123.132-11",
-    "Rg": "12.545.252-9",
-    "DataNascimento": "2005-08-25T00:00:00",
-    "TelefonePrincipal": "(12) 33333-3333",
-    "TelefoneSecundario": "",
-    "Email": "Woqjuj23@gmail.com",
-    "FotoCaminho": null,
-    "Tipo": "Proprietário",
-    "Status": "Ativo",
-    "Profissao": "wadawdaw",
-    "Empresa": "dwdwdwd",
-    "OrgaoEmissorRg": "ssp",
-    "Nacionalidade": "Brasileira",
-    "EstadoCivil": "Solteiro(a)",
-    "Rua": "dahfbahifha",
-    "Numero": "1481",
-    "Bairro": "asdafhyawhuh",
-    "Cep": "57574-454",
-    "Cidade": "afawyfuahfawf"
   }
 ]

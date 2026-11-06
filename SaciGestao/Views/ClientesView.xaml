@@ -394,7 +394,7 @@
         </Grid.RowDefinitions>
 
         <!-- ============ TÍTULO ============ -->
-        <Grid Grid.Row="0">
+        <Grid Grid.Row="0" h:Adaptavel.LarguraMinima="640">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
@@ -438,7 +438,7 @@
             <StackPanel>
                 <TextBlock Text="BARRA DE FILTROS" FontSize="13" FontWeight="Bold"
                            Foreground="{StaticResource TextoSuave}" Margin="0,0,0,14"/>
-                <Grid>
+                <Grid h:Adaptavel.LarguraMinima="640">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="20"/>
@@ -522,7 +522,7 @@
             <Border Style="{StaticResource Cartao}" Padding="20,8"
                     Visibility="{Binding MostrandoLista, Converter={StaticResource BoolParaVisibilidade}}">
                 <Grid>
-                    <DataGrid ItemsSource="{Binding Clientes}"
+                    <DataGrid h:Adaptavel.Tabela="True" ItemsSource="{Binding Clientes}"
                               AutoGenerateColumns="False" IsReadOnly="True"
                               CanUserAddRows="False" CanUserDeleteRows="False"
                               CanUserResizeColumns="False" CanUserReorderColumns="False"
@@ -566,16 +566,16 @@
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
 
-                            <DataGridTextColumn Header="CPF" Binding="{Binding Cpf}" Width="130"
+                            <DataGridTextColumn Header="CPF" h:Adaptavel.OcultarAbaixo="760" Binding="{Binding Cpf}" Width="130"
                                                 ElementStyle="{StaticResource TextoCelula}"/>
 
                             <DataGridTextColumn Header="Telefone" Binding="{Binding TelefonePrincipal}" Width="130"
                                                 ElementStyle="{StaticResource TextoCelula}"/>
 
-                            <DataGridTextColumn Header="E-mail" Binding="{Binding Email}" Width="1.3*" MinWidth="150"
+                            <DataGridTextColumn Header="E-mail" h:Adaptavel.OcultarAbaixo="1000" Binding="{Binding Email}" Width="1.3*" MinWidth="150"
                                                 ElementStyle="{StaticResource TextoCelula}"/>
 
-                            <DataGridTemplateColumn Header="Tipo de Cliente" Width="150">
+                            <DataGridTemplateColumn Header="Tipo de Cliente" h:Adaptavel.OcultarAbaixo="880" Width="150">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <Border Background="#F3F5F8" BorderBrush="#D9DEE5" BorderThickness="1"
@@ -652,7 +652,7 @@
                     <!-- Cabeçalho do cartão: ícone + título + excluir (só ao editar) -->
                     <Border Grid.Row="0" Background="#F7F8FA" CornerRadius="12,12,0,0"
                             BorderBrush="#E6E9EE" BorderThickness="0,0,0,1" Padding="24,18">
-                        <Grid>
+                        <Grid h:Adaptavel.LarguraMinima="640">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
@@ -723,7 +723,7 @@
                                            FontSize="12" Foreground="{StaticResource TextoSuave}" Margin="0,6,0,0"/>
                             </StackPanel>
                         </StackPanel>
-                        <Grid>
+                        <Grid h:Adaptavel.LarguraMinima="150">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="2*"/>
                                 <ColumnDefinition Width="12"/>
@@ -755,7 +755,7 @@
                                          Text="{Binding OrgaoEmissorRgForm, UpdateSourceTrigger=PropertyChanged}"/>
                             </StackPanel>
                         </Grid>
-                        <Grid Margin="0,14,0,0">
+                        <Grid Margin="0,14,0,0" h:Adaptavel.LarguraMinima="150">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="2*"/>
                                 <ColumnDefinition Width="12"/>
@@ -786,7 +786,7 @@
                         </Grid>
 
                         <TextBlock Text="CONTATO" Style="{StaticResource TituloSecaoForm}"/>
-                        <Grid>
+                        <Grid h:Adaptavel.LarguraMinima="200">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="12"/>
@@ -813,7 +813,7 @@
                         </Grid>
 
                         <TextBlock Text="ENDEREÇO DE DOMICÍLIO" Style="{StaticResource TituloSecaoForm}"/>
-                        <Grid>
+                        <Grid h:Adaptavel.LarguraMinima="200">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="3*"/>
                                 <ColumnDefinition Width="12"/>
@@ -838,7 +838,7 @@
                                          Text="{Binding BairroForm, UpdateSourceTrigger=PropertyChanged}"/>
                             </StackPanel>
                         </Grid>
-                        <Grid Margin="0,14,0,0">
+                        <Grid Margin="0,14,0,0" h:Adaptavel.LarguraMinima="200">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="3*"/>
                                 <ColumnDefinition Width="12"/>
@@ -860,7 +860,7 @@
                         </Grid>
 
                         <TextBlock Text="INFORMAÇÕES ADICIONAIS" Style="{StaticResource TituloSecaoForm}"/>
-                        <Grid>
+                        <Grid h:Adaptavel.LarguraMinima="300">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="16"/>
@@ -881,7 +881,7 @@
                             </StackPanel>
                         </Grid>
 
-                        <Grid Margin="0,14,0,0">
+                        <Grid Margin="0,14,0,0" h:Adaptavel.LarguraMinima="300">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="16"/>
@@ -1003,7 +1003,7 @@
                                 </StackPanel>
                                 <Border Style="{StaticResource CaixaDetalhe}">
                                     <StackPanel>
-                                <Grid>
+                                <Grid h:Adaptavel.LarguraMinima="150">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="2*"/>
                                         <ColumnDefinition Width="16"/>
@@ -1030,7 +1030,7 @@
                                         <TextBlock Text="{Binding OrgaoEmissorRgTexto}" Style="{StaticResource ValorDetalhe}"/>
                                     </StackPanel>
                                 </Grid>
-                                <Grid Margin="0,16,0,0">
+                                <Grid Margin="0,16,0,0" h:Adaptavel.LarguraMinima="150">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="2*"/>
                                         <ColumnDefinition Width="16"/>
@@ -1067,7 +1067,7 @@
                                 </StackPanel>
                                 <Border Style="{StaticResource CaixaDetalhe}">
                                     <StackPanel>
-                                <Grid>
+                                <Grid h:Adaptavel.LarguraMinima="200">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="16"/>
@@ -1102,7 +1102,7 @@
                                 </StackPanel>
                                 <Border Style="{StaticResource CaixaDetalhe}">
                                     <StackPanel>
-                                <Grid>
+                                <Grid h:Adaptavel.LarguraMinima="200">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="3*"/>
                                         <ColumnDefinition Width="16"/>
@@ -1123,7 +1123,7 @@
                                         <TextBlock Text="{Binding BairroTexto}" Style="{StaticResource ValorDetalhe}"/>
                                     </StackPanel>
                                 </Grid>
-                                <Grid Margin="0,16,0,0">
+                                <Grid Margin="0,16,0,0" h:Adaptavel.LarguraMinima="200">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="3*"/>
                                         <ColumnDefinition Width="16"/>
@@ -1154,7 +1154,7 @@
                                 </StackPanel>
                                 <Border Style="{StaticResource CaixaDetalhe}">
                                     <StackPanel>
-                                <Grid>
+                                <Grid h:Adaptavel.LarguraMinima="150">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="16"/>
