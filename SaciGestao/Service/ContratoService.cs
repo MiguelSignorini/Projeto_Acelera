@@ -85,6 +85,7 @@ namespace SaciGestao.Service
             existente.UC_Energia = editado.UC_Energia;
             existente.UC_Agua = editado.UC_Agua;
             existente.IndiceReajuste = editado.IndiceReajuste;
+            existente.QuantidadeParcelas = editado.QuantidadeParcelas;
             existente.PercentualMultaAtraso = editado.PercentualMultaAtraso;
             existente.MesesIsencaoMultaRescisao = editado.MesesIsencaoMultaRescisao;
             existente.Observacoes = editado.Observacoes;

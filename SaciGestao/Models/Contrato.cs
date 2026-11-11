@@ -33,6 +33,7 @@ namespace SaciGestao.Models
         public DateTime DataAssinatura { get; set; } = DateTime.Today;
 
         public string IndiceReajuste { get; set; } = "IGP-M/FGV";
+        public int QuantidadeParcelas { get; set; } = 1; // Usado apenas em contratos de Venda
         public decimal PercentualMultaAtraso { get; set; } = 10.0m;
         public int MesesIsencaoMultaRescisao { get; set; } = 12;
 
@@ -45,6 +46,10 @@ namespace SaciGestao.Models
         public string TipoTexto => Tipo == TipoContrato.Locacao ? "Locação" : "Venda";
         public string PeriodoTexto => DataInicio.ToString("dd/MM/yyyy") + " a " + DataFim.ToString("dd/MM/yyyy");
         public string ValorTexto => ValorMensal.ToString("C2", new System.Globalization.CultureInfo("pt-BR")) + (Tipo == TipoContrato.Locacao ? " /mês" : "");
+        public string RotuloCondicaoTexto => Tipo == TipoContrato.Venda ? "Parcelas" : "Índice de reajuste";
+        public string CondicaoTexto => Tipo == TipoContrato.Venda
+            ? (QuantidadeParcelas <= 1 ? "À vista (1 parcela)" : QuantidadeParcelas + " parcelas")
+            : IndiceReajuste;
         public string ObservacoesTexto => string.IsNullOrWhiteSpace(Observacoes) ? "Não informado" : Observacoes;
         public string UcEnergiaTexto => string.IsNullOrWhiteSpace(UC_Energia) ? "Não informado" : UC_Energia;
         public string UcAguaTexto => string.IsNullOrWhiteSpace(UC_Agua) ? "Não informado" : UC_Agua;

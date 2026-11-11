@@ -785,7 +785,7 @@
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Column="0">
                                 <TextBlock Text="Tipo" Style="{StaticResource RotuloForm}"/>
-                                <!-- ALTERAÇÃO 1: Usa TipoSelecionadoForm para disparar a visibilidade do reajuste -->
+                                <!-- Usa TipoSelecionadoForm para alternar entre índice de reajuste (Locação) e parcelas (Venda) -->
                                 <ComboBox Style="{StaticResource ComboArredondado}" ItemsSource="{Binding TiposContratoEnum}" ItemTemplate="{StaticResource ModeloEnumTexto}"
                                           SelectedItem="{Binding TipoSelecionadoForm, Mode=TwoWay}"/>
                             </StackPanel>
@@ -839,6 +839,13 @@
                                 <TextBlock Text="Índice de reajuste" Style="{StaticResource RotuloForm}"/>
                                 <ComboBox Style="{StaticResource ComboArredondado}" ItemsSource="{Binding IndicesReajuste}"
                                           SelectedItem="{Binding ContratoForm.IndiceReajuste, Mode=TwoWay}"/>
+                            </StackPanel>
+
+                            <!-- Venda: no lugar do índice de reajuste aparece a quantidade de parcelas -->
+                            <StackPanel Grid.Column="4" Visibility="{Binding MostrarParcelas, Converter={StaticResource BoolParaVisibilidade}}">
+                                <TextBlock Text="Quantidade de parcelas" Style="{StaticResource RotuloForm}"/>
+                                <TextBox h:Mascara.Tipo="Inteiro" MaxLength="3" Style="{StaticResource CampoForm}"
+                                         Text="{Binding ContratoForm.QuantidadeParcelas}"/>
                             </StackPanel>
 
                             <StackPanel Grid.Column="6">
@@ -1023,8 +1030,8 @@
                                 <Border Style="{StaticResource CaixaDetalhe}">
                                     <h:PainelAdaptavel LarguraMinima="170">
                                         <StackPanel>
-                                            <TextBlock Text="Índice de reajuste" Style="{StaticResource RotuloDetalhe}"/>
-                                            <TextBlock Text="{Binding IndiceReajuste}" Style="{StaticResource ValorDetalhe}"/>
+                                            <TextBlock Text="{Binding RotuloCondicaoTexto, Mode=OneWay}" Style="{StaticResource RotuloDetalhe}"/>
+                                            <TextBlock Text="{Binding CondicaoTexto, Mode=OneWay}" Style="{StaticResource ValorDetalhe}"/>
                                         </StackPanel>
                                         <StackPanel>
                                             <TextBlock Text="Multa por atraso" Style="{StaticResource RotuloDetalhe}"/>
