@@ -27,6 +27,7 @@ namespace SaciGestao.ViewModels
                 {
                     OnPropertyChanged(nameof(TipoSelecionadoForm));
                     OnPropertyChanged(nameof(MostrarIndiceReajuste));
+                    OnPropertyChanged(nameof(MostrarParcelas));
                 }
             }
         }
@@ -42,12 +43,16 @@ namespace SaciGestao.ViewModels
                     ContratoForm.Tipo = value;
                     OnPropertyChanged(nameof(TipoSelecionadoForm));
                     OnPropertyChanged(nameof(MostrarIndiceReajuste));
+                    OnPropertyChanged(nameof(MostrarParcelas));
                 }
             }
         }
 
         // Retorna verdadeiro se for Locação (usado para mostrar/ocultar o índice de reajuste)
         public bool MostrarIndiceReajuste => ContratoForm?.Tipo == TipoContrato.Locacao;
+
+        // Retorna verdadeiro se for Venda (usado para mostrar/ocultar a quantidade de parcelas)
+        public bool MostrarParcelas => ContratoForm?.Tipo == TipoContrato.Venda;
 
         private Contrato? _contratoDetalhe;
         public Contrato? ContratoDetalhe
@@ -284,6 +289,7 @@ namespace SaciGestao.ViewModels
             OnPropertyChanged(nameof(ImovelIdSelecionado));
             OnPropertyChanged(nameof(TipoSelecionadoForm));
             OnPropertyChanged(nameof(MostrarIndiceReajuste));
+            OnPropertyChanged(nameof(MostrarParcelas));
 
             MostrandoLista = false;
             MostrandoDetalhes = false;
@@ -304,6 +310,7 @@ namespace SaciGestao.ViewModels
             OnPropertyChanged(nameof(ImovelIdSelecionado));
             OnPropertyChanged(nameof(TipoSelecionadoForm));
             OnPropertyChanged(nameof(MostrarIndiceReajuste));
+            OnPropertyChanged(nameof(MostrarParcelas));
 
             MostrandoLista = false;
             MostrandoDetalhes = false;
@@ -347,6 +354,12 @@ namespace SaciGestao.ViewModels
             if (ContratoForm.Tipo == TipoContrato.Locacao && string.IsNullOrWhiteSpace(ContratoForm.IndiceReajuste))
             {
                 ErroForm = "Selecione o índice de reajuste para o contrato de locação.";
+                return;
+            }
+
+            if (ContratoForm.Tipo == TipoContrato.Venda && ContratoForm.QuantidadeParcelas < 1)
+            {
+                ErroForm = "Informe a quantidade de parcelas (mínimo 1) para o contrato de venda.";
                 return;
             }
 
