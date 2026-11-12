@@ -228,6 +228,10 @@ namespace SaciGestao.ViewModels
         private string _iptuForm = string.Empty;
         public string IptuForm { get => _iptuForm; set => SetProperty(ref _iptuForm, value); }
 
+        // CIB (Cadastro Imobiliário Brasileiro): opcional enquanto a prefeitura não inscreve o imóvel
+        private string _cibForm = string.Empty;
+        public string CibForm { get => _cibForm; set => SetProperty(ref _cibForm, value ?? string.Empty); }
+
         private string _matriculaSabespForm = string.Empty;
         public string MatriculaSabespForm { get => _matriculaSabespForm; set => SetProperty(ref _matriculaSabespForm, value); }
 
@@ -480,6 +484,7 @@ namespace SaciGestao.ViewModels
             MatriculaSabespForm = string.Empty;
             MatriculaForm = string.Empty;
             IptuForm = string.Empty;
+            CibForm = string.Empty;
             FotosForm.Clear();
             CarregarProprietarios(0);
             ProprietarioIdForm = 0;
@@ -529,6 +534,7 @@ namespace SaciGestao.ViewModels
             MatriculaSabespForm = imovel.MatriculaSabesp;
             MatriculaForm = imovel.Matricula;
             IptuForm = imovel.Iptu;
+            CibForm = imovel.Cib;
             // Imóveis gravados antes do ProprietarioId existir: localiza o dono pelo nome
             int donoId = imovel.ProprietarioId;
             if (donoId == 0 && !string.IsNullOrWhiteSpace(imovel.ProprietarioNome))
@@ -588,6 +594,26 @@ namespace SaciGestao.ViewModels
                 return;
             }
 
+            // CIB: só letras, números e separadores (. - /), entre 4 e 20 caracteres, e único no cadastro
+            string cib = CibForm.Trim().ToUpperInvariant();
+            if (cib.Length > 0)
+            {
+                string chave = ImovelService.NormalizarCib(cib);
+                if (cib.Any(ch => !char.IsLetterOrDigit(ch) && ch != '.' && ch != '-' && ch != '/' && ch != ' ') ||
+                    chave.Length < 4 || cib.Length > 20)
+                {
+                    ErroForm = "CIB inválido: use só letras e números (de 4 a 20 caracteres). Se o imóvel ainda não tem CIB, deixe em branco.";
+                    return;
+                }
+
+                var outro = _service.ObterPorCib(cib, _idEmEdicao);
+                if (outro != null)
+                {
+                    ErroForm = $"Este CIB já está cadastrado no imóvel {outro.Codigo} ({outro.Titulo}). Cada imóvel tem um CIB único.";
+                    return;
+                }
+            }
+
             // Imóvel com contrato ativo: o status vem do contrato (Alugado/Vendido) e não pode ser trocado à mão,
             // senão ele volta a aparecer como disponível e pode ganhar um segundo contrato
             var contratoAtivo = _idEmEdicao == 0 ? null : ContratoService.Instancia.ContratoAtivoDoImovel(_idEmEdicao);
@@ -630,7 +656,8 @@ namespace SaciGestao.ViewModels
                 MatriculaEdp = MatriculaEdpForm.Trim(),
                 MatriculaSabesp = MatriculaSabespForm.Trim(),
                 Matricula = MatriculaForm.Trim(),
-                Iptu = IptuForm.Trim()
+                Iptu = IptuForm.Trim(),
+                Cib = cib
             };
 
             if (_idEmEdicao == 0)
@@ -760,9 +787,11 @@ namespace SaciGestao.ViewModels
             if (!string.IsNullOrWhiteSpace(_busca))
             {
                 string t = _busca.Trim();
+                string tCib = ImovelService.NormalizarCib(t);
                 consulta = consulta.Where(i =>
                     Contem(i.Codigo, t) || Contem(i.Titulo, t) ||
-                    Contem(i.Endereco, t) || Contem(i.Bairro, t) || Contem(i.Cidade, t));
+                    Contem(i.Endereco, t) || Contem(i.Bairro, t) || Contem(i.Cidade, t) ||
+                    (tCib.Length >= 4 && ImovelService.NormalizarCib(i.Cib).Contains(tCib)));
             }
 
             if (_tipo != Todos)

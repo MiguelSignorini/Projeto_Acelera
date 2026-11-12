@@ -54,6 +54,16 @@ namespace SaciGestao.Models
         public string UcEnergiaTexto => string.IsNullOrWhiteSpace(UC_Energia) ? "Não informado" : UC_Energia;
         public string UcAguaTexto => string.IsNullOrWhiteSpace(UC_Agua) ? "Não informado" : UC_Agua;
 
+        // CIB do imóvel do contrato (lido do cadastro do imóvel, não é gravado no contrato)
+        public string ImovelCibTexto
+        {
+            get
+            {
+                var cib = SaciGestao.Service.ImovelService.Instancia.ObterPorId(ImovelId)?.Cib;
+                return string.IsNullOrWhiteSpace(cib) ? "Não informado" : cib;
+            }
+        }
+
         public Contrato Clonar()
         {
             return (Contrato)MemberwiseClone();

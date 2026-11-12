@@ -103,7 +103,11 @@ namespace SaciGestao.Service
             It($"1.2 - LOCATÁRIO(a): {Pessoa(locatario)}");
 
             Cl("CLÁUSULA SEGUNDA: OBJETO DO CONTRATO");
-            It($"2.1 - Neste ato o(a) LOCADOR(a) se compromete a ceder em locação ao(à) LOCATÁRIO(a) o imóvel localizado à {enderecoImovel}, contendo: {Comodos(imovel)}");
+            // CIB (Cadastro Imobiliário Brasileiro) entra na identificação quando o imóvel já tem o código
+            string cib = imovel != null && !string.IsNullOrWhiteSpace(imovel.Cib)
+                ? $", inscrito no Cadastro Imobiliário Brasileiro (CIB) sob o nº {imovel.Cib.Trim()}"
+                : string.Empty;
+            It($"2.1 - Neste ato o(a) LOCADOR(a) se compromete a ceder em locação ao(à) LOCATÁRIO(a) o imóvel localizado à {enderecoImovel}{cib}, contendo: {Comodos(imovel)}");
             It("2.2 - O(a) LOCADOR(a) dão em locação ao(à) LOCATÁRIO(a) a posse direta do imóvel, e declara que o mesmo se encontra desembaraçado de dívidas ou gravames, comprometendo-se, enquanto durar o prazo da locação, a não o onerar sob qualquer hipótese ou condição, sob pena de incidir em infração contratual.");
 
             Cl("CLÁUSULA TERCEIRA: DA FINALIDADE");

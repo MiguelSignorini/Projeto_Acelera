@@ -66,8 +66,20 @@ namespace SaciGestao.Service
             existente.MatriculaSabesp = editado.MatriculaSabesp;
             existente.Matricula = editado.Matricula;
             existente.Iptu = editado.Iptu;
+            existente.Cib = editado.Cib;
 
         }
+
+        // CIB já usado por outro imóvel (o código é único no país). Compara sem espaços, pontos e traços.
+        public Imovel? ObterPorCib(string cib, int ignorarId = 0)
+        {
+            string chave = NormalizarCib(cib);
+            if (chave.Length == 0) return null;
+            return _imoveis.FirstOrDefault(i => i.Id != ignorarId && NormalizarCib(i.Cib) == chave);
+        }
+
+        public static string NormalizarCib(string? cib) =>
+            new string((cib ?? string.Empty).Where(char.IsLetterOrDigit).ToArray()).ToUpperInvariant();
 
         // Mantém o nome do dono (copiado no imóvel) igual ao cadastro do cliente
         public void AtualizarNomeProprietario(int clienteId, string nome)

@@ -820,21 +820,27 @@
                                                    Foreground="{StaticResource Primaria}"
                                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                     </Border>
-                                    <TextBlock Text="CONCESSIONÁRIAS E OBSERVAÇÕES" Style="{StaticResource TituloSecaoDetalhe}"/>
+                                    <TextBlock Text="REGISTRO, CONCESSIONÁRIAS E OBSERVAÇÕES" Style="{StaticResource TituloSecaoDetalhe}"/>
                                 </StackPanel>
                                 <Border Style="{StaticResource CaixaDetalhe}">
                                     <StackPanel>
-                                        <Grid h:Adaptavel.LarguraMinima="300">
+                                        <Grid h:Adaptavel.LarguraMinima="200">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="16"/>
                                                 <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="16"/>
+                                                <ColumnDefinition Width="*"/>
                                             </Grid.ColumnDefinitions>
-                                            <StackPanel Grid.Column="0">
+                                            <StackPanel Grid.Column="0" ToolTip="Cadastro Imobiliário Brasileiro do imóvel (vem do cadastro do imóvel)">
+                                                <TextBlock Text="CIB do imóvel" Style="{StaticResource RotuloDetalhe}"/>
+                                                <TextBlock Text="{Binding ImovelCibTexto}" Style="{StaticResource ValorDetalhe}"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="2">
                                                 <TextBlock Text="UC energia (EDP)" Style="{StaticResource RotuloDetalhe}"/>
                                                 <TextBlock Text="{Binding UcEnergiaTexto}" Style="{StaticResource ValorDetalhe}"/>
                                             </StackPanel>
-                                            <StackPanel Grid.Column="2">
+                                            <StackPanel Grid.Column="4">
                                                 <TextBlock Text="UC água (Sabesp)" Style="{StaticResource RotuloDetalhe}"/>
                                                 <TextBlock Text="{Binding UcAguaTexto}" Style="{StaticResource ValorDetalhe}"/>
                                             </StackPanel>

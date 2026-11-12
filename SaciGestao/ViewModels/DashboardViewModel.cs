@@ -160,6 +160,11 @@ namespace SaciGestao.ViewModels
             if (semFoto > 0)
                 Avisos.Add(Aviso(0xEB9F, semFoto + (semFoto == 1 ? " imóvel disponível está sem foto (anúncio fraco)" : " imóveis disponíveis estão sem foto (anúncio fraco)"), "#374151", "#E4E7EC"));
 
+            // CIB ("CPF do imóvel"): obrigatório em todos os municípios a partir de janeiro de 2027 (LC 214/2025)
+            int semCib = imoveis.Count(i => !i.TemCib);
+            if (semCib > 0)
+                Avisos.Add(Aviso(0xE8A5, semCib + (semCib == 1 ? " imóvel sem CIB (Cadastro Imobiliário Brasileiro) cadastrado" : " imóveis sem CIB (Cadastro Imobiliário Brasileiro) cadastrado"), "#14407A", "#DCE9FB"));
+
             int semDono = imoveis.Count(i => i.ProprietarioId == 0);
             if (semDono > 0)
                 Avisos.Add(Aviso(0xE77B, semDono + (semDono == 1 ? " imóvel sem proprietário vinculado" : " imóveis sem proprietário vinculado"), "#8B1A1A", "#FBDADA"));

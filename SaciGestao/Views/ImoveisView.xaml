@@ -322,7 +322,7 @@
                                 <TextBox x:Name="txtBusca" BorderThickness="0" Background="Transparent"
                                          FontSize="14" VerticalContentAlignment="Center"
                                          Text="{Binding Busca, UpdateSourceTrigger=PropertyChanged}"/>
-                                <TextBlock Text="Buscar por código, endereço, bairro ou cidade"
+                                <TextBlock Text="Buscar por código, endereço, bairro, cidade ou CIB"
                                            Foreground="#5F6B7A" FontSize="14" IsHitTestVisible="False"
                                            VerticalAlignment="Center" Margin="2,0,0,0">
                                     <TextBlock.Style>
@@ -851,25 +851,38 @@
                                 </StackPanel>
                             </Grid>
 
-                            <Grid Margin="0,14,0,0" h:Adaptavel.LarguraMinima="300">
+                            <Grid Margin="0,14,0,0" h:Adaptavel.LarguraMinima="220">
                                 <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="14"/>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="14"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
 
-                                <StackPanel Grid.Column="0">
-                                    <TextBlock Text="Matrícula (registro do imóvel)" Style="{StaticResource RotuloForm}"/>
+                                <!-- CIB: o "CPF do imóvel" da Receita Federal (LC 214/2025) -->
+                                <StackPanel Grid.Column="0"
+                                            ToolTip="Cadastro Imobiliário Brasileiro: código nacional do imóvel gerado pela Receita Federal (Sinter). Obrigatório para todos os municípios a partir de 2027.">
+                                    <TextBlock Text="CIB (Cadastro Imobiliário)" Style="{StaticResource RotuloForm}"/>
+                                    <TextBox Style="{StaticResource CampoForm}" MaxLength="20"
+                                             CharacterCasing="Upper"
+                                             Text="{Binding CibForm, UpdateSourceTrigger=PropertyChanged}"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="Matrícula (cartório)" Style="{StaticResource RotuloForm}"/>
                                     <TextBox Style="{StaticResource CampoForm}"
                                          Text="{Binding MatriculaForm, UpdateSourceTrigger=PropertyChanged}"/>
                                 </StackPanel>
 
-                                <StackPanel Grid.Column="2">
-                                    <TextBlock Text="IPTU" Style="{StaticResource RotuloForm}"/>
+                                <StackPanel Grid.Column="4">
+                                    <TextBlock Text="IPTU (inscrição municipal)" Style="{StaticResource RotuloForm}"/>
                                     <TextBox Style="{StaticResource CampoForm}"
                                          Text="{Binding IptuForm, UpdateSourceTrigger=PropertyChanged}"/>
                                 </StackPanel>
                             </Grid>
+                            <TextBlock Text="O CIB é o &quot;CPF do imóvel&quot; criado pela Receita Federal na reforma tributária. Consulte o código no e-CIB (gov.br). Se o imóvel ainda não tiver, deixe em branco."
+                                       FontSize="12" Foreground="{StaticResource TextoSuave}" TextWrapping="Wrap" Margin="0,6,0,0"/>
 
                             <TextBlock Text="{Binding ErroForm}" Foreground="{StaticResource Perigo}"
                                    FontSize="13" TextWrapping="Wrap" Margin="0,16,0,0">
@@ -1157,17 +1170,23 @@
                                             <TextBlock Text="REGISTRO DO IMÓVEL" Style="{StaticResource TituloSecaoDetalhe}"/>
                                         </StackPanel>
                                         <Border Style="{StaticResource CaixaDetalhe}">
-                                            <Grid h:Adaptavel.LarguraMinima="300">
+                                            <Grid h:Adaptavel.LarguraMinima="140">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="*"/>
                                                     <ColumnDefinition Width="16"/>
                                                     <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="16"/>
+                                                    <ColumnDefinition Width="*"/>
                                                 </Grid.ColumnDefinitions>
-                                                <StackPanel Grid.Column="0">
+                                                <StackPanel Grid.Column="0" ToolTip="Cadastro Imobiliário Brasileiro (Receita Federal)">
+                                                    <TextBlock Text="CIB" Style="{StaticResource RotuloDetalhe}"/>
+                                                    <TextBlock Text="{Binding CibTexto}" Style="{StaticResource ValorDetalhe}"/>
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="2">
                                                     <TextBlock Text="Matrícula" Style="{StaticResource RotuloDetalhe}"/>
                                                     <TextBlock Text="{Binding MatriculaTexto}" Style="{StaticResource ValorDetalhe}"/>
                                                 </StackPanel>
-                                                <StackPanel Grid.Column="2">
+                                                <StackPanel Grid.Column="4">
                                                     <TextBlock Text="IPTU" Style="{StaticResource RotuloDetalhe}"/>
                                                     <TextBlock Text="{Binding IptuTexto}" Style="{StaticResource ValorDetalhe}"/>
                                                 </StackPanel>

@@ -50,6 +50,12 @@ namespace SaciGestao.Models
         public string Matricula { get; set; } = string.Empty;
         public string Iptu { get; set; } = string.Empty;
 
+        // CIB - Cadastro Imobiliário Brasileiro: o "CPF do imóvel" da Receita Federal (Sinter, LC 214/2025).
+        // Código nacional único; vazio enquanto o imóvel ainda não foi inscrito pela prefeitura.
+        public string Cib { get; set; } = string.Empty;
+
+        [JsonIgnore] public bool TemCib => !string.IsNullOrWhiteSpace(Cib);
+
         public bool Ativo { get; set; } = true;
 
         public string EnderecoCompleto
@@ -80,6 +86,7 @@ namespace SaciGestao.Models
         [JsonIgnore] public string DescricaoTexto => OuNaoInformado(Descricao);
         [JsonIgnore] public string MatriculaTexto => OuNaoInformado(Matricula);
         [JsonIgnore] public string IptuTexto => OuNaoInformado(Iptu);
+        [JsonIgnore] public string CibTexto => OuNaoInformado(Cib);
         [JsonIgnore] public string MatriculaEdpTexto => OuNaoInformado(MatriculaEdp);
         [JsonIgnore] public string MatriculaSabespTexto => OuNaoInformado(MatriculaSabesp);
         [JsonIgnore] public string ProprietarioTexto => OuNaoInformado(ProprietarioNome);

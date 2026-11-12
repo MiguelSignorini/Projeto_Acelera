@@ -15,6 +15,7 @@
     "Finalidade": "Venda",
     "Status": "Disponível",
     "Valor": 450000,
+    "PercentualEmpresa": 6,
     "Quartos": 2,
     "Suites": 0,
     "Banheiros": 0,
@@ -26,6 +27,7 @@
     "MatriculaSabesp": "SAB-00987654",
     "Matricula": "",
     "Iptu": "",
+    "Cib": "",
     "Ativo": true,
     "Fotos": [
       "demo_imovel_1.jpg"
@@ -47,6 +49,7 @@
     "Finalidade": "Venda",
     "Status": "Reservado",
     "Valor": 350000,
+    "PercentualEmpresa": 6,
     "Quartos": 3,
     "Suites": 0,
     "Banheiros": 0,
@@ -58,6 +61,7 @@
     "MatriculaSabesp": "SAB-00112233",
     "Matricula": "",
     "Iptu": "",
+    "Cib": "",
     "Ativo": true,
     "Fotos": [
       "demo_imovel_2.jpg"
@@ -79,6 +83,7 @@
     "Finalidade": "Aluguel",
     "Status": "Alugado",
     "Valor": 2100.00,
+    "PercentualEmpresa": 10,
     "Quartos": 1,
     "Suites": 0,
     "Banheiros": 0,
@@ -90,6 +95,7 @@
     "MatriculaSabesp": "SAB-00223344",
     "Matricula": "",
     "Iptu": "",
+    "Cib": "",
     "Ativo": true,
     "Fotos": [
       "94fe34e6b1ea4491ae0a7a0f2b6f3ae4.png",
@@ -112,6 +118,7 @@
     "Finalidade": "Venda",
     "Status": "Disponível",
     "Valor": 210000,
+    "PercentualEmpresa": 6,
     "Quartos": 0,
     "Suites": 0,
     "Banheiros": 0,
@@ -123,6 +130,7 @@
     "MatriculaSabesp": "",
     "Matricula": "",
     "Iptu": "",
+    "Cib": "",
     "Ativo": true,
     "Fotos": [
       "demo_imovel_3.jpg"
@@ -144,6 +152,7 @@
     "Finalidade": "Aluguel",
     "Status": "Disponível",
     "Valor": 1800,
+    "PercentualEmpresa": 10,
     "Quartos": 2,
     "Suites": 0,
     "Banheiros": 0,
@@ -155,6 +164,7 @@
     "MatriculaSabesp": "SAB-00334455",
     "Matricula": "",
     "Iptu": "",
+    "Cib": "",
     "Ativo": true,
     "Fotos": [
       "demo_imovel_4.jpg"
@@ -176,6 +186,7 @@
     "Finalidade": "Aluguel",
     "Status": "Alugado",
     "Valor": 3200,
+    "PercentualEmpresa": 10,
     "Quartos": 0,
     "Suites": 0,
     "Banheiros": 0,
@@ -187,6 +198,7 @@
     "MatriculaSabesp": "SAB-00445566",
     "Matricula": "",
     "Iptu": "",
+    "Cib": "",
     "Ativo": true,
     "Fotos": [
       "demo_imovel_5.jpg"

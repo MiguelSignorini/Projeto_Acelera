@@ -69,7 +69,11 @@ namespace SaciGestao.Service
 
             Cl("CLÁUSULA SEGUNDA: DO OBJETO");
             It("2.1 - O PROMITENTE VENDEDOR por este Instrumento compromete-se a vender à PROMITENTE COMPRADORA o imóvel a seguir mencionado e caracterizado.");
-            It($"2.2 - A PROMITENTE COMPRADORA está comprando {descricaoImovel}, situado na {enderecoImovel}, Inscrição Municipal nº {inscricaoMunicipal}, matrícula nº {matriculaImovel}.");
+            // CIB (Cadastro Imobiliário Brasileiro, o "CPF do imóvel") só aparece quando o imóvel já tem o código
+            string cib = imovel != null && !string.IsNullOrWhiteSpace(imovel.Cib)
+                ? $", Cadastro Imobiliário Brasileiro (CIB) nº {imovel.Cib.Trim()}"
+                : string.Empty;
+            It($"2.2 - A PROMITENTE COMPRADORA está comprando {descricaoImovel}, situado na {enderecoImovel}, Inscrição Municipal nº {inscricaoMunicipal}, matrícula nº {matriculaImovel}{cib}.");
 
             Cl("CLÁUSULA TERCEIRA: DO PREÇO E FORMA DE PAGAMENTO");
             It($"3.1 - O preço certo e total pela aquisição objeto deste CONTRATO é de R$ {valorTotalFormatado}.");
