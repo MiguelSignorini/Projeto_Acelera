@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Windows.Data;
 using SaciGestao.Models;
@@ -31,7 +32,7 @@ namespace SaciGestao.Models
         public string TelefoneSecundario { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
 
-        // Nome do arquivo da foto dentro da pasta Fotos (null = sem foto, a tela mostra as iniciais)
+        // Caminho da foto dentro da pasta Fotos, ex.: "clientes/abc.jpg" (null = sem foto, a tela mostra as iniciais)
         public string? FotoCaminho { get; set; }
 
         public TipoCliente Tipo { get; set; }
@@ -144,11 +145,39 @@ namespace SaciGestao.Service
             if (lista != null)
             {
                 _clientes.AddRange(lista);
-                _proximoId = _clientes.Max(c => c.Id) + 1;
+                _proximoId = _clientes.Select(c => c.Id).DefaultIfEmpty(0).Max() + 1;
+                MoverFotosAntigas();
                 return;
             }
 
             CarregarExemplos();
+        }
+
+        // Fotos de clientes salvas antes da pasta Fotos\clientes existir ficavam soltas em Fotos:
+        // move o arquivo para Fotos\clientes e atualiza o caminho guardado no cliente.
+        private void MoverFotosAntigas()
+        {
+            foreach (var c in _clientes)
+            {
+                string? foto = c.FotoCaminho;
+                if (string.IsNullOrEmpty(foto) || Path.IsPathRooted(foto) || foto.Contains('/') || foto.Contains('\\'))
+                    continue;
+
+                string novo = Persistencia.SubpastaClientes + "/" + foto;
+                string antigo = Path.Combine(Persistencia.PastaFotos, foto);
+                string destino = Path.Combine(Persistencia.PastaFotosClientes, foto);
+
+                try
+                {
+                    if (!File.Exists(destino) && File.Exists(antigo))
+                    {
+                        Directory.CreateDirectory(Persistencia.PastaFotosClientes);
+                        File.Move(antigo, destino);
+                    }
+                    if (File.Exists(destino)) c.FotoCaminho = novo;
+                }
+                catch { /* sem permissão etc.: mantém o caminho antigo, que continua funcionando */ }
+            }
         }
 
         public void Salvar()

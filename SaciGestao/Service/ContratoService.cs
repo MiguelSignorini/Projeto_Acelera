@@ -26,7 +26,7 @@ namespace SaciGestao.Service
             if (lista != null)
             {
                 _contratos.AddRange(lista);
-                _proximoId = _contratos.Max(c => c.Id) + 1;
+                _proximoId = _contratos.Select(c => c.Id).DefaultIfEmpty(0).Max() + 1;
                 return;
             }
 
@@ -51,9 +51,7 @@ namespace SaciGestao.Service
             _contratos.Add(contrato);
 
             // Regra RF12: Atualizar automaticamente o status do imóvel para Alugado ou Vendido
-            AtualizarStatusImovel(contrato.ImovelId, contrato.Tipo == TipoContrato.Locacao
-                ? StatusImovel.Alugado
-                : StatusImovel.Vendido);
+            AplicarStatusImovel(contrato);
         }
 
         public void Atualizar(Contrato editado)
@@ -90,9 +88,45 @@ namespace SaciGestao.Service
             existente.MesesIsencaoMultaRescisao = editado.MesesIsencaoMultaRescisao;
             existente.Observacoes = editado.Observacoes;
 
-            AtualizarStatusImovel(existente.ImovelId, existente.Tipo == TipoContrato.Locacao
-                ? StatusImovel.Alugado
-                : StatusImovel.Vendido);
+            AplicarStatusImovel(existente);
+        }
+
+        // Contrato Ativo ocupa o imóvel (Alugado/Vendido); Encerrado ou Cancelado devolve para Disponível
+        private void AplicarStatusImovel(Contrato contrato)
+        {
+            if (contrato.Status == StatusContrato.Ativo)
+                AtualizarStatusImovel(contrato.ImovelId, contrato.Tipo == TipoContrato.Locacao
+                    ? StatusImovel.Alugado
+                    : StatusImovel.Vendido);
+            else
+                DevolverImovelSeNaoTiverOutroContrato(contrato.ImovelId, contrato.Id);
+        }
+
+        // Usado antes de excluir cliente/imóvel: existe contrato apontando para ele?
+        public bool ClienteTemContrato(int clienteId) =>
+            _contratos.Any(c => c.LocatarioId == clienteId || c.LocadorId == clienteId);
+
+        public bool ImovelTemContrato(int imovelId) =>
+            _contratos.Any(c => c.ImovelId == imovelId);
+
+        // Contrato ativo que ocupa o imóvel (ignorando um contrato, ex.: o que está sendo editado)
+        public Contrato? ContratoAtivoDoImovel(int imovelId, int contratoIdIgnorado = 0) =>
+            _contratos.FirstOrDefault(c => c.Ativo && c.Status == StatusContrato.Ativo &&
+                                           c.ImovelId == imovelId && c.Id != contratoIdIgnorado);
+
+        // Mantém nomes copiados nos contratos iguais ao cadastro (chamado ao editar cliente/imóvel)
+        public void AtualizarNomeCliente(int clienteId, string nome)
+        {
+            foreach (var c in _contratos)
+            {
+                if (c.LocatarioId == clienteId) c.LocatarioNome = nome;
+                if (c.LocadorId == clienteId) c.LocadorNome = nome;
+            }
+        }
+
+        public void AtualizarTituloImovel(int imovelId, string titulo)
+        {
+            foreach (var c in _contratos.Where(c => c.ImovelId == imovelId)) c.ImovelTitulo = titulo;
         }
 
         public void Excluir(int id)
@@ -101,6 +135,9 @@ namespace SaciGestao.Service
             if (contrato == null) return;
 
             _contratos.RemoveAll(c => c.Id == id);
+
+            // Pagamentos do contrato saem junto (senão ficariam "soltos" no Financeiro)
+            FinanceiroService.Instancia.RemoverDoContrato(id);
 
             // Devolve o imóvel para Disponível, a menos que outro contrato ativo ainda o use
             DevolverImovelSeNaoTiverOutroContrato(contrato.ImovelId, contrato.Id);

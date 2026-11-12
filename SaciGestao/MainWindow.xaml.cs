@@ -52,6 +52,7 @@ namespace SaciGestao
         private void VoltarAoLogin()
         {
             _usuarioLogado = null;
+            UsuarioService.Instancia.Sair();
             FecharMenu();
             AreaConteudo.Content = null;
             foreach (var rb in new[] { rbDashboard, rbImoveis, rbClientes, rbContratos, rbFinanceiro })
@@ -104,7 +105,8 @@ namespace SaciGestao
             rolagemConteudo.Margin = new Thickness(celular ? 10 : 24);
             txtBemVindo.FontSize = celular ? 16 : 20;
             txtBemVindo.Visibility = largura < 520 ? Visibility.Collapsed : Visibility.Visible;
-            caixaBusca.Width = largura < 520 ? Math.Max(120, largura - 160) : celular ? 180 : 270;
+            caixaData.Visibility = largura < 820 ? Visibility.Collapsed : Visibility.Visible;
+            rotuloMenu.Visibility = compacto ? Visibility.Collapsed : Visibility.Visible;
         }
 
         private void AbrirMenu_Click(object sender, RoutedEventArgs e)
@@ -182,6 +184,10 @@ namespace SaciGestao
         {
             if (_usuarioLogado == null) return;
             runNomeUsuario.Text = _usuarioLogado.NomeCompleto;
+
+            // Ex.: "Quinta, 12 de novembro" (primeira letra maiúscula)
+            string hoje = DateTime.Today.ToString("dddd, d 'de' MMMM", new System.Globalization.CultureInfo("pt-BR"));
+            txtData.Text = char.ToUpper(hoje[0]) + hoje.Substring(1).Replace("-feira", "");
 
             string? foto = _usuarioLogado.FotoCaminho;
             fotoPerfil.Fill = null;

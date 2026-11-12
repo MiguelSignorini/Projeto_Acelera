@@ -14,11 +14,11 @@
         <h:CompactoParaAlinhamentoConverter x:Key="CompactoParaAlinhamento"/>
 
         <!-- Cores do mockup -->
-        <SolidColorBrush x:Key="CorMenuHover" Color="#2C3742"/>
-        <SolidColorBrush x:Key="CorMenuAtivo" Color="#161C22"/>
-        <SolidColorBrush x:Key="CorTextoMenu" Color="#AEB7C2"/>
+        <SolidColorBrush x:Key="CorMenuHover" Color="#1E293B"/>
+        <SolidColorBrush x:Key="CorMenuAtivo" Color="#1D3254"/>
+        <SolidColorBrush x:Key="CorTextoMenu" Color="#A9B4C4"/>
         <SolidColorBrush x:Key="CorDestaque" Color="#8DBBF7"/>
-        <SolidColorBrush x:Key="CorFundo" Color="#F1F3F6"/>
+        <SolidColorBrush x:Key="CorFundo" Color="#F2F4F8"/>
         <SolidColorBrush x:Key="CorTexto" Color="#1F2933"/>
 
         <!-- Item do menu lateral (no modo compacto mostra só o ícone) -->
@@ -26,23 +26,29 @@
             <Setter Property="GroupName" Value="Menu"/>
             <Setter Property="Foreground" Value="{StaticResource CorTextoMenu}"/>
             <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Height" Value="46"/>
-            <Setter Property="Margin" Value="10,3"/>
+            <Setter Property="Height" Value="44"/>
+            <Setter Property="Margin" Value="12,2"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="RadioButton">
-                        <Border x:Name="fundo" CornerRadius="6"
-                                Background="Transparent" Padding="14,0">
-                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center"
-                                        HorizontalAlignment="{Binding (h:Responsivo.Compacto), RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource CompactoParaAlinhamento}}">
-                                <TextBlock Text="{TemplateBinding Tag}"
-                                           FontFamily="Segoe MDL2 Assets" FontSize="18"
-                                           Width="28" VerticalAlignment="Center"/>
-                                <TextBlock x:Name="texto" Text="{TemplateBinding Content}"
-                                           FontSize="15" Margin="8,0,0,0"
-                                           VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </Border>
+                        <Grid>
+                            <Border x:Name="fundo" CornerRadius="8"
+                                    Background="Transparent" Padding="14,0">
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center"
+                                            HorizontalAlignment="{Binding (h:Responsivo.Compacto), RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource CompactoParaAlinhamento}}">
+                                    <TextBlock x:Name="icone" Text="{TemplateBinding Tag}"
+                                               FontFamily="Segoe MDL2 Assets" FontSize="17"
+                                               Width="28" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="texto" Text="{TemplateBinding Content}"
+                                               FontSize="14.5" Margin="8,0,0,0"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+                            <!-- Barrinha azul que marca a tela aberta -->
+                            <Border x:Name="marcador" Width="3" Height="22" CornerRadius="2"
+                                    HorizontalAlignment="Left" Margin="-12,0,0,0"
+                                    Background="{StaticResource CorDestaque}" Visibility="Hidden"/>
+                        </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="h:Responsivo.Compacto" Value="True">
                                 <Setter TargetName="texto" Property="Visibility" Value="Collapsed"/>
@@ -51,11 +57,15 @@
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="fundo" Property="Background"
                                         Value="{StaticResource CorMenuHover}"/>
+                                <Setter Property="Foreground" Value="White"/>
                             </Trigger>
                             <Trigger Property="IsChecked" Value="True">
                                 <Setter TargetName="fundo" Property="Background"
                                         Value="{StaticResource CorMenuAtivo}"/>
-                                <Setter Property="Foreground" Value="{StaticResource CorDestaque}"/>
+                                <Setter TargetName="marcador" Property="Visibility" Value="Visible"/>
+                                <Setter TargetName="icone" Property="Foreground" Value="{StaticResource CorDestaque}"/>
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter Property="FontWeight" Value="SemiBold"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -67,20 +77,20 @@
         <Style x:Key="MenuAcaoStyle" TargetType="Button">
             <Setter Property="Foreground" Value="{StaticResource CorTextoMenu}"/>
             <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Height" Value="46"/>
-            <Setter Property="Margin" Value="10,3"/>
+            <Setter Property="Height" Value="42"/>
+            <Setter Property="Margin" Value="12,2"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border x:Name="fundo" CornerRadius="6"
+                        <Border x:Name="fundo" CornerRadius="8"
                                 Background="Transparent" Padding="14,0">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center"
                                         HorizontalAlignment="{Binding (h:Responsivo.Compacto), RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource CompactoParaAlinhamento}}">
                                 <TextBlock Text="{TemplateBinding Tag}"
-                                           FontFamily="Segoe MDL2 Assets" FontSize="18"
+                                           FontFamily="Segoe MDL2 Assets" FontSize="17"
                                            Width="28" VerticalAlignment="Center"/>
                                 <TextBlock x:Name="texto" Text="{TemplateBinding Content}"
-                                           FontSize="15" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                                           FontSize="14.5" Margin="8,0,0,0" VerticalAlignment="Center"/>
                             </StackPanel>
                         </Border>
                         <ControlTemplate.Triggers>
@@ -158,6 +168,8 @@
                 <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto"
                               HorizontalScrollBarVisibility="Disabled">
                     <StackPanel>
+                        <TextBlock x:Name="rotuloMenu" Text="MENU" FontSize="11" FontWeight="SemiBold"
+                                   Foreground="#7D8A9E" Margin="28,6,0,8"/>
                         <RadioButton x:Name="rbDashboard" Content="Dashboard" Tag="&#xF0E2;" ToolTip="Dashboard"
                                      Style="{StaticResource MenuItemStyle}" Checked="Menu_Checked"/>
                         <RadioButton x:Name="rbImoveis" Content="Imóveis" Tag="&#xE80F;" ToolTip="Imóveis"
@@ -173,6 +185,7 @@
 
                 <!-- Salvar (grava nos JSON principais e fecha o sistema) e Sair, fixos no rodapé -->
                 <StackPanel Grid.Row="2" Margin="0,0,0,16">
+                    <Border Height="1" Background="#263247" Margin="20,0,20,10"/>
                     <Button Content="Salvar" Tag="&#xE74E;" ToolTip="Salvar nos JSON principais e fechar"
                             Style="{StaticResource MenuAcaoStyle}" Click="Salvar_Click"/>
                     <Button Content="Sair" Tag="&#xE7E8;" ToolTip="Sair"
@@ -189,7 +202,7 @@
 
                 <!-- Barra superior -->
                 <Border Grid.Row="0" Background="White"
-                        BorderBrush="#E1E5EA" BorderThickness="0,0,0,1">
+                        BorderBrush="{StaticResource BordaSuave}" BorderThickness="0,0,0,1">
                     <Grid x:Name="barraTopo" Margin="28,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
@@ -212,36 +225,16 @@
                         <StackPanel Grid.Column="2" Orientation="Horizontal"
                                     VerticalAlignment="Center">
 
-                            <!-- Campo de busca com placeholder -->
-                            <Border x:Name="caixaBusca" Width="270" Height="40" CornerRadius="6" Background="#E9ECF0">
-                                <Grid Margin="12,0">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Text="&#xE721;" FontFamily="Segoe MDL2 Assets"
-                                               FontSize="16" Foreground="#5B6570"
-                                               VerticalAlignment="Center"/>
-                                    <Grid Grid.Column="1" Margin="10,0,0,0">
-                                        <TextBox x:Name="txtBusca" BorderThickness="0"
-                                                 Background="Transparent" FontSize="14"
-                                                 VerticalContentAlignment="Center"/>
-                                        <TextBlock Text="Buscar..." Foreground="#5F6B7A" FontSize="14"
-                                                   IsHitTestVisible="False" VerticalAlignment="Center"
-                                                   Margin="2,0,0,0">
-                                            <TextBlock.Style>
-                                                <Style TargetType="TextBlock">
-                                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding Text, ElementName=txtBusca}" Value="">
-                                                            <Setter Property="Visibility" Value="Visible"/>
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </TextBlock.Style>
-                                        </TextBlock>
-                                    </Grid>
-                                </Grid>
+                            <!-- Data de hoje (some em telas estreitas) -->
+                            <Border x:Name="caixaData" Height="36" CornerRadius="18" Padding="14,0"
+                                    Background="{StaticResource FundoApp}" BorderBrush="{StaticResource BordaSuave}"
+                                    BorderThickness="1">
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBlock Text="&#xE787;" FontFamily="Segoe MDL2 Assets" FontSize="14"
+                                               Foreground="{StaticResource Primaria}" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="txtData" Margin="8,0,0,0" FontSize="13.5"
+                                               Foreground="{StaticResource TextoSuave}" VerticalAlignment="Center"/>
+                                </StackPanel>
                             </Border>
 
                             <!-- Foto do usuário logado: clique abre as configurações do perfil -->
@@ -253,10 +246,10 @@
                                     </ControlTemplate>
                                 </Button.Template>
                                 <Grid Width="44" Height="44">
-                                    <Ellipse x:Name="fundoPerfil" Fill="#E4E8EE"
-                                             Stroke="{StaticResource Primaria}" StrokeThickness="2"/>
+                                    <Ellipse x:Name="fundoPerfil" Fill="{StaticResource PrimariaClara}"
+                                             Stroke="{StaticResource PrimariaMedia}" StrokeThickness="2"/>
                                     <TextBlock x:Name="iconePerfil" Text="&#xE77B;" FontFamily="Segoe MDL2 Assets"
-                                               FontSize="20" Foreground="{StaticResource CorTexto}"
+                                               FontSize="19" Foreground="{StaticResource Primaria}"
                                                HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                     <Ellipse x:Name="fotoPerfil" Margin="2"/>
                                 </Grid>

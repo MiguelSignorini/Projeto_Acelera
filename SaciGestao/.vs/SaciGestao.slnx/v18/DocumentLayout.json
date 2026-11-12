@@ -1,17 +1,37 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\Profe\\Desktop\\GIT\\Projeto_Acelera\\SaciGestao\\",
+  "WorkspaceRootPath": "C:\\Users\\T-GAMER\\Documents\\GitHub\\Projeto_Acelera\\SaciGestao\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|c:\\users\\profe\\desktop\\git\\projeto_acelera\\sacigestao\\json\\comparacao\\clientes.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "AbsoluteMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|c:\\users\\t-gamer\\documents\\github\\projeto_acelera\\sacigestao\\json\\imoveis.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|solutionrelative:json\\imoveis.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|c:\\users\\t-gamer\\documents\\github\\projeto_acelera\\sacigestao\\json\\contratos.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|solutionrelative:json\\contratos.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|c:\\users\\t-gamer\\documents\\github\\projeto_acelera\\sacigestao\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|solutionrelative:mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|c:\\users\\t-gamer\\documents\\github\\projeto_acelera\\sacigestao\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|solutionrelative:mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|c:\\users\\t-gamer\\documents\\github\\projeto_acelera\\sacigestao\\sacigestao.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|solutionrelative:sacigestao.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|c:\\users\\t-gamer\\documents\\github\\projeto_acelera\\sacigestao\\json\\comparacao\\clientes.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|solutionrelative:json\\comparacao\\clientes.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|c:\\users\\profe\\desktop\\git\\projeto_acelera\\sacigestao\\json\\clientes.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "AbsoluteMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|c:\\users\\t-gamer\\documents\\github\\projeto_acelera\\sacigestao\\json\\clientes.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|solutionrelative:json\\clientes.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|c:\\users\\profe\\desktop\\git\\projeto_acelera\\sacigestao\\models\\cliente.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|c:\\users\\t-gamer\\documents\\github\\projeto_acelera\\sacigestao\\models\\cliente.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|solutionrelative:models\\cliente.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -39,10 +59,70 @@
             {
               "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "contratos.json",
+              "DocumentMoniker": "C:\\Users\\T-GAMER\\Documents\\GitHub\\Projeto_Acelera\\SaciGestao\\Json\\contratos.json",
+              "RelativeDocumentMoniker": "Json\\contratos.json",
+              "ToolTip": "C:\\Users\\T-GAMER\\Documents\\GitHub\\Projeto_Acelera\\SaciGestao\\Json\\contratos.json",
+              "RelativeToolTip": "Json\\contratos.json",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAAAsAAAAYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-11-12T19:19:57.752Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "imoveis.json",
+              "DocumentMoniker": "C:\\Users\\T-GAMER\\Documents\\GitHub\\Projeto_Acelera\\SaciGestao\\Json\\imoveis.json",
+              "RelativeDocumentMoniker": "Json\\imoveis.json",
+              "ToolTip": "C:\\Users\\T-GAMER\\Documents\\GitHub\\Projeto_Acelera\\SaciGestao\\Json\\imoveis.json",
+              "RelativeToolTip": "Json\\imoveis.json",
+              "ViewState": "AgIAAHUAAAAAAAAAAAAAAIQAAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-11-12T19:19:52.446Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "MainWindow.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\T-GAMER\\Documents\\GitHub\\Projeto_Acelera\\SaciGestao\\MainWindow.xaml.cs",
+              "RelativeDocumentMoniker": "MainWindow.xaml.cs",
+              "ToolTip": "C:\\Users\\T-GAMER\\Documents\\GitHub\\Projeto_Acelera\\SaciGestao\\MainWindow.xaml.cs",
+              "RelativeToolTip": "MainWindow.xaml.cs",
+              "ViewState": "AgIAADUAAAAAAAAAAAAuwEAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-11-12T18:55:40.02Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "MainWindow.xaml",
+              "DocumentMoniker": "C:\\Users\\T-GAMER\\Documents\\GitHub\\Projeto_Acelera\\SaciGestao\\MainWindow.xaml",
+              "RelativeDocumentMoniker": "MainWindow.xaml",
+              "ToolTip": "C:\\Users\\T-GAMER\\Documents\\GitHub\\Projeto_Acelera\\SaciGestao\\MainWindow.xaml",
+              "RelativeToolTip": "MainWindow.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-11-12T18:55:32.095Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "SaciGestao.csproj",
+              "DocumentMoniker": "C:\\Users\\T-GAMER\\Documents\\GitHub\\Projeto_Acelera\\SaciGestao\\SaciGestao.csproj",
+              "RelativeDocumentMoniker": "SaciGestao.csproj",
+              "ToolTip": "C:\\Users\\T-GAMER\\Documents\\GitHub\\Projeto_Acelera\\SaciGestao\\SaciGestao.csproj",
+              "RelativeToolTip": "SaciGestao.csproj",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAABgAAAAxAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-11-12T18:55:15.262Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
               "Title": "clientes.json",
-              "DocumentMoniker": "C:\\Users\\Profe\\Desktop\\GIT\\Projeto_Acelera\\SaciGestao\\Json\\clientes.json",
+              "DocumentMoniker": "C:\\Users\\T-GAMER\\Documents\\GitHub\\Projeto_Acelera\\SaciGestao\\Json\\clientes.json",
               "RelativeDocumentMoniker": "Json\\clientes.json",
-              "ToolTip": "C:\\Users\\Profe\\Desktop\\GIT\\Projeto_Acelera\\SaciGestao\\Json\\clientes.json",
+              "ToolTip": "C:\\Users\\T-GAMER\\Documents\\GitHub\\Projeto_Acelera\\SaciGestao\\Json\\clientes.json",
               "RelativeToolTip": "Json\\clientes.json",
               "ViewState": "AgIAAG0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
@@ -50,24 +130,23 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 5,
               "Title": "clientes.json",
-              "DocumentMoniker": "C:\\Users\\Profe\\Desktop\\GIT\\Projeto_Acelera\\SaciGestao\\Json\\Comparacao\\clientes.json",
+              "DocumentMoniker": "C:\\Users\\T-GAMER\\Documents\\GitHub\\Projeto_Acelera\\SaciGestao\\Json\\Comparacao\\clientes.json",
               "RelativeDocumentMoniker": "Json\\Comparacao\\clientes.json",
-              "ToolTip": "C:\\Users\\Profe\\Desktop\\GIT\\Projeto_Acelera\\SaciGestao\\Json\\Comparacao\\clientes.json",
+              "ToolTip": "C:\\Users\\T-GAMER\\Documents\\GitHub\\Projeto_Acelera\\SaciGestao\\Json\\Comparacao\\clientes.json",
               "RelativeToolTip": "Json\\Comparacao\\clientes.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAIoAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAC0AAAAAAAAAAAAAAEEAAAARAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2026-10-30T21:39:16.542Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-10-30T21:39:16.542Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 7,
               "Title": "Cliente.cs",
-              "DocumentMoniker": "C:\\Users\\Profe\\Desktop\\GIT\\Projeto_Acelera\\SaciGestao\\Models\\Cliente.cs",
+              "DocumentMoniker": "C:\\Users\\T-GAMER\\Documents\\GitHub\\Projeto_Acelera\\SaciGestao\\Models\\Cliente.cs",
               "RelativeDocumentMoniker": "Models\\Cliente.cs",
-              "ToolTip": "C:\\Users\\Profe\\Desktop\\GIT\\Projeto_Acelera\\SaciGestao\\Models\\Cliente.cs",
+              "ToolTip": "C:\\Users\\T-GAMER\\Documents\\GitHub\\Projeto_Acelera\\SaciGestao\\Models\\Cliente.cs",
               "RelativeToolTip": "Models\\Cliente.cs",
               "ViewState": "AgIAAEAAAAAAAAAAAAAmwE4AAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",

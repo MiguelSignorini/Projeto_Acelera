@@ -27,6 +27,10 @@ namespace SaciGestao.Models
         public decimal ValorRecebido { get; set; }
         public decimal Percentual { get; set; }
 
+        // Venda parcelada: número desta parcela e total de parcelas (locação e venda à vista = 1/1)
+        public int Parcela { get; set; } = 1;
+        public int TotalParcelas { get; set; } = 1;
+
         // ---------- Cálculos ----------
         // Data usada nos filtros e na ordenação: dia do pagamento, se já foi pago; senão o vencimento
         public DateTime Data => Pago && DataPagamento.HasValue ? DataPagamento.Value.Date : Vencimento.Date;
@@ -56,10 +60,11 @@ namespace SaciGestao.Models
 
         public string ReferenciaTexto => EhLocacao
             ? "Ref. " + Competencia.ToString("MM/yyyy")
-            : "Venda";
+            : (TotalParcelas > 1 ? "Parcela " + Parcela + "/" + TotalParcelas : "Venda");
 
         // Texto usado na lista de parcelas do diálogo "Registrar pagamento"
-        public string ParcelaTexto => (EhLocacao ? Competencia.ToString("MM/yyyy") : "Valor da venda")
+        public string ParcelaTexto => (EhLocacao ? Competencia.ToString("MM/yyyy")
+                : TotalParcelas > 1 ? "Parcela " + Parcela + "/" + TotalParcelas : "Valor da venda")
             + " • " + ValorPrevisto.ToString("C2", PtBr) + " • vence " + Vencimento.ToString("dd/MM/yyyy")
             + (Atrasado ? " (atrasado)" : "");
 

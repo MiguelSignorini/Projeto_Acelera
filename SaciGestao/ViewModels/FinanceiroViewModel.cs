@@ -377,6 +377,20 @@ namespace SaciGestao.ViewModels
                 return;
             }
 
+            // Aceita pagamento parcial e com juros/multa, mas barra valor fora de proporção (erro de digitação)
+            if (valor > ParcelaSelecionada.ValorPrevisto * 2)
+            {
+                ErroForm = $"O valor recebido ({valor.ToString("C2", PtBr)}) é mais que o dobro da parcela " +
+                           $"({ParcelaSelecionada.ValorPrevisto.ToString("C2", PtBr)}). Confira o valor digitado.";
+                return;
+            }
+
+            if (DataPagamentoForm.Date > DateTime.Today)
+            {
+                ErroForm = "A data do pagamento não pode ser no futuro.";
+                return;
+            }
+
             if (!ConfirmadoForm)
             {
                 ErroForm = "Marque a confirmação de que o pagamento foi recebido. Sem ela o pagamento continua pendente.";
@@ -411,10 +425,10 @@ namespace SaciGestao.ViewModels
         {
             if (linha == null || !linha.Pago) return;
 
-            var resposta = MessageBox.Show(
-                $"Desfazer o registro deste pagamento?\n\n{linha.Descricao}\n{linha.ValorTexto}\n\nEle volta a ficar como Pendente.",
-                "Desfazer pagamento", MessageBoxButton.YesNo, MessageBoxImage.Question);
-            if (resposta != MessageBoxResult.Yes) return;
+            if (!Views.Dialogo.Confirmar("Desfazer pagamento",
+                    $"{linha.Descricao}\n{linha.ValorTexto}\n\nO pagamento volta a ficar como Pendente.",
+                    "Desfazer", Views.TipoDialogo.Atencao))
+                return;
 
             FinanceiroService.Instancia.Desfazer(linha.PagamentoId);
             Recarregar();

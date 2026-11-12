@@ -12,22 +12,7 @@
         <conv:CaminhoParaImagemConverter x:Key="CaminhoParaImagem"/>
         <BooleanToVisibilityConverter x:Key="BoolParaVisibilidade"/>
 
-
-        <!-- Cartão branco -->
-        <Style x:Key="Cartao" TargetType="Border">
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="CornerRadius" Value="12"/>
-            <Setter Property="BorderBrush" Value="#E6E9EE"/>
-            <Setter Property="BorderThickness" Value="1"/>
-        </Style>
-
-        <Style x:Key="Rotulo" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="Foreground" Value="{StaticResource Texto}"/>
-            <Setter Property="Margin" Value="0,0,0,6"/>
-        </Style>
-
-        <!-- Título de cada seção do formulário (DADOS PESSOAIS / CONTATO / ...) -->
+<!-- Título de cada seção do formulário (DADOS PESSOAIS / CONTATO / ...) -->
         <Style x:Key="TituloSecaoForm" TargetType="TextBlock">
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="FontWeight" Value="Bold"/>
@@ -35,143 +20,13 @@
             <Setter Property="Margin" Value="0,22,0,10"/>
         </Style>
 
-        <!-- Campos de texto do formulário -->
-        <Style x:Key="CampoForm" TargetType="TextBox">
-            <Setter Property="Height" Value="38"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="Padding" Value="10,0"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="BorderBrush" Value="{StaticResource Borda}"/>
-            <Setter Property="BorderThickness" Value="1"/>
-        </Style>
-
-        <Style x:Key="DataPickerForm" TargetType="DatePicker">
+<Style x:Key="DataPickerForm" TargetType="DatePicker">
             <Setter Property="Height" Value="38"/>
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
         </Style>
 
-        <!-- ComboBox arredondado, usado nos filtros e no formulário -->
-        <Style x:Key="ComboArredondado" TargetType="ComboBox">
-            <Setter Property="Height" Value="38"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="Foreground" Value="{StaticResource Texto}"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="ComboBox">
-                        <Grid>
-                            <ToggleButton x:Name="toggle" Focusable="False" ClickMode="Press"
-                                          IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
-                                <ToggleButton.Template>
-                                    <ControlTemplate TargetType="ToggleButton">
-                                        <Border Background="White" BorderBrush="{StaticResource Borda}"
-                                                BorderThickness="1" CornerRadius="8">
-                                            <TextBlock Text="&#xE70D;" FontFamily="Segoe MDL2 Assets"
-                                                       FontSize="11" Foreground="{StaticResource TextoSuave}"
-                                                       HorizontalAlignment="Right" VerticalAlignment="Center"
-                                                       Margin="0,0,12,0"/>
-                                        </Border>
-                                    </ControlTemplate>
-                                </ToggleButton.Template>
-                            </ToggleButton>
-                            <ContentPresenter IsHitTestVisible="False" Margin="12,0,32,0"
-                                              VerticalAlignment="Center" HorizontalAlignment="Left"
-                                              Content="{TemplateBinding SelectionBoxItem}"
-                                              ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"/>
-                            <Popup IsOpen="{TemplateBinding IsDropDownOpen}" Placement="Bottom"
-                                   AllowsTransparency="True" Focusable="False" PopupAnimation="Slide">
-                                <Border MinWidth="{Binding ActualWidth, RelativeSource={RelativeSource TemplatedParent}}"
-                                        MaxHeight="{TemplateBinding MaxDropDownHeight}"
-                                        Margin="0,4,0,0" Background="White"
-                                        BorderBrush="{StaticResource Borda}" BorderThickness="1"
-                                        CornerRadius="8">
-                                    <ScrollViewer>
-                                        <StackPanel IsItemsHost="True"
-                                                    KeyboardNavigation.DirectionalNavigation="Contained"/>
-                                    </ScrollViewer>
-                                </Border>
-                            </Popup>
-                        </Grid>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <!-- Botão vermelho (Novo Cliente / Salvar Cliente) -->
-        <Style x:Key="BotaoPrimario" TargetType="Button">
-            <Setter Property="Background" Value="{StaticResource Primaria}"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="FontSize" Value="15"/>
-            <Setter Property="Height" Value="42"/>
-            <Setter Property="Padding" Value="20,0"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border x:Name="fundo" Background="{TemplateBinding Background}"
-                                CornerRadius="8" Padding="{TemplateBinding Padding}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="fundo" Property="Background" Value="#174A96"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <!-- Botão contornado (Cancelar) -->
-        <Style x:Key="BotaoContorno" TargetType="Button">
-            <Setter Property="Foreground" Value="{StaticResource Texto}"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="Height" Value="42"/>
-            <Setter Property="Padding" Value="18,0"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border x:Name="fundo" Background="White" BorderBrush="{StaticResource Borda}"
-                                BorderThickness="1" CornerRadius="8" Padding="{TemplateBinding Padding}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="fundo" Property="Background" Value="#F1F3F6"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <!-- Botão de texto discreto (Excluir dentro do formulário) -->
-        <Style x:Key="BotaoTextoPerigo" TargetType="Button">
-            <Setter Property="Foreground" Value="{StaticResource Perigo}"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="Height" Value="38"/>
-            <Setter Property="Padding" Value="14,0"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border x:Name="fundo" Background="Transparent" CornerRadius="8"
-                                Padding="{TemplateBinding Padding}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="fundo" Property="Background" Value="{StaticResource PerigoClaro}"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <!-- Chip de filtro (Todos / Proprietários / Compradores / Inquilinos) -->
+<!-- Chip de filtro (Todos / Proprietários / Compradores / Inquilinos) -->
         <Style x:Key="ChipFiltro" TargetType="RadioButton">
             <Setter Property="GroupName" Value="FiltroTipo"/>
             <Setter Property="Cursor" Value="Hand"/>
@@ -212,90 +67,10 @@
             <Setter Property="Foreground" Value="{StaticResource Texto}"/>
         </Style>
 
-        <!-- Botões de ação da tabela -->
-        <Style x:Key="BotaoAcao" TargetType="Button">
-            <Setter Property="AutomationProperties.Name" Value="{Binding ToolTip, RelativeSource={RelativeSource Self}}"/>
-            <Setter Property="Width" Value="34"/>
-            <Setter Property="Height" Value="34"/>
-            <Setter Property="Margin" Value="0,0,6,0"/>
-            <Setter Property="Background" Value="#E4E8EE"/>
-            <Setter Property="Foreground" Value="{StaticResource Texto}"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" CornerRadius="6">
-                            <TextBlock Text="{TemplateBinding Content}"
-                                       FontFamily="Segoe MDL2 Assets" FontSize="15"
-                                       Foreground="{TemplateBinding Foreground}"
-                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Opacity" Value="0.75"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style x:Key="BotaoAcaoPerigo" TargetType="Button" BasedOn="{StaticResource BotaoAcao}">
-            <Setter Property="Background" Value="#F8D7D7"/>
-            <Setter Property="Foreground" Value="{StaticResource Perigo}"/>
-        </Style>
-
-        <!-- Botão Excluir da linha: aparece para qualquer status -->
+<!-- Botão Excluir da linha: aparece para qualquer status -->
         <Style x:Key="BotaoExcluirLinha" TargetType="Button" BasedOn="{StaticResource BotaoAcaoPerigo}"/>
 
-        <!-- Estilo da tabela -->
-        <Style x:Key="CabecalhoColuna" TargetType="DataGridColumnHeader">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="DataGridColumnHeader">
-                        <Border Background="White" BorderBrush="{StaticResource Primaria}"
-                                BorderThickness="0,0,0,2" Padding="8,10">
-                            <ContentPresenter VerticalAlignment="Center"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="Foreground" Value="{StaticResource Texto}"/>
-        </Style>
-
-        <Style x:Key="CelulaGrid" TargetType="DataGridCell">
-            <Setter Property="Focusable" Value="False"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="DataGridCell">
-                        <Border Background="Transparent" BorderBrush="#E3E6EB" BorderThickness="0,0,0,1">
-                            <ContentPresenter VerticalAlignment="Center"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style x:Key="LinhaGrid" TargetType="DataGridRow">
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="Foreground" Value="{StaticResource Texto}"/>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#F7F8FA"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-
-        <Style x:Key="TextoCelula" TargetType="TextBlock">
-            <Setter Property="Margin" Value="8,0"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
-        </Style>
-
-        <!-- Ponto e texto coloridos do status -->
+<!-- Ponto e texto coloridos do status -->
         <Style x:Key="PontoStatus" TargetType="Ellipse">
             <Setter Property="Width" Value="8"/>
             <Setter Property="Height" Value="8"/>
@@ -394,7 +169,7 @@
         </Grid.RowDefinitions>
 
         <!-- ============ TÍTULO ============ -->
-        <Grid Grid.Row="0" h:Adaptavel.LarguraMinima="640">
+        <Grid Grid.Row="0" h:Adaptavel.LarguraMinima="280">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
@@ -404,13 +179,13 @@
                 <TextBlock FontSize="28" FontWeight="Bold" Foreground="{StaticResource Texto}">
                     <TextBlock.Style>
                         <Style TargetType="TextBlock">
-                            <Setter Property="Text" Value="CLIENTES"/>
+                            <Setter Property="Text" Value="Clientes"/>
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding MostrandoFormulario}" Value="True">
                                     <Setter Property="Text" Value="{Binding TituloFormulario}"/>
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding MostrandoDetalhes}" Value="True">
-                                    <Setter Property="Text" Value="DETALHES DO CLIENTE"/>
+                                    <Setter Property="Text" Value="Detalhes do cliente"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -436,7 +211,7 @@
         <Border Grid.Row="1" Style="{StaticResource Cartao}" Margin="0,18,0,0" Padding="20,16"
                 Visibility="{Binding MostrandoLista, Converter={StaticResource BoolParaVisibilidade}}">
             <StackPanel>
-                <TextBlock Text="BARRA DE FILTROS" FontSize="13" FontWeight="Bold"
+                <TextBlock Text="FILTROS" FontSize="13" FontWeight="Bold"
                            Foreground="{StaticResource TextoSuave}" Margin="0,0,0,14"/>
                 <Grid h:Adaptavel.LarguraMinima="640">
                     <Grid.ColumnDefinitions>
@@ -447,7 +222,7 @@
 
                     <StackPanel Grid.Column="0" VerticalAlignment="Bottom">
                         <TextBlock Text="Busca (Nome/CPF)" Style="{StaticResource Rotulo}"/>
-                        <Border Height="38" CornerRadius="8" Background="#E9ECF0">
+                        <Border Height="40" CornerRadius="8" Background="White" BorderBrush="{StaticResource Borda}" BorderThickness="1">
                             <Grid Margin="12,0">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>

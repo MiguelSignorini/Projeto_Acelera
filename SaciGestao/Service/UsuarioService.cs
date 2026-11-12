@@ -22,7 +22,7 @@ namespace SaciGestao.Service
         {
             // Lê Json\usuarios.json ao iniciar; só grava quando o sistema fecha (ver App.OnExit)
             var lista = Persistencia.Carregar<Usuario>(Arquivo);
-            if (lista != null)
+            if (lista != null && lista.Count > 0) // sem nenhum usuário ninguém entraria: recria o admin
             {
                 _usuarios.AddRange(lista);
                 _proximoId = _usuarios.Max(u => u.Id) + 1;

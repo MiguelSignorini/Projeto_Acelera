@@ -13,9 +13,19 @@ namespace SaciGestao
             // Erro inesperado: grava o detalhe em um arquivo e avisa, em vez de fechar o sistema sem explicação
             DispatcherUnhandledException += (s, ev) =>
             {
-                try { System.IO.File.AppendAllText(System.IO.Path.Combine(System.IO.Path.GetTempPath(), "SaciGestao_erro.log"), DateTime.Now + "\n" + ev.Exception + "\n\n"); } catch { }
-                MessageBox.Show("Ocorreu um erro inesperado:\n\n" + ev.Exception.Message, "SaciGestao", MessageBoxButton.OK, MessageBoxImage.Error);
+                string log = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "SaciGestao_erro.log");
+                try { System.IO.File.AppendAllText(log, DateTime.Now + "\n" + ev.Exception + "\n\n"); } catch { }
                 ev.Handled = true;
+                try
+                {
+                    Views.Dialogo.Avisar("Ocorreu um erro inesperado", ev.Exception.Message + "\n\nO sistema continua aberto. Os detalhes técnicos foram gravados em:",
+                                         Views.TipoDialogo.Erro, log);
+                }
+                catch
+                {
+                    // Se até a janela de aviso falhar, usa a caixa simples do Windows
+                    MessageBox.Show("Ocorreu um erro inesperado:\n\n" + ev.Exception.Message, "SaciGestao", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             };
 
             // Os services leem os arquivos da pasta Json na primeira vez que são usados.

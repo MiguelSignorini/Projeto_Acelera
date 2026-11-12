@@ -225,9 +225,9 @@ namespace SaciGestao.ViewModels
             }
         }
 
-        public static int TotalProprietarios => ClienteService.Instancia.ObterTodos().Count(c => c.Tipo == TipoCliente.Proprietário && c.Status != StatusCliente.Inativo);
-        public static int TotalCompradores => ClienteService.Instancia.ObterTodos().Count(c => c.Tipo == TipoCliente.Comprador && c.Status != StatusCliente.Inativo);
-        public static int TotalInquilinos => ClienteService.Instancia.ObterTodos().Count(c => c.Tipo == TipoCliente.Inquilino && c.Status != StatusCliente.Inativo);
+        public int TotalProprietarios => ClienteService.Instancia.ObterTodos().Count(c => c.Tipo == TipoCliente.Proprietário && c.Status != StatusCliente.Inativo);
+        public int TotalCompradores => ClienteService.Instancia.ObterTodos().Count(c => c.Tipo == TipoCliente.Comprador && c.Status != StatusCliente.Inativo);
+        public int TotalInquilinos => ClienteService.Instancia.ObterTodos().Count(c => c.Tipo == TipoCliente.Inquilino && c.Status != StatusCliente.Inativo);
 
         private bool _mostrandoLista = true;
         public bool MostrandoLista
@@ -250,7 +250,7 @@ namespace SaciGestao.ViewModels
             set => SetProperty(ref _mostrandoDetalhes, value);
         }
 
-        private string _tituloFormulario = "NOVO CLIENTE";
+        private string _tituloFormulario = "Novo cliente";
         public string TituloFormulario
         {
             get => _tituloFormulario;
@@ -285,8 +285,8 @@ namespace SaciGestao.ViewModels
             CancelarFormCommand = new RelayCommand(_ => VoltarParaLista());
             FecharDetalhesCommand = new RelayCommand(_ => VoltarParaLista());
             EditarDoDetalheCommand = new RelayCommand(_ => AbrirEditar(ClienteDetalhe));
-            ExcluirDoDetalheCommand = new RelayCommand(_ => { ExcluirCliente(ClienteDetalhe); VoltarParaLista(); });
-            ExcluirDoFormCommand = new RelayCommand(_ => { ExcluirPorId(_idEmEdicao); VoltarParaLista(); });
+            ExcluirDoDetalheCommand = new RelayCommand(_ => { if (ExcluirCliente(ClienteDetalhe)) VoltarParaLista(); });
+            ExcluirDoFormCommand = new RelayCommand(_ => { if (ExcluirPorId(_idEmEdicao)) VoltarParaLista(); });
             EscolherFotoCommand = new RelayCommand(_ => EscolherFoto());
             RemoverFotoCommand = new RelayCommand(_ => FotoForm = null);
 
@@ -306,12 +306,20 @@ namespace SaciGestao.ViewModels
 
             if (!string.IsNullOrWhiteSpace(Busca))
             {
-                var termo = Busca.ToLower();
+                var termo = Busca.Trim();
+                var termoDigitos = Digitos(termo);
+                // CPF encontra digitado com ou sem pontos e traço
                 lista = [.. lista.Where(c => c.Nome.Contains(termo, StringComparison.CurrentCultureIgnoreCase) ||
-                                         c.Cpf.Contains(termo, StringComparison.CurrentCultureIgnoreCase))];
+                                         c.Cpf.Contains(termo, StringComparison.CurrentCultureIgnoreCase) ||
+                                         (termoDigitos.Length >= 3 && Digitos(c.Cpf).Contains(termoDigitos)))];
             }
 
             Clientes = new ObservableCollection<Cliente>(lista);
+
+            // Contadores dos filtros (Proprietários / Compradores / Inquilinos) mudam ao cadastrar ou excluir
+            OnPropertyChanged(nameof(TotalProprietarios));
+            OnPropertyChanged(nameof(TotalCompradores));
+            OnPropertyChanged(nameof(TotalInquilinos));
         }
 
         private void CarregarForm(Cliente c)
@@ -354,16 +362,53 @@ namespace SaciGestao.ViewModels
 
         private static string Digitos(string? texto) => new((texto ?? string.Empty).Where(char.IsDigit).ToArray());
 
-        private static void ExcluirPorId(int id)
+        // Confere os dois dígitos verificadores do CPF (recusa também 000.000.000-00, 111.111.111-11...)
+        private static bool CpfValido(string cpf)
         {
-            if (id == 0) return;
+            if (cpf.Length != 11 || cpf.Distinct().Count() == 1) return false;
+            for (int t = 9; t < 11; t++)
+            {
+                int soma = 0;
+                for (int i = 0; i < t; i++) soma += (cpf[i] - '0') * (t + 1 - i);
+                int digito = soma * 10 % 11 % 10;
+                if (cpf[t] - '0' != digito) return false;
+            }
+            return true;
+        }
+
+        // Confirma e exclui; devolve true se o cliente foi excluído
+        private static bool ExcluirPorId(int id)
+        {
+            if (id == 0) return false;
+
+            var cliente = ClienteService.Instancia.ObterTodos().FirstOrDefault(c => c.Id == id);
+            string nome = cliente?.Nome ?? "este cliente";
+
+            // Não deixa excluir quem ainda está ligado a um contrato ou é dono de um imóvel
+            bool temContrato = ContratoService.Instancia.ClienteTemContrato(id);
+            bool temImovel = ImovelService.Instancia.ObterAtivos().Any(i => i.ProprietarioId == id);
+            if (temContrato || temImovel)
+            {
+                Views.Dialogo.Avisar("Exclusão bloqueada",
+                    $"Não é possível excluir {nome}: ele está vinculado a "
+                    + (temContrato && temImovel ? "contrato(s) e imóvel(is)" : temContrato ? "contrato(s)" : "imóvel(is)")
+                    + ".\n\nExclua ou altere esses registros antes, ou marque o cliente como Inativo.",
+                    Views.TipoDialogo.Atencao);
+                return false;
+            }
+
+            if (!Views.Dialogo.Confirmar("Excluir cliente",
+                    $"{nome} será excluído definitivamente. Essa ação não pode ser desfeita.", "Excluir"))
+                return false;
+
             ClienteService.Instancia.Excluir(id);
+            return true;
         }
 
         private void AbrirNovo()
         {
             CarregarForm(new Cliente());
-            TituloFormulario = "NOVO CLIENTE";
+            TituloFormulario = "Novo cliente";
             SubtituloFormulario = "Preencha os dados do cliente";
             EditandoExistente = false;
             MostrandoLista = false;
@@ -375,7 +420,7 @@ namespace SaciGestao.ViewModels
         {
             if (cliente == null) return;
             CarregarForm(cliente);
-            TituloFormulario = "EDITAR CLIENTE";
+            TituloFormulario = "Editar cliente";
             SubtituloFormulario = cliente.Nome;
             EditandoExistente = true;
             MostrandoLista = false;
@@ -392,11 +437,11 @@ namespace SaciGestao.ViewModels
             MostrandoDetalhes = true;
         }
 
-        private void ExcluirCliente(Cliente? cliente)
+        private bool ExcluirCliente(Cliente? cliente)
         {
-            if (cliente == null) return;
-            ClienteService.Instancia.Excluir(cliente.Id);
+            if (cliente == null || !ExcluirPorId(cliente.Id)) return false;
             FiltrarClientes();
+            return true;
         }
 
         private void SalvarCliente()
@@ -436,6 +481,14 @@ namespace SaciGestao.ViewModels
             if (!string.IsNullOrWhiteSpace(TelefoneSecundarioForm) && Digitos(TelefoneSecundarioForm).Length < 10)
                 invalidos.Add("Telefone Secundário (DDD + número)");
             if (Digitos(CepForm).Length != 8) invalidos.Add("CEP (8 números)");
+            // Dígitos verificadores: conferidos em CPF novo ou alterado (os exemplos antigos usam CPFs fictícios)
+            string? cpfGravado = ClienteService.Instancia.ObterTodos().FirstOrDefault(c => c.Id == _idEmEdicao)?.Cpf;
+            if (Digitos(CpfForm).Length == 11 && Digitos(CpfForm) != Digitos(cpfGravado) && !CpfValido(Digitos(CpfForm)))
+                invalidos.Add("CPF (número inválido)");
+            if (!System.Text.RegularExpressions.Regex.IsMatch(EmailForm.Trim(), @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+                invalidos.Add("E-mail (ex.: nome@email.com)");
+            if (DataNascimentoForm is DateTime nasc && (nasc.Date > DateTime.Today || nasc.Date < DateTime.Today.AddYears(-120)))
+                invalidos.Add("Data de Nascimento (não pode ser no futuro)");
 
             if (invalidos.Count > 0)
             {
@@ -443,16 +496,26 @@ namespace SaciGestao.ViewModels
                 return;
             }
 
-            // Foto nova escolhida: copia para a pasta Fotos (o JSON guarda só o nome do arquivo)
+            // CPF não pode se repetir entre clientes
+            string cpfDigitos = Digitos(CpfForm);
+            var mesmoCpf = ClienteService.Instancia.ObterTodos()
+                .FirstOrDefault(c => c.Id != _idEmEdicao && Digitos(c.Cpf) == cpfDigitos);
+            if (mesmoCpf != null)
+            {
+                ErroForm = $"Já existe um cliente com este CPF: {mesmoCpf.Nome}.";
+                return;
+            }
+
+            // Foto nova escolhida: copia para Fotos\clientes (o JSON guarda "clientes/<arquivo>")
             string? foto = FotoForm;
             if (!string.IsNullOrEmpty(foto) && Path.IsPathRooted(foto))
             {
                 try
                 {
-                    Directory.CreateDirectory(Persistencia.PastaFotos);
+                    Directory.CreateDirectory(Persistencia.PastaFotosClientes);
                     string nomeArquivo = Guid.NewGuid().ToString("N") + Path.GetExtension(foto);
-                    File.Copy(foto, Path.Combine(Persistencia.PastaFotos, nomeArquivo));
-                    foto = nomeArquivo;
+                    File.Copy(foto, Path.Combine(Persistencia.PastaFotosClientes, nomeArquivo));
+                    foto = Persistencia.SubpastaClientes + "/" + nomeArquivo;
                 }
                 catch (Exception ex)
                 {
@@ -489,7 +552,12 @@ namespace SaciGestao.ViewModels
             if (cliente.Id == 0)
                 ClienteService.Instancia.Adicionar(cliente);
             else
+            {
                 ClienteService.Instancia.Atualizar(cliente);
+                // Contratos e imóveis guardam uma cópia do nome: mantém igual ao cadastro
+                ContratoService.Instancia.AtualizarNomeCliente(cliente.Id, cliente.Nome);
+                ImovelService.Instancia.AtualizarNomeProprietario(cliente.Id, cliente.Nome);
+            }
 
             VoltarParaLista();
         }

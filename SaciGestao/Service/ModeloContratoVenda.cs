@@ -38,10 +38,25 @@ namespace SaciGestao.Service
                 ? Branco
                 : $"{Ou(imovel.Endereco)}, nº {Ou(imovel.Numero)}, Bairro {Ou(imovel.Bairro)}, {Ou(imovel.Cidade)} – SP, CEP {Ou(imovel.Cep)}";
 
-            string descricaoImovel = imovel == null ? Branco : (imovel.Descricao ?? "Imóvel residencial/comercial");
-            string inscricaoMunicipal = imovel?.MatriculaEdp ?? Branco;
-            string matriculaImovel = imovel?.MatriculaSabesp ?? Branco;
+            // Descrição: texto livre do imóvel; sem ele, o tipo do imóvel (ex.: "o imóvel do tipo Casa")
+            string descricaoImovel = imovel == null
+                ? Branco
+                : !string.IsNullOrWhiteSpace(imovel.Descricao)
+                    ? imovel.Descricao.Trim().TrimEnd('.')
+                    : $"o imóvel do tipo {imovel.Tipo}";
+            // Inscrição municipal = IPTU; matrícula = registro do imóvel em cartório
+            string inscricaoMunicipal = Ou(imovel?.Iptu);
+            string matriculaImovel = Ou(imovel?.Matricula);
             string valorTotalFormatado = $"{Dinheiro(c.ValorMensal)} ({Extenso.Reais(c.ValorMensal)})";
+
+            // Forma de pagamento: à vista ou em parcelas mensais iguais (a última ajusta os centavos)
+            int parcelas = Math.Max(1, c.QuantidadeParcelas);
+            decimal valorParcela = Math.Round(c.ValorMensal / parcelas, 2);
+            string formaPagamento = parcelas == 1
+                ? $"3.2 - O pagamento será feito à vista, em parcela única, com vencimento em {c.DataInicio:dd/MM/yyyy}."
+                : $"3.2 - O pagamento será feito em {parcelas} ({Extenso.Inteiro(parcelas)}) parcelas mensais de R$ {Dinheiro(valorParcela)} " +
+                  $"({Extenso.Reais(valorParcela)}), vencendo a primeira em {c.DataInicio:dd/MM/yyyy} e as demais no mesmo dia dos meses seguintes" +
+                  (valorParcela * parcelas != c.ValorMensal ? ", sendo a última ajustada para fechar o valor total." : ".");
 
             var b = new List<BlocoContrato>();
             void Cl(string t) => b.Add(new(TipoBloco.Clausula, t));
@@ -58,6 +73,7 @@ namespace SaciGestao.Service
 
             Cl("CLÁUSULA TERCEIRA: DO PREÇO E FORMA DE PAGAMENTO");
             It($"3.1 - O preço certo e total pela aquisição objeto deste CONTRATO é de R$ {valorTotalFormatado}.");
+            It(formaPagamento);
 
             Cl("CLÁUSULA QUARTA: DA SITUAÇÃO DO IMÓVEL");
             It("4.1 - O PROMITENTE VENDEDOR declara que o bem está inteiramente livre e desembaraçado de quaisquer ônus, dívidas, execuções ou penhoras.");

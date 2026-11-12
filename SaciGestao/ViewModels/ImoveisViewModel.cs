@@ -511,8 +511,13 @@ namespace SaciGestao.ViewModels
             EstadoForm = imovel.Estado;
             CepForm = imovel.Cep;
             ValorForm = imovel.Valor > 0 ? imovel.Valor.ToString("N2", PtBr) : string.Empty;
-            _finalidadeForm = imovel.Finalidade; // evita sugerir o padrão por cima do percentual gravado
+            // Grava direto no campo para não sugerir o percentual padrão por cima do gravado,
+            // mas avisa a tela (senão o combo continua mostrando a finalidade do imóvel anterior)
+            _finalidadeForm = imovel.Finalidade;
+            OnPropertyChanged(nameof(FinalidadeForm));
+            OnPropertyChanged(nameof(RotuloPercentualForm));
             PercentualForm = imovel.PercentualEmpresa.ToString("0.##", PtBr);
+            OnPropertyChanged(nameof(GanhoEstimadoForm));
             QuartosForm = imovel.Quartos.ToString();
             SuitesForm = imovel.Suites.ToString();
             BanheirosForm = imovel.Banheiros.ToString();
@@ -536,7 +541,6 @@ namespace SaciGestao.ViewModels
             CarregarProprietarios(donoId);
             ProprietarioIdForm = donoId;
             TipoForm = imovel.Tipo;
-            FinalidadeForm = imovel.Finalidade;
             StatusForm = imovel.Status;
             ErroForm = string.Empty;
 
@@ -584,6 +588,20 @@ namespace SaciGestao.ViewModels
                 return;
             }
 
+            // Imóvel com contrato ativo: o status vem do contrato (Alugado/Vendido) e não pode ser trocado à mão,
+            // senão ele volta a aparecer como disponível e pode ganhar um segundo contrato
+            var contratoAtivo = _idEmEdicao == 0 ? null : ContratoService.Instancia.ContratoAtivoDoImovel(_idEmEdicao);
+            if (contratoAtivo != null)
+            {
+                var statusDoContrato = contratoAtivo.Tipo == TipoContrato.Locacao ? StatusImovel.Alugado : StatusImovel.Vendido;
+                if (StatusForm != statusDoContrato)
+                {
+                    ErroForm = $"Este imóvel tem o contrato ativo {contratoAtivo.Codigo}, por isso o status deve ser {statusDoContrato}. " +
+                               "Para liberar o imóvel, encerre ou cancele o contrato.";
+                    return;
+                }
+            }
+
             var imovel = new Imovel
             {
                 Id = _idEmEdicao,
@@ -618,7 +636,10 @@ namespace SaciGestao.ViewModels
             if (_idEmEdicao == 0)
                 _service.Adicionar(imovel);
             else
+            {
                 _service.Atualizar(imovel);
+                ContratoService.Instancia.AtualizarTituloImovel(imovel.Id, imovel.Titulo);
+            }
 
             DefinirTela(false, false);
             Recarregar();
@@ -626,13 +647,11 @@ namespace SaciGestao.ViewModels
 
         private void ExcluirDoForm()
         {
-            if (_idEmEdicao == 0) return;
+            if (_idEmEdicao == 0 || ImovelBloqueadoPorContrato(_idEmEdicao)) return;
 
-            var resposta = MessageBox.Show(
-                "Excluir este imóvel definitivamente? Essa ação não pode ser desfeita.",
-                "Confirmar exclusão", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-
-            if (resposta != MessageBoxResult.Yes) return;
+            if (!Views.Dialogo.Confirmar("Excluir imóvel",
+                    "Este imóvel será excluído definitivamente. Essa ação não pode ser desfeita.", "Excluir"))
+                return;
 
             _service.Excluir(_idEmEdicao);
             DefinirTela(false, false);
@@ -651,15 +670,24 @@ namespace SaciGestao.ViewModels
         }
 
         // ---------- Excluir a partir da lista ----------
+        // Imóvel com contrato não pode ser excluído (o contrato ficaria apontando para nada)
+        private static bool ImovelBloqueadoPorContrato(int imovelId)
+        {
+            if (!ContratoService.Instancia.ImovelTemContrato(imovelId)) return false;
+
+            Views.Dialogo.Avisar("Exclusão bloqueada",
+                "Não é possível excluir este imóvel: ele está vinculado a contrato(s).\n\nExclua o contrato antes.",
+                Views.TipoDialogo.Atencao);
+            return true;
+        }
+
         private void Excluir(Imovel? i)
         {
-            if (i == null) return;
+            if (i == null || ImovelBloqueadoPorContrato(i.Id)) return;
 
-            var resposta = MessageBox.Show(
-                "Excluir o imóvel " + i.Codigo + " definitivamente? Essa ação não pode ser desfeita.",
-                "Confirmar exclusão", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-
-            if (resposta == MessageBoxResult.Yes)
+            if (Views.Dialogo.Confirmar("Excluir imóvel",
+                    $"O imóvel {i.Codigo} ({i.Titulo}) será excluído definitivamente. Essa ação não pode ser desfeita.",
+                    "Excluir"))
             {
                 _service.Excluir(i.Id);
                 Recarregar();
@@ -749,7 +777,10 @@ namespace SaciGestao.ViewModels
             if (_bairro != TodasBairros)
                 consulta = consulta.Where(i => i.Bairro == _bairro);
 
-            consulta = consulta.Where(i => i.Valor >= _faixa.Min && i.Valor <= _faixa.Max);
+            // Faixa de preço vale para imóveis à venda; o aluguel mensal não é comparável com preço de venda
+            if (_faixa != Faixas[0])
+                consulta = consulta.Where(i => i.Finalidade == FinalidadeImovel.Venda &&
+                                               i.Valor >= _faixa.Min && i.Valor <= _faixa.Max);
 
             Imoveis.Clear();
             foreach (var imovel in consulta) Imoveis.Add(imovel);

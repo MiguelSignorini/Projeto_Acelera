@@ -171,7 +171,7 @@ namespace SaciGestao.ViewModels
             set => SetProperty(ref _mostrandoDetalhes, value);
         }
 
-        private string _tituloFormulario = "NOVO CONTRATO";
+        private string _tituloFormulario = "Novo contrato";
         public string TituloFormulario
         {
             get => _tituloFormulario;
@@ -211,6 +211,9 @@ namespace SaciGestao.ViewModels
             Filtrar();
         }
 
+        // Último valor preenchido automaticamente a partir de um imóvel (para saber se o usuário já mudou o valor)
+        private decimal _valorSugerido;
+
         private void AoSelecionarImovel(int imovelId)
         {
             if (imovelId <= 0) return;
@@ -219,10 +222,26 @@ namespace SaciGestao.ViewModels
             if (imovel == null) return;
 
             ContratoForm.ImovelTitulo = imovel.Titulo;
-            if (ContratoForm.ValorMensal == 0)
+
+            // Contrato novo: o tipo acompanha a finalidade do imóvel (imóvel de venda -> Venda, de aluguel -> Locação)
+            if (ContratoForm.Id == 0)
+            {
+                var tipo = imovel.Finalidade == FinalidadeImovel.Venda ? TipoContrato.Venda : TipoContrato.Locacao;
+                if (ContratoForm.Tipo != tipo)
+                {
+                    ContratoForm.Tipo = tipo;
+                    OnPropertyChanged(nameof(TipoSelecionadoForm));
+                    OnPropertyChanged(nameof(MostrarIndiceReajuste));
+                    OnPropertyChanged(nameof(MostrarParcelas));
+                }
+            }
+
+            // Sugere o valor do imóvel se o campo está vazio ou ainda com o valor sugerido pelo imóvel anterior
+            if (ContratoForm.ValorMensal == 0 || ContratoForm.ValorMensal == _valorSugerido)
             {
                 ContratoForm.ValorMensal = imovel.Valor;
             }
+            _valorSugerido = imovel.Valor;
 
             ContratoForm.UC_Energia = imovel.MatriculaEdp;
             ContratoForm.UC_Agua = imovel.MatriculaSabesp;
@@ -279,8 +298,9 @@ namespace SaciGestao.ViewModels
         private void Novo()
         {
             ContratoForm = new Contrato();
+            _valorSugerido = 0;
             ErroForm = string.Empty;
-            TituloFormulario = "NOVO CONTRATO";
+            TituloFormulario = "Novo contrato";
             EditandoExistente = false;
 
             OnPropertyChanged(nameof(ListaImoveis));
@@ -300,8 +320,9 @@ namespace SaciGestao.ViewModels
         {
             if (contrato == null) return;
             ContratoForm = contrato.Clonar();
+            _valorSugerido = ImovelService.Instancia.ObterPorId(contrato.ImovelId)?.Valor ?? 0;
             ErroForm = string.Empty;
-            TituloFormulario = "EDITAR CONTRATO";
+            TituloFormulario = "Editar contrato";
             EditandoExistente = true;
 
             OnPropertyChanged(nameof(ListaImoveis));
@@ -329,6 +350,17 @@ namespace SaciGestao.ViewModels
         private void Excluir(Contrato? contrato)
         {
             if (contrato == null) return;
+
+            int pagamentos = FinanceiroService.Instancia.QuantidadeDoContrato(contrato.Id);
+            string aviso = pagamentos > 0
+                ? $"\n\nAtenção: {pagamentos} pagamento(s) registrado(s) deste contrato também serão removidos do Financeiro."
+                : string.Empty;
+
+            if (!Views.Dialogo.Confirmar("Excluir contrato",
+                    $"O contrato {contrato.Codigo} será excluído definitivamente. Essa ação não pode ser desfeita.{aviso}",
+                    "Excluir"))
+                return;
+
             ContratoService.Instancia.Excluir(contrato.Id);
             ContratoService.Instancia.Salvar(); // Garante persistência imediata na memória/disco[cite: 4, 5]
             Filtrar();
@@ -361,6 +393,32 @@ namespace SaciGestao.ViewModels
             {
                 ErroForm = "Informe a quantidade de parcelas (mínimo 1) para o contrato de venda.";
                 return;
+            }
+
+            // Um imóvel só pode ter um contrato ativo por vez
+            if (ContratoForm.Status == StatusContrato.Ativo)
+            {
+                var outro = ContratoService.Instancia.ContratoAtivoDoImovel(ContratoForm.ImovelId, ContratoForm.Id);
+                if (outro != null)
+                {
+                    ErroForm = $"Este imóvel já tem o contrato ativo {outro.Codigo}. Encerre ou cancele esse contrato antes.";
+                    return;
+                }
+            }
+
+            // Com pagamentos registrados, mudar tipo, início ou parcelas deixaria esses pagamentos sem parcela correspondente
+            if (ContratoForm.Id != 0 && FinanceiroService.Instancia.QuantidadeDoContrato(ContratoForm.Id) > 0)
+            {
+                var original = ContratoService.Instancia.ObterAtivos().FirstOrDefault(c => c.Id == ContratoForm.Id);
+                if (original != null &&
+                    (original.Tipo != ContratoForm.Tipo ||
+                     original.DataInicio.Date != ContratoForm.DataInicio.Date ||
+                     (original.Tipo == TipoContrato.Venda && original.QuantidadeParcelas != ContratoForm.QuantidadeParcelas)))
+                {
+                    ErroForm = "Este contrato já tem pagamentos registrados: o tipo, a data de início e a quantidade de parcelas " +
+                               "não podem mudar. Desfaça os pagamentos no Financeiro antes, se precisar alterar.";
+                    return;
+                }
             }
 
             ErroForm = string.Empty;

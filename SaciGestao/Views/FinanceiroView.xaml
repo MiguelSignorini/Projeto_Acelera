@@ -10,14 +10,7 @@
         <h:IguaisConverter x:Key="Iguais"/>
         <h:TextoParaVisibilidadeConverter x:Key="TextoParaVisibilidade"/>
 
-        <Style x:Key="Cartao" TargetType="Border">
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="CornerRadius" Value="12"/>
-            <Setter Property="BorderBrush" Value="#E6E9EE"/>
-            <Setter Property="BorderThickness" Value="1"/>
-        </Style>
-
-        <!-- Cartão de indicador com ícone -->
+<!-- Cartão de indicador com ícone -->
         <Style x:Key="CartaoIndicador" TargetType="Border" BasedOn="{StaticResource Cartao}">
             <Setter Property="Padding" Value="18,16"/>
             <Setter Property="Margin" Value="0,0,12,0"/>
@@ -31,10 +24,10 @@
         </Style>
 
         <Style x:Key="RotuloIndicador" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontSize" Value="13"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Foreground" Value="{StaticResource TextoSuave}"/>
-            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
         </Style>
 
         <Style x:Key="ValorIndicador" TargetType="TextBlock">
@@ -58,78 +51,10 @@
             <Setter Property="Margin" Value="0,0,0,6"/>
         </Style>
 
-        <Style x:Key="Campo" TargetType="TextBox">
-            <Setter Property="Height" Value="38"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="Padding" Value="10,0"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="BorderBrush" Value="{StaticResource Borda}"/>
-        </Style>
+        <!-- Campos, ComboBox e DatePicker usam o visual arredondado do Tema.xaml -->
+        <Style x:Key="Campo" TargetType="TextBox" BasedOn="{StaticResource CampoForm}"/>
 
-        <Style TargetType="ComboBox">
-            <Setter Property="Height" Value="38"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-        </Style>
-
-        <Style TargetType="DatePicker">
-            <Setter Property="Height" Value="38"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="BorderBrush" Value="{StaticResource Borda}"/>
-        </Style>
-
-        <!-- Botões -->
-        <Style x:Key="BotaoPrimario" TargetType="Button">
-            <Setter Property="Background" Value="{StaticResource Primaria}"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Height" Value="42"/>
-            <Setter Property="Padding" Value="20,0"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border x:Name="fundo" Background="{TemplateBinding Background}" CornerRadius="8"
-                                Padding="{TemplateBinding Padding}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="fundo" Property="Background" Value="{StaticResource PrimariaEscura}"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style x:Key="BotaoContorno" TargetType="Button">
-            <Setter Property="Foreground" Value="{StaticResource Texto}"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="Height" Value="42"/>
-            <Setter Property="Padding" Value="18,0"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border x:Name="fundo" Background="White" BorderBrush="{StaticResource Borda}"
-                                BorderThickness="1" CornerRadius="8" Padding="{TemplateBinding Padding}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="fundo" Property="Background" Value="#F1F3F6"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <!-- Botões pequenos da linha da tabela -->
+<!-- Botões pequenos da linha da tabela -->
         <Style x:Key="BotaoLinha" TargetType="Button" BasedOn="{StaticResource BotaoPrimario}">
             <Setter Property="Height" Value="32"/>
             <Setter Property="FontSize" Value="13"/>
@@ -179,58 +104,11 @@
             </Setter>
         </Style>
 
-        <!-- Tabela -->
-        <Style x:Key="CabecalhoColuna" TargetType="DataGridColumnHeader">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="DataGridColumnHeader">
-                        <Border Background="#F7F9FC" Padding="8,11">
-                            <ContentPresenter VerticalAlignment="Center"
-                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="FontSize" Value="12"/>
-            <Setter Property="Foreground" Value="{StaticResource TextoSuave}"/>
-        </Style>
-
-        <Style x:Key="CabecalhoColunaDireita" TargetType="DataGridColumnHeader" BasedOn="{StaticResource CabecalhoColuna}">
+<Style x:Key="CabecalhoColunaDireita" TargetType="DataGridColumnHeader" BasedOn="{StaticResource CabecalhoColuna}">
             <Setter Property="HorizontalContentAlignment" Value="Right"/>
         </Style>
 
-        <Style x:Key="CelulaGrid" TargetType="DataGridCell">
-            <Setter Property="Focusable" Value="False"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="DataGridCell">
-                        <Border Background="Transparent" BorderBrush="#EEF0F3" BorderThickness="0,0,0,1">
-                            <ContentPresenter VerticalAlignment="Center"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style x:Key="LinhaGrid" TargetType="DataGridRow">
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="Foreground" Value="{StaticResource Texto}"/>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#F4F7FC"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-
-        <Style x:Key="TextoCelula" TargetType="TextBlock">
-            <Setter Property="Margin" Value="8,0"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
-        </Style>
-
-        <Style x:Key="TextoValor" TargetType="TextBlock" BasedOn="{StaticResource TextoCelula}">
+<Style x:Key="TextoValor" TargetType="TextBlock" BasedOn="{StaticResource TextoCelula}">
             <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="TextAlignment" Value="Right"/>
             <Setter Property="Foreground" Value="{StaticResource Sucesso}"/>
@@ -323,13 +201,13 @@
             <StackPanel Margin="10,10,10,24">
 
                 <!-- ============ CABEÇALHO ============ -->
-                <Grid h:Adaptavel.LarguraMinima="440">
+                <Grid h:Adaptavel.LarguraMinima="280">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <StackPanel>
-                        <TextBlock Text="FINANCEIRO" FontSize="28" FontWeight="Bold" Foreground="{StaticResource Texto}"/>
+                        <TextBlock Text="Financeiro" FontSize="28" FontWeight="Bold" Foreground="{StaticResource Texto}"/>
                         <TextBlock Text="Pagamentos de contratos, valores na conta e o ganho da empresa."
                                    FontSize="14" Foreground="{StaticResource TextoSuave}" TextWrapping="Wrap"/>
                     </StackPanel>
@@ -343,7 +221,7 @@
                 </Grid>
 
                 <!-- ============ INDICADORES (do período filtrado) ============ -->
-                <h:PainelAdaptavel LarguraMinima="240" EspacamentoVertical="12" Margin="0,18,0,18">
+                <h:PainelAdaptavel LarguraMinima="215" EspacamentoVertical="12" Margin="0,18,0,18">
 
                     <Border Style="{StaticResource CartaoIndicador}" Background="{StaticResource Primaria}"
                             BorderBrush="{StaticResource Primaria}">
@@ -356,7 +234,7 @@
                                 <TextBlock Text="&#xE825;" Style="{StaticResource IconeIndicador}" Foreground="White"/>
                             </Border>
                             <StackPanel Grid.Column="1" Margin="14,0,0,0" VerticalAlignment="Center">
-                                <TextBlock Text="RECEITA NA CONTA" Style="{StaticResource RotuloIndicador}" Foreground="#D6E4F8"/>
+                                <TextBlock Text="Receita na conta" Style="{StaticResource RotuloIndicador}" Foreground="#D6E4F8"/>
                                 <Viewbox Stretch="Uniform" StretchDirection="DownOnly" HorizontalAlignment="Left">
                                     <TextBlock Text="{Binding ReceitaNaConta, StringFormat=C2}" Style="{StaticResource ValorIndicador}" Foreground="White"/>
                                 </Viewbox>
@@ -377,7 +255,7 @@
                                 <TextBlock Text="&#xE823;" Style="{StaticResource IconeIndicador}" Foreground="{StaticResource Atencao}"/>
                             </Border>
                             <StackPanel Grid.Column="1" Margin="14,0,0,0" VerticalAlignment="Center">
-                                <TextBlock Text="A RECEBER (PENDENTE)" Style="{StaticResource RotuloIndicador}"/>
+                                <TextBlock Text="A receber (pendente)" Style="{StaticResource RotuloIndicador}"/>
                                 <Viewbox Stretch="Uniform" StretchDirection="DownOnly" HorizontalAlignment="Left">
                                     <TextBlock Text="{Binding AReceber, StringFormat=C2}" Style="{StaticResource ValorIndicador}"/>
                                 </Viewbox>
@@ -396,7 +274,7 @@
                                 <TextBlock Text="&#xE8F1;" Style="{StaticResource IconeIndicador}" Foreground="{StaticResource Primaria}"/>
                             </Border>
                             <StackPanel Grid.Column="1" Margin="14,0,0,0" VerticalAlignment="Center">
-                                <TextBlock Text="GANHO DA EMPRESA" Style="{StaticResource RotuloIndicador}"/>
+                                <TextBlock Text="Ganho da empresa" Style="{StaticResource RotuloIndicador}"/>
                                 <Viewbox Stretch="Uniform" StretchDirection="DownOnly" HorizontalAlignment="Left">
                                     <TextBlock Text="{Binding GanhoEmpresa, StringFormat=C2}" Style="{StaticResource ValorIndicador}"
                                                Foreground="{StaticResource Primaria}"/>
@@ -416,7 +294,7 @@
                                 <TextBlock Text="&#xE716;" Style="{StaticResource IconeIndicador}" Foreground="{StaticResource Sucesso}"/>
                             </Border>
                             <StackPanel Grid.Column="1" Margin="14,0,0,0" VerticalAlignment="Center">
-                                <TextBlock Text="REPASSE AOS PROPRIETÁRIOS" Style="{StaticResource RotuloIndicador}"/>
+                                <TextBlock Text="Repasse aos proprietários" Style="{StaticResource RotuloIndicador}"/>
                                 <Viewbox Stretch="Uniform" StretchDirection="DownOnly" HorizontalAlignment="Left">
                                     <TextBlock Text="{Binding Repasse, StringFormat=C2}" Style="{StaticResource ValorIndicador}"/>
                                 </Viewbox>

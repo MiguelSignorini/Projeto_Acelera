@@ -161,8 +161,8 @@
             <Setter Property="Width" Value="40"/>
             <Setter Property="Height" Value="40"/>
             <Setter Property="CornerRadius" Value="10"/>
-            <Setter Property="Background" Value="#33D32F2F"/>
-            <Setter Property="BorderBrush" Value="#66D32F2F"/>
+            <Setter Property="Background" Value="#262F7DD1"/>
+            <Setter Property="BorderBrush" Value="#552F7DD1"/>
             <Setter Property="BorderThickness" Value="1"/>
         </Style>
         <Style x:Key="TituloDestaque" TargetType="TextBlock">
@@ -187,15 +187,15 @@
         <Border x:Name="painelMarca" Grid.Column="0" ClipToBounds="True">
             <Border.Background>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                    <GradientStop Color="#161C22" Offset="0"/>
-                    <GradientStop Color="#222B33" Offset="0.6"/>
-                    <GradientStop Color="#2E3A45" Offset="1"/>
+                    <GradientStop Color="#0E1626" Offset="0"/>
+                    <GradientStop Color="#15233D" Offset="0.6"/>
+                    <GradientStop Color="#1B3360" Offset="1"/>
                 </LinearGradientBrush>
             </Border.Background>
 
             <Grid>
                 <!-- Círculos decorativos -->
-                <Ellipse Width="460" Height="460" Fill="#14D32F2F" HorizontalAlignment="Left" VerticalAlignment="Top"
+                <Ellipse Width="460" Height="460" Fill="#1A4F8EE8" HorizontalAlignment="Left" VerticalAlignment="Top"
                          Margin="-190,-170,0,0"/>
                 <Ellipse Width="320" Height="320" Fill="#0FFFFFFF" HorizontalAlignment="Right" VerticalAlignment="Bottom"
                          Margin="0,0,-120,-110"/>
@@ -325,15 +325,6 @@
                 </Button>
 
                 <TextBlock Text="{Binding ErroLogin}" Style="{StaticResource TextoErro}"/>
-
-                <Border Background="#F6F7F9" CornerRadius="8" Padding="14,10" Margin="0,26,0,0">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="&#xE946;" FontFamily="Segoe MDL2 Assets" FontSize="14"
-                                   Foreground="#5F6B7A" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                        <TextBlock Text="Usuário de teste: admin   |   Senha: 123" FontSize="12.5"
-                                   Foreground="{StaticResource TextoSuave}" VerticalAlignment="Center"/>
-                    </StackPanel>
-                </Border>
             </StackPanel>
 
             <!-- RECUPERAR SENHA -->

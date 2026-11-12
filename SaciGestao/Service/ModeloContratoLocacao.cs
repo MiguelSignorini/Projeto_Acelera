@@ -110,7 +110,7 @@ namespace SaciGestao.Service
             It("3.1 - O imóvel objeto desta locação se destina exclusivamente para fim Residencial, não podendo a sua destinação ser mudada sem consentimento expresso do(a) LOCADOR(a).");
 
             Cl("CLÁUSULA QUARTA: PRAZO DA LOCAÇÃO");
-            It($"4.1 - O prazo da presente locação e que ficou combinado entre os contratantes é de {c.PrazoMeses}, iniciando em {c.DataInicio:dd/MM/yyyy} e se encerrando em {c.DataFim:dd/MM/yyyy}, data em que o(a) LOCATÁRIO(a) se compromete e se obriga a restituir o imóvel ao LOCADOR(a), completamente desocupado de pessoas e coisas e em perfeito estado de conservação e limpeza, tal como o recebe, conforme vistoria precedida pela ADMINISTRADORA, cujo relatório deste faz parte integrante, independente de aviso, notificação ou interpelação, sob pena de incorrer na multa prevista na cláusula décima quarta deste instrumento e sujeitar-se ao disposto no artigo 575 do Código Civil.");
+            It($"4.1 - O prazo da presente locação e que ficou combinado entre os contratantes é de {c.PrazoMeses} ({Extenso.Inteiro(c.PrazoMeses)}) {(c.PrazoMeses == 1 ? "mês" : "meses")}, iniciando em {c.DataInicio:dd/MM/yyyy} e se encerrando em {c.DataFim:dd/MM/yyyy}, data em que o(a) LOCATÁRIO(a) se compromete e se obriga a restituir o imóvel ao LOCADOR(a), completamente desocupado de pessoas e coisas e em perfeito estado de conservação e limpeza, tal como o recebe, conforme vistoria precedida pela ADMINISTRADORA, cujo relatório deste faz parte integrante, independente de aviso, notificação ou interpelação, sob pena de incorrer na multa prevista na cláusula décima quarta deste instrumento e sujeitar-se ao disposto no artigo 575 do Código Civil.");
             It("4.2 - Não restituindo o imóvel no prazo aqui avençado, ao LOCADOR(a) pagará enquanto estiver na posse do imóvel, o aluguel mensal e encargos contratuais, reajustado nos termos deste instrumento até efetiva entrega das chaves.");
             It("4.3 - Fica estabelecido que a entrega do imóvel só seja reconhecida e se efetivará com o depósito das chaves nas mãos da ADMINISTRADORA do imóvel que é o corretor de imóveis WILLYAN SACILOTTI DOS SANTOS SIQUEIRA, ou do procurador do(a) LOCADOR(a) e, em qualquer situação, contra recibo.");
             It("4.4 - As cláusulas e condições do presente contrato iniciaram sua vigência na data acima estipulada e vigorarão até que as partes tenham liquidado todas as pendências entre si.");
@@ -120,7 +120,7 @@ namespace SaciGestao.Service
             It($"5.1 - O valor do aluguel, livremente pactuado entre as partes, é de {valor}, por mês, para os primeiros 12 (doze) meses, e, a partir daí, será reajustado de acordo com a variação do percentual do {indice}, ou pela média da variação dos índices inflacionários do ano corrente ao da execução do aluguel, até o primeiro dia anterior ao pagamento de todos os valores devidos. No caso de extinção ou impedimento do uso deste índice, ocasionado por alguma mudança no âmbito governamental, serão adotados outros que o vierem a substituir ou que a legislação permitir.");
 
             Cl("CLÁUSULA SEXTA: DO PAGAMENTO");
-            It($"6.1 - O(a) LOCATÁRIO(a) se compromete e se obriga a pagar, pontualmente até o dia {c.DiaVencimento}.");
+            It($"6.1 - O(a) LOCATÁRIO(a) se compromete e se obriga a pagar o aluguel de {valor}, pontualmente, até o dia {c.DiaVencimento} ({Extenso.Inteiro(c.DiaVencimento)}) de cada mês.");
             It("6.2 - Será pago pelo(a) LOCATÁRIO(a) saldo residual referente à data de recebimento das chaves do imóvel, ao dia de vencimento do primeiro aluguel.");
             It($"6.3 - O pagamento deverá ser feito na conta da ADMINISTRADORA do imóvel, por meio de boleto bancário, enviado mensalmente via e-mail e/ou WhatsApp, em nome de SACILOTTI IMÓVEIS E NEGÓCIOS LTDA, CNPJ: {DadosImobiliaria.Cnpj}.");
             It("6.4 - Caso o(a) LOCATÁRIO(a) tenha algum problema referente ao boleto, nesse caso, o mesmo deve entrar em contato com a ADMINISTRADORA com no mínimo 24 (vinte e quatro) horas de antecedência.");
@@ -265,18 +265,23 @@ namespace SaciGestao.Service
             if (n == 0) return "zero";
             if (n < 0) return "menos " + Inteiro(-n);
 
-            var grupos = new List<string>();
-            long milhoes = n / 1_000_000, milhares = (n / 1000) % 1000, resto = n % 1000;
+            // Grupos de 3 dígitos: bilhões, milhões, milhares e o resto (até 999 bilhões)
+            long bilhoes = n / 1_000_000_000, milhoes = (n / 1_000_000) % 1000, milhares = (n / 1000) % 1000, resto = n % 1000;
+            if (bilhoes > 999) return n.ToString("N0", new CultureInfo("pt-BR"));
 
-            if (milhoes > 0) grupos.Add(Ate999((int)milhoes) + (milhoes == 1 ? " milhão" : " milhões"));
-            if (milhares > 0) grupos.Add(milhares == 1 ? "mil" : Ate999((int)milhares) + " mil");
-            if (resto > 0) grupos.Add(Ate999((int)resto));
+            var grupos = new List<(string Texto, long Valor)>();
+            if (bilhoes > 0) grupos.Add((Ate999((int)bilhoes) + (bilhoes == 1 ? " bilhão" : " bilhões"), bilhoes));
+            if (milhoes > 0) grupos.Add((Ate999((int)milhoes) + (milhoes == 1 ? " milhão" : " milhões"), milhoes));
+            if (milhares > 0) grupos.Add((milhares == 1 ? "mil" : Ate999((int)milhares) + " mil", milhares));
+            if (resto > 0) grupos.Add((Ate999((int)resto), resto));
 
-            // "e" entre os grupos quando o último é menor que 100 ou centena exata (ex.: mil e quinhentos)
-            if (grupos.Count == 1) return grupos[0];
-            bool ligaComE = resto > 0 && (resto < 100 || resto % 100 == 0);
-            if (resto == 0) return string.Join(" ", grupos);
-            return string.Join(" ", grupos.Take(grupos.Count - 1)) + (ligaComE ? " e " : " ") + grupos[^1];
+            if (grupos.Count == 1) return grupos[0].Texto;
+
+            // "e" antes do último grupo quando ele é menor que 100 ou centena exata
+            // (ex.: mil e quinhentos, dois milhões e quinhentos mil, mil e vinte)
+            var ultimo = grupos[^1];
+            bool ligaComE = ultimo.Valor < 100 || ultimo.Valor % 100 == 0;
+            return string.Join(" ", grupos.Take(grupos.Count - 1).Select(g => g.Texto)) + (ligaComE ? " e " : " ") + ultimo.Texto;
         }
 
         public static string Reais(decimal valor)
@@ -284,6 +289,7 @@ namespace SaciGestao.Service
             long reais = (long)Math.Floor(valor);
             int centavos = (int)Math.Round((valor - reais) * 100m);
 
+            if (centavos == 100) { reais++; centavos = 0; }
             string r = reais == 0 && centavos > 0 ? "" : Inteiro(reais) + (reais == 1 ? " real" : (reais % 1_000_000 == 0 && reais > 0 ? " de reais" : " reais"));
             string c = centavos > 0 ? Inteiro(centavos) + (centavos == 1 ? " centavo" : " centavos") : "";
 

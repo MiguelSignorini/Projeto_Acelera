@@ -69,6 +69,12 @@ namespace SaciGestao.Service
 
         }
 
+        // Mantém o nome do dono (copiado no imóvel) igual ao cadastro do cliente
+        public void AtualizarNomeProprietario(int clienteId, string nome)
+        {
+            foreach (var i in _imoveis.Where(i => i.ProprietarioId == clienteId)) i.ProprietarioNome = nome;
+        }
+
         // Remove definitivamente o imóvel da lista
         public void Excluir(int id)
         {
@@ -87,7 +93,7 @@ namespace SaciGestao.Service
             if (lista != null)
             {
                 _imoveis.AddRange(lista);
-                _proximoId = _imoveis.Max(i => i.Id) + 1;
+                _proximoId = _imoveis.Select(i => i.Id).DefaultIfEmpty(0).Max() + 1;
                 AplicarPercentualPadrao();
                 return;
             }

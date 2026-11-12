@@ -28,11 +28,19 @@ namespace SaciGestao.Service
 
                 GerarArquivo(contrato, dialogo.FileName);
 
-                MessageBox.Show($"Contrato salvo em:\n{dialogo.FileName}", "PDF gerado", MessageBoxButton.OK, MessageBoxImage.Information);
+                int escolha = Views.Dialogo.Mostrar("PDF gerado",
+                    $"O contrato {contrato.Codigo} foi salvo no arquivo abaixo.",
+                    Views.TipoDialogo.Sucesso, dialogo.FileName,
+                    "Abrir PDF", "Abrir pasta", "Fechar");
+
+                if (escolha == 0)
+                    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(dialogo.FileName) { UseShellExecute = true });
+                else if (escolha == 1)
+                    System.Diagnostics.Process.Start("explorer.exe", $"/select,\"{dialogo.FileName}\"");
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao gerar PDF: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                Views.Dialogo.Avisar("Não foi possível gerar o PDF", ex.Message, Views.TipoDialogo.Erro);
             }
         }
 

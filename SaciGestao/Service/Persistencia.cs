@@ -37,6 +37,11 @@ namespace SaciGestao.Service
         // Pasta das fotos dos imóveis (o JSON guarda só o nome do arquivo de cada foto)
         public static string PastaFotos { get; } = Path.Combine(_raiz, "Fotos");
 
+        // Fotos dos clientes ficam separadas em Fotos\clientes. O JSON guarda "clientes/<arquivo>",
+        // então CaminhoDaFoto continua funcionando sem mudança.
+        public const string SubpastaClientes = "clientes";
+        public static string PastaFotosClientes { get; } = Path.Combine(PastaFotos, SubpastaClientes);
+
         private static readonly JsonSerializerOptions _opcoes = new JsonSerializerOptions
         {
             WriteIndented = true,                                  // JSON legível, com indentação
@@ -72,7 +77,7 @@ namespace SaciGestao.Service
 
         public static string CaminhoArquivo(string nomeArquivo) => Path.Combine(PastaJson, nomeArquivo);
 
-        // Lê a lista do arquivo. Devolve null se o arquivo não existe, está vazio ou está corrompido.
+        // Lê a lista do arquivo. Devolve null se o arquivo não existe ou está corrompido (lista vazia é válida).
         public static List<T>? Carregar<T>(string nomeArquivo)
         {
             string caminho = CaminhoArquivo(nomeArquivo);
@@ -81,7 +86,7 @@ namespace SaciGestao.Service
             try
             {
                 var lista = JsonSerializer.Deserialize<List<T>>(File.ReadAllText(caminho), _opcoes);
-                return lista != null && lista.Count > 0 ? lista : null;
+                return lista; // lista vazia é válida: tudo foi apagado e salvo (não recarrega os exemplos)
             }
             catch (Exception)
             {
