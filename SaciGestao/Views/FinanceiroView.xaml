@@ -234,11 +234,11 @@
                                 <TextBlock Text="&#xE825;" Style="{StaticResource IconeIndicador}" Foreground="White"/>
                             </Border>
                             <StackPanel Grid.Column="1" Margin="14,0,0,0" VerticalAlignment="Center">
-                                <TextBlock Text="Receita na conta" Style="{StaticResource RotuloIndicador}" Foreground="#D6E4F8"/>
+                                <TextBlock Text="Receita na conta" Style="{StaticResource RotuloIndicador}" Foreground="#F3D5D4"/>
                                 <Viewbox Stretch="Uniform" StretchDirection="DownOnly" HorizontalAlignment="Left">
                                     <TextBlock Text="{Binding ReceitaNaConta, StringFormat=C2}" Style="{StaticResource ValorIndicador}" Foreground="White"/>
                                 </Viewbox>
-                                <TextBlock Style="{StaticResource DetalheIndicador}" Foreground="#D6E4F8">
+                                <TextBlock Style="{StaticResource DetalheIndicador}" Foreground="#F3D5D4">
                                     <Run Text="Locação "/><Run Text="{Binding TotalLocacao, StringFormat=C0, Mode=OneWay}"/><Run Text=" • Venda "/><Run Text="{Binding TotalVenda, StringFormat=C0, Mode=OneWay}"/>
                                 </TextBlock>
                             </StackPanel>
@@ -518,7 +518,7 @@
                             </StackPanel>
                         </h:PainelAdaptavel>
 
-                        <Border Background="#EEF4FF" CornerRadius="8" Padding="12,8" Margin="0,14,0,0"
+                        <Border Background="#FDF3F2" CornerRadius="8" Padding="12,8" Margin="0,14,0,0"
                                 Visibility="{Binding ResumoEmpresa, Converter={StaticResource TextoParaVisibilidade}}">
                             <TextBlock Text="{Binding ResumoEmpresa}" FontSize="13" FontWeight="SemiBold"
                                        Foreground="{StaticResource Primaria}" TextWrapping="Wrap"/>

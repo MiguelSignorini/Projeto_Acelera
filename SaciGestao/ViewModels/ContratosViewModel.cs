@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -82,7 +82,7 @@ namespace SaciGestao.ViewModels
             {
                 var imovelAtualId = ContratoForm?.ImovelId ?? 0;
                 return ImovelService.Instancia.ObterAtivos()
-                    .Where(i => i.Status == StatusImovel.Disponível || i.Id == imovelAtualId)
+                    .Where(i => i.Status == StatusImovel.Disponível || i.Status == StatusImovel.Reservado || i.Id == imovelAtualId)
                     .ToList();
             }
         }
@@ -380,6 +380,18 @@ namespace SaciGestao.ViewModels
             if (ContratoForm.ValorMensal <= 0)
             {
                 ErroForm = "Informe um valor válido maior que zero.";
+                return;
+            }
+
+            if (ContratoForm.DiaVencimento < 1 || ContratoForm.DiaVencimento > 31)
+            {
+                ErroForm = "O dia de vencimento deve estar entre 1 e 31.";
+                return;
+            }
+
+            if (ContratoForm.PrazoMeses < 1)
+            {
+                ErroForm = "O prazo do contrato deve ser de pelo menos 1 mês.";
                 return;
             }
 

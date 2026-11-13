@@ -4,8 +4,35 @@
     "NomeUsuario": "admin",
     "Senha": "123",
     "NomeCompleto": "Administrador",
-    "FotoCaminho": null,
+    "Email": "admin@sacilotti.com.br",
+    "Telefone": "(12) 3105-4500",
+    "Cargo": "Administrador do sistema",
+    "FotoCaminho": "usuarios/admin.png",
     "PerguntaSecreta": "Qual o nome do seu primeiro animal de estimação?",
     "RespostaSecreta": "rex"
+  },
+  {
+    "Id": 2,
+    "NomeUsuario": "carolina",
+    "Senha": "123",
+    "NomeCompleto": "Carolina Ribeiro",
+    "Email": "carolina.ribeiro@sacilotti.com.br",
+    "Telefone": "(12) 99781-2034",
+    "Cargo": "Corretora de imóveis",
+    "FotoCaminho": "usuarios/carolina_ribeiro.png",
+    "PerguntaSecreta": "Qual o nome da cidade onde você nasceu?",
+    "RespostaSecreta": "lorena"
+  },
+  {
+    "Id": 3,
+    "NomeUsuario": "enari",
+    "Senha": "123",
+    "NomeCompleto": "Enari Santos",
+    "Email": "enari.santos@sacilotti.com.br",
+    "Telefone": "(12) 99655-7712",
+    "Cargo": "Gerente administrativo",
+    "FotoCaminho": "usuarios/enari_santos.png",
+    "PerguntaSecreta": "Qual o nome da sua primeira escola?",
+    "RespostaSecreta": "objetivo"
   }
 ]

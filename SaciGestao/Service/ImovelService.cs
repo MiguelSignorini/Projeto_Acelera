@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -56,10 +56,6 @@ namespace SaciGestao.Service
             existente.Banheiros = editado.Banheiros;
             existente.Cozinhas = editado.Cozinhas;
             existente.Salas = editado.Salas;
-            existente.Suites = editado.Suites;       // Novo campo
-            existente.Banheiros = editado.Banheiros; // Novo campo
-            existente.Cozinhas = editado.Cozinhas;   // Novo campo
-            existente.Salas = editado.Salas;         // Novo campo
             existente.Vagas = editado.Vagas;
             existente.Descricao = editado.Descricao;
             existente.MatriculaEdp = editado.MatriculaEdp;

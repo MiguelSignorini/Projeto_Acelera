@@ -8,7 +8,7 @@
     "ImovelTitulo": "Casa Vila Nova 2Q",
     "LocatarioNome": "Maria Oliveira",
     "LocadorNome": "João Silva",
-    "Tipo": "Venda",
+    "Tipo": "Locacao",
     "Status": "Cancelado",
     "ValorMensal": 1800,
     "PrazoMeses": 36,
@@ -22,7 +22,7 @@
     "MesesIsencaoMultaRescisao": 12,
     "UC_Energia": "EDP-00445566",
     "UC_Agua": "SAB-00334455",
-    "Observacoes": "",
+    "Observacoes": "Contrato cancelado antes da entrega das chaves, a pedido do locatário. Caução devolvida conforme acordado entre as partes.",
     "Ativo": true
   },
   {
@@ -48,7 +48,7 @@
     "MesesIsencaoMultaRescisao": 12,
     "UC_Energia": "EDP-00556677",
     "UC_Agua": "SAB-00445566",
-    "Observacoes": "",
+    "Observacoes": "Locação comercial. Imóvel entregue vistoriado e com fotos anexas ao termo de vistoria. Reajuste anual pelo IPCA.",
     "Ativo": true
   },
   {
@@ -62,7 +62,7 @@
     "LocadorNome": "Fernanda Lima",
     "Tipo": "Locacao",
     "Status": "Ativo",
-    "ValorMensal": 2100.00,
+    "ValorMensal": 2100.0,
     "PrazoMeses": 36,
     "DiaVencimento": 20,
     "DataInicio": "2026-10-30T00:00:00-03:00",
@@ -74,7 +74,33 @@
     "MesesIsencaoMultaRescisao": 12,
     "UC_Energia": "EDP-00334455",
     "UC_Agua": "SAB-00223344",
-    "Observacoes": "",
+    "Observacoes": "Locação residencial. Depósito caução de 3 aluguéis, vistoria de entrada realizada e assinada pelas partes.",
+    "Ativo": true
+  },
+  {
+    "Id": 8,
+    "Codigo": "CTR008",
+    "ImovelId": 2,
+    "LocatarioId": 2,
+    "LocadorId": 1,
+    "ImovelTitulo": "Casa Jardim América 3Q",
+    "LocatarioNome": "Maria Oliveira",
+    "LocadorNome": "João Silva",
+    "Tipo": "Venda",
+    "Status": "Ativo",
+    "ValorMensal": 350000,
+    "PrazoMeses": 36,
+    "DiaVencimento": 10,
+    "DataInicio": "2026-11-01T00:00:00-03:00",
+    "DataFim": "2029-11-01T00:00:00-03:00",
+    "DataAssinatura": "2026-10-28T00:00:00-03:00",
+    "IndiceReajuste": "IGP-M/FGV",
+    "QuantidadeParcelas": 36,
+    "PercentualMultaAtraso": 10.0,
+    "MesesIsencaoMultaRescisao": 12,
+    "UC_Energia": "EDP-00223344",
+    "UC_Agua": "SAB-00112233",
+    "Observacoes": "Venda parcelada em 36 vezes, com entrada paga na assinatura. Escritura após a quitação.",
     "Ativo": true
   }
 ]

@@ -8,7 +8,7 @@
         Critérios WCAG 2.1 (W3C): texto com contraste mínimo de 4,5:1 e
         bordas de campos / ícones com no mínimo 3:1 contra o fundo branco.
 
-        Azul     = ação principal (confiança, calma)
+        Vinho    = ação principal (cor da marca Sacilotti, extraída da logo)
         Verde    = positivo / disponível / ativo
         Âmbar    = atenção moderada / reservado
         Vermelho = SOMENTE perigo: excluir, erro, cancelado
@@ -21,11 +21,11 @@
     <!-- ============================ CORES ============================ -->
 
     <!-- Ação principal -->
-    <SolidColorBrush x:Key="Primaria" Color="#1E5BB8"/>            <!-- branco sobre ela: 6,6:1 -->
-    <SolidColorBrush x:Key="PrimariaEscura" Color="#174A96"/>      <!-- hover -->
-    <SolidColorBrush x:Key="PrimariaMaisEscura" Color="#123B78"/>  <!-- pressionado -->
-    <SolidColorBrush x:Key="PrimariaClara" Color="#E8F0FB"/>       <!-- fundos suaves -->
-    <SolidColorBrush x:Key="PrimariaMedia" Color="#BFD3F2"/>       <!-- bordas suaves em destaque -->
+    <SolidColorBrush x:Key="Primaria" Color="#960806"/>            <!-- branco sobre ela: 6,6:1 -->
+    <SolidColorBrush x:Key="PrimariaEscura" Color="#7A0605"/>      <!-- hover -->
+    <SolidColorBrush x:Key="PrimariaMaisEscura" Color="#5E0504"/>  <!-- pressionado -->
+    <SolidColorBrush x:Key="PrimariaClara" Color="#FBEDEC"/>       <!-- fundos suaves -->
+    <SolidColorBrush x:Key="PrimariaMedia" Color="#E8B9B7"/>       <!-- bordas suaves em destaque -->
 
     <!-- Estados -->
     <SolidColorBrush x:Key="Sucesso" Color="#1E7B3A"/>
@@ -36,7 +36,7 @@
     <SolidColorBrush x:Key="PerigoClaro" Color="#FDECEC"/>
 
     <!-- Texto e bordas -->
-    <SolidColorBrush x:Key="Texto" Color="#1A2230"/>
+    <SolidColorBrush x:Key="Texto" Color="#2B2B2B"/>
     <SolidColorBrush x:Key="TextoSuave" Color="#4B5563"/>          <!-- 7,5:1 no branco -->
     <SolidColorBrush x:Key="Borda" Color="#8591A1"/>               <!-- bordas de campos: 3,4:1 -->
     <SolidColorBrush x:Key="BordaSuave" Color="#E3E7ED"/>          <!-- divisórias e contorno de cartões -->
@@ -44,13 +44,13 @@
     <SolidColorBrush x:Key="FundoApp" Color="#F2F4F8"/>            <!-- fundo atrás dos cartões -->
 
     <!-- Menu lateral / identidade -->
-    <SolidColorBrush x:Key="CorMenu" Color="#141C2B"/>
+    <SolidColorBrush x:Key="CorMenu" Color="#232323"/>
 
     <!-- Sombra leve dos cartões -->
     <DropShadowEffect x:Key="SombraCartao" BlurRadius="18" ShadowDepth="2" Direction="270"
-                      Opacity="0.06" Color="#0B1A33"/>
+                      Opacity="0.06" Color="#000000"/>
     <DropShadowEffect x:Key="SombraFlutuante" BlurRadius="28" ShadowDepth="6" Direction="270"
-                      Opacity="0.16" Color="#0B1A33"/>
+                      Opacity="0.16" Color="#000000"/>
 
     <!-- ============================ CARTÕES ============================ -->
 

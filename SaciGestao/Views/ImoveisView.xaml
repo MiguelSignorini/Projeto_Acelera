@@ -74,8 +74,8 @@
                     <Setter Property="BorderBrush" Value="#E8C65A"/>
                 </DataTrigger>
                 <DataTrigger Binding="{Binding Status}" Value="Alugado">
-                    <Setter Property="Background" Value="#DCE9FB"/>
-                    <Setter Property="BorderBrush" Value="#9DBDEB"/>
+                    <Setter Property="Background" Value="#F8DEDD"/>
+                    <Setter Property="BorderBrush" Value="#E0A5A3"/>
                 </DataTrigger>
                 <DataTrigger Binding="{Binding Status}" Value="Vendido">
                     <Setter Property="Background" Value="#E6E0F8"/>
@@ -96,7 +96,7 @@
                     <Setter Property="Foreground" Value="#7A4B00"/>
                 </DataTrigger>
                 <DataTrigger Binding="{Binding Status}" Value="Alugado">
-                    <Setter Property="Foreground" Value="#14407A"/>
+                    <Setter Property="Foreground" Value="#6B0504"/>
                 </DataTrigger>
                 <DataTrigger Binding="{Binding Status}" Value="Vendido">
                     <Setter Property="Foreground" Value="#43257A"/>
@@ -127,7 +127,7 @@
             <Setter Property="Cursor" Value="Hand"/>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="BorderBrush" Value="#1E5BB8"/>
+                    <Setter Property="BorderBrush" Value="#960806"/>
                     <Setter Property="Effect">
                         <Setter.Value>
                             <DropShadowEffect BlurRadius="16" ShadowDepth="2" Opacity="0.18" Color="#000000"/>
@@ -197,7 +197,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="fundo" Property="Background" Value="#1E5BB8"/>
+                                <Setter TargetName="fundo" Property="Background" Value="#960806"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -222,7 +222,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="fundo" Property="Background" Value="#1E5BB8"/>
+                                <Setter TargetName="fundo" Property="Background" Value="#960806"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -246,7 +246,7 @@
                                 <Setter TargetName="moldura" Property="Opacity" Value="1"/>
                             </Trigger>
                             <Trigger Property="IsSelected" Value="True">
-                                <Setter TargetName="moldura" Property="BorderBrush" Value="#1E5BB8"/>
+                                <Setter TargetName="moldura" Property="BorderBrush" Value="#960806"/>
                                 <Setter TargetName="moldura" Property="Opacity" Value="1"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
@@ -709,7 +709,7 @@
 
                                 <StackPanel Grid.Column="2">
                                     <TextBlock Text="Ganho estimado da empresa" Style="{StaticResource RotuloForm}"/>
-                                    <Border Height="38" CornerRadius="4" Background="#EEF4FF" BorderBrush="{StaticResource Borda}" BorderThickness="1">
+                                    <Border Height="38" CornerRadius="4" Background="#FDF3F2" BorderBrush="{StaticResource Borda}" BorderThickness="1">
                                         <TextBlock Text="{Binding GanhoEstimadoForm}" FontSize="14" FontWeight="SemiBold"
                                                    Foreground="{StaticResource Primaria}" VerticalAlignment="Center" Margin="10,0"/>
                                     </Border>
@@ -1248,7 +1248,7 @@
                                             </TextBlock>
                                         </StackPanel>
 
-                                        <Border Background="#EEF4FF" CornerRadius="8" Padding="12,8" Margin="0,12,0,0">
+                                        <Border Background="#FDF3F2" CornerRadius="8" Padding="12,8" Margin="0,12,0,0">
                                             <StackPanel>
                                                 <TextBlock Style="{StaticResource RotuloDetalhe}">
                                                     <Run Text="{Binding RotuloPercentual, Mode=OneWay}"/><Run Text=" • "/><Run Text="{Binding PercentualEmpresaTexto, Mode=OneWay}"/>

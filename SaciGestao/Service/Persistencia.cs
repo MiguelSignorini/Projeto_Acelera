@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -85,7 +85,9 @@ namespace SaciGestao.Service
 
             try
             {
-                var lista = JsonSerializer.Deserialize<List<T>>(File.ReadAllText(caminho), _opcoes);
+                string conteudo = File.ReadAllText(caminho);
+                if (string.IsNullOrWhiteSpace(conteudo)) return null; // arquivo vazio: usa os dados de exemplo, sem marcar como corrompido
+                var lista = JsonSerializer.Deserialize<List<T>>(conteudo, _opcoes);
                 return lista; // lista vazia é válida: tudo foi apagado e salvo (não recarrega os exemplos)
             }
             catch (Exception)
@@ -108,9 +110,10 @@ namespace SaciGestao.Service
                 File.WriteAllText(temporario, JsonSerializer.Serialize(itens.ToList(), _opcoes));
                 File.Move(temporario, caminho, overwrite: true);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // Sem permissão de escrita, por exemplo: o programa não deve travar ao fechar
+                // Sem permissão de escrita, por exemplo: o programa não deve travar ao fechar, mas deixa rastro do erro
+                try { File.AppendAllText(Path.Combine(Path.GetTempPath(), "SaciGestao_erro.log"), DateTime.Now + " - falha ao salvar " + nomeArquivo + ": " + ex.Message + Environment.NewLine); } catch { }
             }
         }
 

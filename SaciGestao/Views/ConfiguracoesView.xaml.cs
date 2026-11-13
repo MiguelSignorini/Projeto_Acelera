@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -32,6 +32,9 @@ namespace SaciGestao.Views
             _usuario = usuario;
             txtNome.Text = usuario.NomeCompleto;
             txtUsuario.Text = usuario.NomeUsuario;
+            txtCargo.Text = usuario.Cargo;
+            txtEmail.Text = usuario.Email;
+            txtTelefone.Text = usuario.Telefone;
             txtPergunta.Text = usuario.PerguntaSecreta;
 
             MostrarPrevia(usuario.FotoCaminho);
@@ -83,7 +86,10 @@ namespace SaciGestao.Views
         {
             bool pendente = _removerFoto || _novaFotoOrigem != null ||
                             txtNome.Text.Trim() != _usuario.NomeCompleto ||
-                            txtUsuario.Text.Trim() != _usuario.NomeUsuario;
+                            txtUsuario.Text.Trim() != _usuario.NomeUsuario ||
+                            txtCargo.Text.Trim() != _usuario.Cargo ||
+                            txtEmail.Text.Trim() != _usuario.Email ||
+                            txtTelefone.Text.Trim() != _usuario.Telefone;
             return !pendente || AplicarPerfil();
         }
 
@@ -129,6 +135,9 @@ namespace SaciGestao.Views
 
             _usuario.NomeCompleto = nome;
             _usuario.NomeUsuario = nomeUsuario;
+            _usuario.Cargo = txtCargo.Text.Trim();
+            _usuario.Email = txtEmail.Text.Trim();
+            _usuario.Telefone = txtTelefone.Text.Trim();
             _novaFotoOrigem = null;
             _removerFoto = false;
 

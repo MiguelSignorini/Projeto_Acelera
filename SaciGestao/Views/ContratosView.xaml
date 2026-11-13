@@ -23,10 +23,10 @@
                     <Setter Property="Background" Value="#F5C542"/>
                 </DataTrigger>
                 <DataTrigger Binding="{Binding Status}" Value="Alugado">
-                    <Setter Property="Background" Value="#2F7DD1"/>
+                    <Setter Property="Background" Value="#960806"/>
                 </DataTrigger>
                 <DataTrigger Binding="{Binding Status}" Value="Vendido">
-                    <Setter Property="Background" Value="#1E5BB8"/>
+                    <Setter Property="Background" Value="#960806"/>
                 </DataTrigger>
             </Style.Triggers>
         </Style>
@@ -68,7 +68,7 @@
             <Setter Property="Cursor" Value="Hand"/>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="BorderBrush" Value="#1E5BB8"/>
+                    <Setter Property="BorderBrush" Value="#960806"/>
                     <Setter Property="Effect">
                         <Setter.Value>
                             <DropShadowEffect BlurRadius="16" ShadowDepth="2" Opacity="0.18" Color="#000000"/>
@@ -138,7 +138,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="fundo" Property="Background" Value="#1E5BB8"/>
+                                <Setter TargetName="fundo" Property="Background" Value="#960806"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -163,7 +163,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="fundo" Property="Background" Value="#1E5BB8"/>
+                                <Setter TargetName="fundo" Property="Background" Value="#960806"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -187,7 +187,7 @@
                                 <Setter TargetName="moldura" Property="Opacity" Value="1"/>
                             </Trigger>
                             <Trigger Property="IsSelected" Value="True">
-                                <Setter TargetName="moldura" Property="BorderBrush" Value="#1E5BB8"/>
+                                <Setter TargetName="moldura" Property="BorderBrush" Value="#960806"/>
                                 <Setter TargetName="moldura" Property="Opacity" Value="1"/>
                             </Trigger>
                         </ControlTemplate.Triggers>

@@ -17,7 +17,7 @@
         <SolidColorBrush x:Key="CorMenuHover" Color="#1E293B"/>
         <SolidColorBrush x:Key="CorMenuAtivo" Color="#1D3254"/>
         <SolidColorBrush x:Key="CorTextoMenu" Color="#A9B4C4"/>
-        <SolidColorBrush x:Key="CorDestaque" Color="#8DBBF7"/>
+        <SolidColorBrush x:Key="CorDestaque" Color="#E8A09E"/>
         <SolidColorBrush x:Key="CorFundo" Color="#F2F4F8"/>
         <SolidColorBrush x:Key="CorTexto" Color="#1F2933"/>
 

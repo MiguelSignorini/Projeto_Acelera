@@ -14,7 +14,7 @@ namespace SaciGestao.ViewModels
         public int Valor { get; set; }
         public int Maximo { get; set; }
         public string Detalhe { get; set; } = string.Empty;
-        public string Cor { get; set; } = "#1E5BB8";
+        public string Cor { get; set; } = "#960806";
     }
 
     // Uma fatia do gráfico de rosca (o desenho é um arco, ver MontarRosca)
@@ -23,7 +23,7 @@ namespace SaciGestao.ViewModels
         public string Rotulo { get; set; } = string.Empty;
         public int Valor { get; set; }
         public string Percentual { get; set; } = string.Empty;
-        public string Cor { get; set; } = "#1E5BB8";
+        public string Cor { get; set; } = "#960806";
         public string Arco { get; set; } = string.Empty;
     }
 
@@ -32,8 +32,8 @@ namespace SaciGestao.ViewModels
     {
         public string Icone { get; set; } = string.Empty;
         public string Texto { get; set; } = string.Empty;
-        public string Cor { get; set; } = "#1E5BB8";
-        public string CorFundo { get; set; } = "#E8F0FB";
+        public string Cor { get; set; } = "#960806";
+        public string CorFundo { get; set; } = "#FBEDEC";
     }
 
     // Uma linha da tabela "Contratos a vencer"
@@ -131,7 +131,7 @@ namespace SaciGestao.ViewModels
             int maximo = Math.Max(1, new[] { leads, disponiveis.Count, reservados.Count, fechados }.Max());
             Funil = new List<BarraResumo>
             {
-                new BarraResumo { Rotulo = "Clientes em atendimento", Valor = leads, Maximo = maximo, Cor = "#1E5BB8", Detalhe = "interessados" },
+                new BarraResumo { Rotulo = "Clientes em atendimento", Valor = leads, Maximo = maximo, Cor = "#960806", Detalhe = "interessados" },
                 new BarraResumo { Rotulo = "Imóveis disponíveis", Valor = disponiveis.Count, Maximo = maximo, Cor = "#2E9E5B", Detalhe = Moeda(disponiveis.Sum(i => i.Valor)) },
                 new BarraResumo { Rotulo = "Imóveis reservados", Valor = reservados.Count, Maximo = maximo, Cor = "#D9A21B", Detalhe = Moeda(reservados.Sum(i => i.Valor)) },
                 new BarraResumo { Rotulo = "Negócios fechados", Valor = fechados, Maximo = maximo, Cor = "#6B46C1", Detalhe = "alugados e vendidos" }
@@ -143,7 +143,7 @@ namespace SaciGestao.ViewModels
             {
                 ("Disponível", imoveis.Count(i => i.Status == StatusImovel.Disponível), "#2E9E5B"),
                 ("Reservado",  imoveis.Count(i => i.Status == StatusImovel.Reservado),  "#D9A21B"),
-                ("Alugado",    imoveis.Count(i => i.Status == StatusImovel.Alugado),    "#1E5BB8"),
+                ("Alugado",    imoveis.Count(i => i.Status == StatusImovel.Alugado),    "#960806"),
                 ("Vendido",    imoveis.Count(i => i.Status == StatusImovel.Vendido),    "#6B46C1")
             });
 
@@ -154,7 +154,7 @@ namespace SaciGestao.ViewModels
                 Avisos.Add(Aviso(0xE787, vencendo + (vencendo == 1 ? " contrato precisa de renovação em até 60 dias" : " contratos precisam de renovação em até 60 dias"), "#7A4B00", "#FFF0C2"));
 
             if (reservados.Count > 0)
-                Avisos.Add(Aviso(0xE81C, reservados.Count + (reservados.Count == 1 ? " imóvel reservado aguardando fechamento" : " imóveis reservados aguardando fechamento"), "#14407A", "#DCE9FB"));
+                Avisos.Add(Aviso(0xE81C, reservados.Count + (reservados.Count == 1 ? " imóvel reservado aguardando fechamento" : " imóveis reservados aguardando fechamento"), "#6B0504", "#F8DEDD"));
 
             int semFoto = imoveis.Count(i => i.Fotos.Count == 0 && i.Status == StatusImovel.Disponível);
             if (semFoto > 0)
@@ -163,7 +163,7 @@ namespace SaciGestao.ViewModels
             // CIB ("CPF do imóvel"): obrigatório em todos os municípios a partir de janeiro de 2027 (LC 214/2025)
             int semCib = imoveis.Count(i => !i.TemCib);
             if (semCib > 0)
-                Avisos.Add(Aviso(0xE8A5, semCib + (semCib == 1 ? " imóvel sem CIB (Cadastro Imobiliário Brasileiro) cadastrado" : " imóveis sem CIB (Cadastro Imobiliário Brasileiro) cadastrado"), "#14407A", "#DCE9FB"));
+                Avisos.Add(Aviso(0xE8A5, semCib + (semCib == 1 ? " imóvel sem CIB (Cadastro Imobiliário Brasileiro) cadastrado" : " imóveis sem CIB (Cadastro Imobiliário Brasileiro) cadastrado"), "#6B0504", "#F8DEDD"));
 
             int semDono = imoveis.Count(i => i.ProprietarioId == 0);
             if (semDono > 0)
