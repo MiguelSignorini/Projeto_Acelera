@@ -96,7 +96,7 @@
                     <Setter Property="Foreground" Value="#7A4B00"/>
                 </DataTrigger>
                 <DataTrigger Binding="{Binding Status}" Value="Alugado">
-                    <Setter Property="Foreground" Value="#6B0504"/>
+                    <Setter Property="Foreground" Value="#690303"/>
                 </DataTrigger>
                 <DataTrigger Binding="{Binding Status}" Value="Vendido">
                     <Setter Property="Foreground" Value="#43257A"/>
@@ -127,7 +127,7 @@
             <Setter Property="Cursor" Value="Hand"/>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="BorderBrush" Value="#960806"/>
+                    <Setter Property="BorderBrush" Value="#920505"/>
                     <Setter Property="Effect">
                         <Setter.Value>
                             <DropShadowEffect BlurRadius="16" ShadowDepth="2" Opacity="0.18" Color="#000000"/>
@@ -197,7 +197,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="fundo" Property="Background" Value="#960806"/>
+                                <Setter TargetName="fundo" Property="Background" Value="#920505"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -222,7 +222,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="fundo" Property="Background" Value="#960806"/>
+                                <Setter TargetName="fundo" Property="Background" Value="#920505"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -246,7 +246,7 @@
                                 <Setter TargetName="moldura" Property="Opacity" Value="1"/>
                             </Trigger>
                             <Trigger Property="IsSelected" Value="True">
-                                <Setter TargetName="moldura" Property="BorderBrush" Value="#960806"/>
+                                <Setter TargetName="moldura" Property="BorderBrush" Value="#920505"/>
                                 <Setter TargetName="moldura" Property="Opacity" Value="1"/>
                             </Trigger>
                         </ControlTemplate.Triggers>

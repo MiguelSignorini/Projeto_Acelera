@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
@@ -67,6 +67,19 @@ namespace SaciGestao.ViewModels
             ? "Nenhum pagamento pendente"
             : QuantidadePendentes + (QuantidadePendentes == 1 ? " pagamento pendente" : " pagamentos pendentes")
               + (QuantidadeAtrasados > 0 ? " • " + QuantidadeAtrasados + " atrasado(s)" : string.Empty);
+
+        // ============================================================
+        // CONTRATOS ATIVOS E POP-UP DE DETALHES
+        // ============================================================
+        public ObservableCollection<ContratoFinanceiro> ContratosAtivos { get; } = new();
+        public int QuantidadeContratosAtivos => ContratosAtivos.Count;
+        public bool SemContratosAtivos => ContratosAtivos.Count == 0;
+
+        private bool _detalheAberto;
+        public bool DetalheAberto { get => _detalheAberto; private set => SetProperty(ref _detalheAberto, value); }
+
+        private ContratoFinanceiro? _detalheContrato;
+        public ContratoFinanceiro? DetalheContrato { get => _detalheContrato; private set => SetProperty(ref _detalheContrato, value); }
 
         // ============================================================
         // FILTROS
@@ -180,6 +193,9 @@ namespace SaciGestao.ViewModels
         public ICommand DesfazerCommand { get; }
         public ICommand LimparFiltrosCommand { get; }
         public ICommand PeriodoCommand { get; }
+        public ICommand AbrirDetalheCommand { get; }
+        public ICommand FecharDetalheCommand { get; }
+        public ICommand RegistrarDoDetalheCommand { get; }
 
         public FinanceiroViewModel()
         {
@@ -190,6 +206,9 @@ namespace SaciGestao.ViewModels
             DesfazerCommand = new RelayCommand(p => Desfazer(p as MovimentacaoFinanceira));
             LimparFiltrosCommand = new RelayCommand(_ => LimparFiltros());
             PeriodoCommand = new RelayCommand(p => AplicarPeriodo(p as string ?? "tudo"));
+            AbrirDetalheCommand = new RelayCommand(p => AbrirDetalhe(p as ContratoFinanceiro));
+            FecharDetalheCommand = new RelayCommand(_ => DetalheAberto = false);
+            RegistrarDoDetalheCommand = new RelayCommand(_ => RegistrarDoDetalhe());
 
             Recarregar();
         }
@@ -201,6 +220,42 @@ namespace SaciGestao.ViewModels
         {
             _todas = FinanceiroService.Instancia.ObterMovimentacoes();
             Filtrar();
+            CarregarContratosAtivos();
+        }
+
+        // Lista de contratos ativos; se o pop-up está aberto, atualiza também o contrato que ele mostra
+        private void CarregarContratosAtivos()
+        {
+            ContratosAtivos.Clear();
+            foreach (var c in FinanceiroService.Instancia.ObterContratosFinanceiro())
+                ContratosAtivos.Add(c);
+
+            OnPropertyChanged(nameof(QuantidadeContratosAtivos));
+            OnPropertyChanged(nameof(SemContratosAtivos));
+
+            if (DetalheAberto && DetalheContrato != null)
+            {
+                DetalheContrato = ContratosAtivos.FirstOrDefault(c => c.ContratoId == DetalheContrato.ContratoId);
+                if (DetalheContrato == null) DetalheAberto = false;
+            }
+        }
+
+        private void AbrirDetalhe(ContratoFinanceiro? contrato)
+        {
+            if (contrato == null) return;
+            DetalheContrato = contrato;
+            DetalheAberto = true;
+        }
+
+        // Botão do pop-up: abre o "Registrar pagamento" já na próxima parcela pendente do contrato
+        private void RegistrarDoDetalhe()
+        {
+            var contrato = DetalheContrato;
+            if (contrato == null) return;
+
+            var proxima = FinanceiroService.Instancia.ParcelasPendentes(contrato.ContratoId).FirstOrDefault();
+            DetalheAberto = false;
+            AbrirDialogo(proxima ?? new MovimentacaoFinanceira { ContratoId = contrato.ContratoId });
         }
 
         private void Filtrar()

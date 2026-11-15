@@ -21,9 +21,9 @@
     <!-- ============================ CORES ============================ -->
 
     <!-- Ação principal -->
-    <SolidColorBrush x:Key="Primaria" Color="#960806"/>            <!-- branco sobre ela: 6,6:1 -->
-    <SolidColorBrush x:Key="PrimariaEscura" Color="#7A0605"/>      <!-- hover -->
-    <SolidColorBrush x:Key="PrimariaMaisEscura" Color="#5E0504"/>  <!-- pressionado -->
+    <SolidColorBrush x:Key="Primaria" Color="#920505"/>            <!-- branco sobre ela: 6,6:1 -->
+    <SolidColorBrush x:Key="PrimariaEscura" Color="#780404"/>      <!-- hover -->
+    <SolidColorBrush x:Key="PrimariaMaisEscura" Color="#5C0303"/>  <!-- pressionado -->
     <SolidColorBrush x:Key="PrimariaClara" Color="#FBEDEC"/>       <!-- fundos suaves -->
     <SolidColorBrush x:Key="PrimariaMedia" Color="#E8B9B7"/>       <!-- bordas suaves em destaque -->
 

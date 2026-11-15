@@ -68,6 +68,84 @@ namespace SaciGestao.Service
                 : GerarPendentes(contrato).OrderBy(p => p.Competencia).ToList();
         }
 
+        // Contratos ativos com o resumo financeiro (quanto já foi pago, quanto falta, parcelas...).
+        // Os que têm parcela atrasada vêm primeiro.
+        public List<ContratoFinanceiro> ObterContratosFinanceiro()
+        {
+            return ContratosParaPagamento()
+                .Select(MontarContratoFinanceiro)
+                .OrderByDescending(c => c.ComAtraso)
+                .ThenBy(c => c.Codigo)
+                .ToList();
+        }
+
+        public ContratoFinanceiro? ObterContratoFinanceiro(int contratoId)
+        {
+            var contrato = ContratosParaPagamento().FirstOrDefault(c => c.Id == contratoId);
+            return contrato == null ? null : MontarContratoFinanceiro(contrato);
+        }
+
+        // Todas as parcelas do contrato, do início ao fim do prazo, cada uma marcada como paga ou não
+        private ContratoFinanceiro MontarContratoFinanceiro(Contrato contrato)
+        {
+            var pagos = _pagamentos.Where(p => p.ContratoId == contrato.Id)
+                .GroupBy(p => p.Competencia.Date)
+                .ToDictionary(g => g.Key, g => g.First());
+
+            var parcelas = new List<ParcelaContrato>();
+
+            if (contrato.Tipo == TipoContrato.Venda)
+            {
+                var venda = ParcelasVenda(contrato);
+                foreach (var v in venda)
+                {
+                    pagos.TryGetValue(v.Competencia, out var pg);
+                    parcelas.Add(NovaParcela(v.Numero, venda.Count > 1 ? "Parcela " + v.Numero + "/" + venda.Count : "Valor da venda",
+                        v.Competencia, v.Competencia, v.Valor, false, pg));
+                }
+            }
+            else
+            {
+                int prazo = Math.Max(1, contrato.PrazoMeses);
+                var primeiro = new DateTime(contrato.DataInicio.Year, contrato.DataInicio.Month, 1);
+                for (int i = 0; i < prazo; i++)
+                {
+                    var mes = primeiro.AddMonths(i);
+                    int dia = Math.Min(Math.Max(contrato.DiaVencimento, 1), DateTime.DaysInMonth(mes.Year, mes.Month));
+                    var vencimento = new DateTime(mes.Year, mes.Month, dia);
+                    if (vencimento < contrato.DataInicio.Date) vencimento = contrato.DataInicio.Date;
+
+                    pagos.TryGetValue(mes, out var pg);
+                    parcelas.Add(NovaParcela(i + 1, mes.ToString("MM/yyyy"), mes, vencimento, contrato.ValorMensal, true, pg));
+                }
+            }
+
+            return new ContratoFinanceiro
+            {
+                Contrato = contrato,
+                Parcelas = parcelas,
+                PercentualEmpresa = PercentualDoImovel(contrato.ImovelId)
+            };
+        }
+
+        private static ParcelaContrato NovaParcela(int numero, string referencia, DateTime competencia, DateTime vencimento,
+            decimal valor, bool locacao, Pagamento? pagamento)
+        {
+            return new ParcelaContrato
+            {
+                Numero = numero,
+                Referencia = referencia,
+                Competencia = competencia,
+                Vencimento = vencimento,
+                ValorPrevisto = valor,
+                EhLocacao = locacao,
+                Pago = pagamento != null,
+                ValorPago = pagamento?.ValorRecebido ?? 0m,
+                DataPagamento = pagamento?.DataPagamento,
+                CaiuNaConta = pagamento?.CaiuNaConta ?? false
+            };
+        }
+
         // ---------- Ações ----------
         public void Registrar(Pagamento pagamento)
         {

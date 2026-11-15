@@ -94,7 +94,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="fundo" Property="Background" Value="#7A0605"/>
+                                <Setter TargetName="fundo" Property="Background" Value="#780404"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -161,8 +161,8 @@
             <Setter Property="Width" Value="40"/>
             <Setter Property="Height" Value="40"/>
             <Setter Property="CornerRadius" Value="10"/>
-            <Setter Property="Background" Value="#26960806"/>
-            <Setter Property="BorderBrush" Value="#55960806"/>
+            <Setter Property="Background" Value="#26920505"/>
+            <Setter Property="BorderBrush" Value="#55920505"/>
             <Setter Property="BorderThickness" Value="1"/>
         </Style>
         <Style x:Key="TituloDestaque" TargetType="TextBlock">
@@ -195,7 +195,7 @@
 
             <Grid>
                 <!-- Círculos decorativos -->
-                <Ellipse Width="460" Height="460" Fill="#1A960806" HorizontalAlignment="Left" VerticalAlignment="Top"
+                <Ellipse Width="460" Height="460" Fill="#1A920505" HorizontalAlignment="Left" VerticalAlignment="Top"
                          Margin="-190,-170,0,0"/>
                 <Ellipse Width="320" Height="320" Fill="#0FFFFFFF" HorizontalAlignment="Right" VerticalAlignment="Bottom"
                          Margin="0,0,-120,-110"/>

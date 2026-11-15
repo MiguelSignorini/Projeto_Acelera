@@ -172,6 +172,78 @@
             </Style.Triggers>
         </Style>
 
+        <!-- Linha clicável da lista de contratos ativos -->
+        <Style x:Key="LinhaContrato" TargetType="Button">
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="fundo" Background="Transparent" BorderBrush="{StaticResource BordaSuave}"
+                                BorderThickness="0,1,0,0" Padding="22,14">
+                            <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="fundo" Property="Background" Value="{StaticResource FundoSuave}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="fundo" Property="Background" Value="{StaticResource PrimariaClara}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Situação do contrato: em dia (verde), com parcela atrasada (vermelho), quitado (cor da marca) -->
+        <Style x:Key="PilulaContrato" TargetType="Border" BasedOn="{StaticResource Pilula}">
+            <Setter Property="Background" Value="{StaticResource SucessoClaro}"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding ComAtraso}" Value="True">
+                    <Setter Property="Background" Value="{StaticResource PerigoClaro}"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Quitado}" Value="True">
+                    <Setter Property="Background" Value="{StaticResource PrimariaClara}"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="TextoPilulaContrato" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{StaticResource Sucesso}"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding ComAtraso}" Value="True">
+                    <Setter Property="Foreground" Value="{StaticResource Perigo}"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Quitado}" Value="True">
+                    <Setter Property="Foreground" Value="{StaticResource Primaria}"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="RotuloDetalhe" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Foreground" Value="{StaticResource TextoSuave}"/>
+        </Style>
+        <Style x:Key="ValorDetalhe" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{StaticResource Texto}"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="Margin" Value="0,2,0,12"/>
+        </Style>
+        <Style x:Key="CabecalhoParcela" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="{StaticResource TextoSuave}"/>
+        </Style>
+        <Style x:Key="CelulaParcela" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Foreground" Value="{StaticResource Texto}"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
         <!-- Barra do gráfico -->
         <Style x:Key="BarraMes" TargetType="ProgressBar">
             <Setter Property="Height" Value="12"/>
@@ -386,6 +458,78 @@
                     </StackPanel>
                 </Border>
 
+                <!-- ============ CONTRATOS ATIVOS ============ -->
+                <Border Style="{StaticResource Cartao}" Padding="0" ClipToBounds="True" Margin="0,0,0,18">
+                    <StackPanel>
+                        <Grid Margin="22,16,22,12">
+                            <StackPanel>
+                                <TextBlock Text="Contratos ativos" FontSize="17" FontWeight="Bold" Foreground="{StaticResource Texto}"/>
+                                <TextBlock Text="Clique em um contrato para ver o que já foi pago, o que falta e todas as parcelas."
+                                           FontSize="13" Foreground="{StaticResource TextoSuave}" Margin="0,2,0,0" TextWrapping="Wrap"/>
+                            </StackPanel>
+                            <TextBlock HorizontalAlignment="Right" VerticalAlignment="Top" FontSize="13"
+                                       Foreground="{StaticResource TextoSuave}"
+                                       Text="{Binding QuantidadeContratosAtivos, StringFormat='{}{0} contrato(s)'}"/>
+                        </Grid>
+
+                        <TextBlock Text="Nenhum contrato ativo no momento." HorizontalAlignment="Center" Margin="0,16,0,28"
+                                   Foreground="{StaticResource TextoSuave}" FontSize="14"
+                                   Visibility="{Binding SemContratosAtivos, Converter={StaticResource BoolVis}}"/>
+
+                        <ItemsControl ItemsSource="{Binding ContratosAtivos}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button Style="{StaticResource LinhaContrato}"
+                                            Command="{Binding DataContext.AbrirDetalheCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                            CommandParameter="{Binding}">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="2*" MinWidth="150"/>
+                                                <ColumnDefinition Width="1.2*" MinWidth="110"/>
+                                                <ColumnDefinition Width="1.6*" MinWidth="130"/>
+                                                <ColumnDefinition Width="1.3*" MinWidth="120"/>
+                                                <ColumnDefinition Width="Auto" MinWidth="100"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <StackPanel VerticalAlignment="Center" Margin="0,0,12,0">
+                                                <TextBlock FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource Texto}" TextTrimming="CharacterEllipsis">
+                                                    <Run Text="{Binding Codigo, Mode=OneWay}"/><Run Text=" • "/><Run Text="{Binding ImovelTitulo, Mode=OneWay}"/>
+                                                </TextBlock>
+                                                <TextBlock FontSize="12" Foreground="{StaticResource TextoSuave}" TextTrimming="CharacterEllipsis" Margin="0,2,0,0">
+                                                    <Run Text="{Binding TipoTexto, Mode=OneWay}"/><Run Text=" • "/><Run Text="{Binding LocatarioNome, Mode=OneWay}"/>
+                                                </TextBlock>
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="0,0,12,0">
+                                                <TextBlock Text="Falta pagar" Style="{StaticResource RotuloDetalhe}"/>
+                                                <TextBlock Text="{Binding FaltaTexto}" FontSize="14" FontWeight="Bold" Foreground="{StaticResource Texto}"/>
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Column="2" VerticalAlignment="Center" Margin="0,0,16,0">
+                                                <ProgressBar Value="{Binding Progresso, Mode=OneWay}" Style="{StaticResource BarraMes}" Height="8"/>
+                                                <TextBlock Text="{Binding ParcelasTexto}" Style="{StaticResource RotuloDetalhe}" Margin="0,5,0,0"/>
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Column="3" VerticalAlignment="Center" Margin="0,0,12,0">
+                                                <TextBlock Text="Próximo vencimento" Style="{StaticResource RotuloDetalhe}"/>
+                                                <TextBlock Text="{Binding ProximoVencimentoTexto}" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource Texto}"/>
+                                            </StackPanel>
+
+                                            <Border Grid.Column="4" Style="{StaticResource PilulaContrato}" VerticalAlignment="Center" Margin="0,0,12,0">
+                                                <TextBlock Text="{Binding StatusTexto}" Style="{StaticResource TextoPilulaContrato}"/>
+                                            </Border>
+
+                                            <TextBlock Grid.Column="5" Text="&#xE76C;" FontFamily="Segoe MDL2 Assets" FontSize="14"
+                                                       Foreground="{StaticResource TextoSuave}" VerticalAlignment="Center"/>
+                                        </Grid>
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+
                 <!-- ============ PAGAMENTOS ============ -->
                 <Border Style="{StaticResource Cartao}" Padding="0" ClipToBounds="True">
                     <Grid>
@@ -477,6 +621,190 @@
                 </Border>
             </StackPanel>
         </ScrollViewer>
+
+        <!-- ============ DETALHES DO CONTRATO (pop-up) ============ -->
+        <Grid Visibility="{Binding DetalheAberto, Converter={StaticResource BoolVis}}">
+            <Border Background="#99000000" MouseDown="FundoDetalhe_MouseDown"/>
+
+            <Border Style="{StaticResource Cartao}" Background="White" MaxWidth="900" Margin="14"
+                    HorizontalAlignment="Stretch" VerticalAlignment="Center" Padding="0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Cabeçalho -->
+                    <Border Background="{StaticResource Primaria}" CornerRadius="14,14,0,0" Padding="26,18">
+                        <Grid DataContext="{Binding DetalheContrato}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock FontSize="12" FontWeight="SemiBold" Foreground="#F3D5D4">
+                                    <Run Text="{Binding Codigo, Mode=OneWay}"/><Run Text=" • "/><Run Text="{Binding TipoTexto, Mode=OneWay}"/>
+                                </TextBlock>
+                                <TextBlock Text="{Binding ImovelTitulo}" FontSize="20" FontWeight="Bold" Foreground="White"
+                                           TextWrapping="Wrap" Margin="0,2,0,0"/>
+                                <TextBlock FontSize="13" Foreground="#F3D5D4" TextWrapping="Wrap" Margin="0,4,0,0">
+                                    <Run Text="Cliente: "/><Run Text="{Binding LocatarioNome, Mode=OneWay}" FontWeight="SemiBold"/><Run Text="   •   Proprietário: "/><Run Text="{Binding LocadorNome, Mode=OneWay}" FontWeight="SemiBold"/>
+                                </TextBlock>
+                            </StackPanel>
+                            <Border Grid.Column="1" Style="{StaticResource PilulaContrato}" VerticalAlignment="Top" Background="White">
+                                <TextBlock Text="{Binding StatusTexto}" Style="{StaticResource TextoPilulaContrato}"/>
+                            </Border>
+                        </Grid>
+                    </Border>
+
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" MaxHeight="560">
+                        <StackPanel Margin="26,20,26,8" DataContext="{Binding DetalheContrato}">
+
+                            <!-- Resumo: quanto foi pago, quanto falta, próximo vencimento -->
+                            <h:PainelAdaptavel LarguraMinima="190" EspacamentoVertical="10">
+                                <Border Background="{StaticResource FundoSuave}" CornerRadius="10" Padding="14,12" Margin="0,0,10,0">
+                                    <StackPanel>
+                                        <TextBlock Text="Valor total" Style="{StaticResource RotuloDetalhe}"/>
+                                        <TextBlock Text="{Binding ValorTotalTexto}" FontSize="19" FontWeight="Bold" Foreground="{StaticResource Texto}"/>
+                                        <TextBlock Text="{Binding PeriodoTexto}" Style="{StaticResource RotuloDetalhe}" Margin="0,2,0,0" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Background="{StaticResource SucessoClaro}" CornerRadius="10" Padding="14,12" Margin="0,0,10,0">
+                                    <StackPanel>
+                                        <TextBlock Text="Já pago" Style="{StaticResource RotuloDetalhe}"/>
+                                        <TextBlock Text="{Binding TotalPagoTexto}" FontSize="19" FontWeight="Bold" Foreground="{StaticResource Sucesso}"/>
+                                        <TextBlock Text="{Binding ParcelasTexto}" Style="{StaticResource RotuloDetalhe}" Margin="0,2,0,0" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Background="{StaticResource AtencaoClara}" CornerRadius="10" Padding="14,12" Margin="0,0,10,0">
+                                    <StackPanel>
+                                        <TextBlock Text="Ainda falta" Style="{StaticResource RotuloDetalhe}"/>
+                                        <TextBlock Text="{Binding FaltaTexto}" FontSize="19" FontWeight="Bold" Foreground="{StaticResource Atencao}"/>
+                                        <TextBlock Style="{StaticResource RotuloDetalhe}" Margin="0,2,0,0" TextWrapping="Wrap">
+                                            <Run Text="{Binding ParcelasPendentes, Mode=OneWay}"/><Run Text=" parcela(s) • atrasado: "/><Run Text="{Binding AtrasadoTexto, Mode=OneWay}"/>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </Border>
+                                <Border Background="{StaticResource PrimariaClara}" CornerRadius="10" Padding="14,12">
+                                    <StackPanel>
+                                        <TextBlock Text="Próximo pagamento" Style="{StaticResource RotuloDetalhe}"/>
+                                        <TextBlock Text="{Binding ProximoVencimentoTexto}" FontSize="19" FontWeight="Bold" Foreground="{StaticResource Primaria}"/>
+                                        <TextBlock Text="{Binding ProximoVencimentoDetalhe}" Style="{StaticResource RotuloDetalhe}" Margin="0,2,0,0" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                </Border>
+                            </h:PainelAdaptavel>
+
+                            <!-- Andamento -->
+                            <Grid Margin="0,18,0,0">
+                                <TextBlock Text="Andamento do pagamento" FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource Texto}"/>
+                                <TextBlock Text="{Binding ProgressoTexto}" HorizontalAlignment="Right" FontSize="13" FontWeight="Bold"
+                                           Foreground="{StaticResource Primaria}"/>
+                            </Grid>
+                            <ProgressBar Value="{Binding Progresso, Mode=OneWay}" Style="{StaticResource BarraMes}" Margin="0,6,0,0"/>
+
+                            <!-- Modelo de pagamento -->
+                            <TextBlock Text="Modelo de pagamento" FontSize="15" FontWeight="Bold" Foreground="{StaticResource Texto}" Margin="0,22,0,10"/>
+                            <Border BorderBrush="{StaticResource BordaSuave}" BorderThickness="1" CornerRadius="10" Padding="16,14,16,2">
+                                <h:PainelAdaptavel LarguraMinima="230" EspacamentoVertical="0">
+                                    <StackPanel Margin="0,0,14,0">
+                                        <TextBlock Text="Modelo" Style="{StaticResource RotuloDetalhe}"/>
+                                        <TextBlock Text="{Binding ModeloPagamentoTexto}" Style="{StaticResource ValorDetalhe}"/>
+                                    </StackPanel>
+                                    <StackPanel Margin="0,0,14,0">
+                                        <TextBlock Text="Valor de cada parcela" Style="{StaticResource RotuloDetalhe}"/>
+                                        <TextBlock Text="{Binding ValorParcelaTexto}" Style="{StaticResource ValorDetalhe}"/>
+                                    </StackPanel>
+                                    <StackPanel Margin="0,0,14,0">
+                                        <TextBlock Text="Data estimada de pagamento" Style="{StaticResource RotuloDetalhe}"/>
+                                        <TextBlock Text="{Binding VencimentoRegraTexto}" Style="{StaticResource ValorDetalhe}"/>
+                                    </StackPanel>
+                                    <StackPanel Margin="0,0,14,0">
+                                        <TextBlock Text="Reajuste" Style="{StaticResource RotuloDetalhe}"/>
+                                        <TextBlock Text="{Binding ReajusteTexto}" Style="{StaticResource ValorDetalhe}"/>
+                                    </StackPanel>
+                                    <StackPanel Margin="0,0,14,0">
+                                        <TextBlock Text="Multa por atraso" Style="{StaticResource RotuloDetalhe}"/>
+                                        <TextBlock Text="{Binding MultaTexto}" Style="{StaticResource ValorDetalhe}"/>
+                                    </StackPanel>
+                                    <StackPanel>
+                                        <TextBlock Text="Participação da empresa" Style="{StaticResource RotuloDetalhe}"/>
+                                        <TextBlock Style="{StaticResource ValorDetalhe}">
+                                            <Run Text="{Binding PercentualEmpresaTexto, Mode=OneWay}"/><Run Text=" • já recebido: "/><Run Text="{Binding GanhoEmpresaTexto, Mode=OneWay}"/>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </h:PainelAdaptavel>
+                            </Border>
+
+                            <!-- Lista de parcelas -->
+                            <TextBlock Text="Parcelas" FontSize="15" FontWeight="Bold" Foreground="{StaticResource Texto}" Margin="0,22,0,10"/>
+                            <Border BorderBrush="{StaticResource BordaSuave}" BorderThickness="1" CornerRadius="10" ClipToBounds="True">
+                                <StackPanel>
+                                    <Grid Background="{StaticResource FundoSuave}">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="44"/>
+                                            <ColumnDefinition Width="*" MinWidth="70"/>
+                                            <ColumnDefinition Width="92"/>
+                                            <ColumnDefinition Width="105"/>
+                                            <ColumnDefinition Width="105"/>
+                                            <ColumnDefinition Width="92"/>
+                                            <ColumnDefinition Width="100"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Nº" Style="{StaticResource CabecalhoParcela}" Margin="14,9,0,9"/>
+                                        <TextBlock Grid.Column="1" Text="REFERÊNCIA" Style="{StaticResource CabecalhoParcela}" Margin="0,9"/>
+                                        <TextBlock Grid.Column="2" Text="VENCIMENTO" Style="{StaticResource CabecalhoParcela}" Margin="0,9"/>
+                                        <TextBlock Grid.Column="3" Text="VALOR" Style="{StaticResource CabecalhoParcela}" TextAlignment="Right" Margin="0,9,10,9"/>
+                                        <TextBlock Grid.Column="4" Text="PAGO" Style="{StaticResource CabecalhoParcela}" TextAlignment="Right" Margin="0,9,10,9"/>
+                                        <TextBlock Grid.Column="5" Text="PAGO EM" Style="{StaticResource CabecalhoParcela}" Margin="6,9"/>
+                                        <TextBlock Grid.Column="6" Text="SITUAÇÃO" Style="{StaticResource CabecalhoParcela}" Margin="0,9,14,9"/>
+                                    </Grid>
+
+                                    <ItemsControl ItemsSource="{Binding Parcelas}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border BorderBrush="{StaticResource BordaSuave}" BorderThickness="0,1,0,0" Padding="0,8">
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="44"/>
+                                                            <ColumnDefinition Width="*" MinWidth="70"/>
+                                                            <ColumnDefinition Width="92"/>
+                                                            <ColumnDefinition Width="105"/>
+                                                            <ColumnDefinition Width="105"/>
+                                                            <ColumnDefinition Width="92"/>
+                                                            <ColumnDefinition Width="100"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <TextBlock Text="{Binding NumeroTexto}" Style="{StaticResource CelulaParcela}" Margin="14,0,0,0"
+                                                                   Foreground="{StaticResource TextoSuave}"/>
+                                                        <TextBlock Grid.Column="1" Text="{Binding Referencia}" Style="{StaticResource CelulaParcela}" FontWeight="SemiBold"/>
+                                                        <TextBlock Grid.Column="2" Text="{Binding VencimentoTexto}" Style="{StaticResource CelulaParcela}"/>
+                                                        <TextBlock Grid.Column="3" Text="{Binding ValorPrevistoTexto}" Style="{StaticResource CelulaParcela}" TextAlignment="Right" Margin="0,0,10,0"/>
+                                                        <TextBlock Grid.Column="4" Text="{Binding ValorPagoTexto}" Style="{StaticResource CelulaParcela}" TextAlignment="Right" Margin="0,0,10,0"
+                                                                   FontWeight="SemiBold" Foreground="{StaticResource Sucesso}"/>
+                                                        <TextBlock Grid.Column="5" Text="{Binding DataPagamentoTexto}" Style="{StaticResource CelulaParcela}" Margin="6,0,0,0"/>
+                                                        <Border Grid.Column="6" Style="{StaticResource PilulaPagamento}" VerticalAlignment="Center" Margin="0,0,14,0">
+                                                            <TextBlock Text="{Binding PagamentoTexto}" Style="{StaticResource TextoPilulaPagamento}"/>
+                                                        </Border>
+                                                    </Grid>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </Border>
+                            <Border Height="16"/>
+                        </StackPanel>
+                    </ScrollViewer>
+
+                    <!-- Rodapé -->
+                    <WrapPanel Grid.Row="2" HorizontalAlignment="Right" Margin="26,10,26,20">
+                        <Button Content="Fechar" Style="{StaticResource BotaoContorno}" Margin="0,0,10,0"
+                                Command="{Binding FecharDetalheCommand}"/>
+                        <Button Content="Registrar pagamento" Style="{StaticResource BotaoPrimario}"
+                                Command="{Binding RegistrarDoDetalheCommand}"/>
+                    </WrapPanel>
+                </Grid>
+            </Border>
+        </Grid>
 
         <!-- ============ REGISTRAR PAGAMENTO (janela por cima da tela) ============ -->
         <Grid Visibility="{Binding DialogoAberto, Converter={StaticResource BoolVis}}">
