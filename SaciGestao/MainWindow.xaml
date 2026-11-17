@@ -157,7 +157,7 @@
 
                 <!-- Bloco branco com o Logo reduzido -->
                 <Border x:Name="blocoLogo" Height="160" Padding="10" Margin="-10,-10,0,-15">
-                    <Image Source="Resources/logo3.png"
+                    <Image Source="Resources/Logo4.png"
                            MaxHeight="150" MaxWidth="200"
                            Stretch="Uniform"
                            HorizontalAlignment="Center" VerticalAlignment="Center"

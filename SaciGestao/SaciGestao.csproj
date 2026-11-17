@@ -20,19 +20,8 @@
         <PackageReference Include="PDFsharp-MigraDoc-WPF" Version="6.2.4" />
     </ItemGroup>
 
-    <!-- Corrigido: sem o ponto e sem CopyToOutputDirectory -->
-    <ItemGroup>
-        <Resource Include="Resources\logo.png" />
-    </ItemGroup>
-
-	<!-- Corrigido: sem o ponto e sem CopyToOutputDirectory -->
-    <ItemGroup>
-        <Resource Include="Resources\logo2.png" />
-    </ItemGroup>
-
-	<!-- Corrigido: sem o ponto e sem CopyToOutputDirectory -->
-    <ItemGroup>
-        <Resource Include="Resources\logo3.png" />
-    </ItemGroup>
+	<ItemGroup>
+		<Resource Include="Resources\Logo4.png" />
+	</ItemGroup>
 
 </Project>

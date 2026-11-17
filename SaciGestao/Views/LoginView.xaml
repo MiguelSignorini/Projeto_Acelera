@@ -203,7 +203,7 @@
                          HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,70,60,0"/>
 
                 <StackPanel VerticalAlignment="Center" Margin="64,40">
-                    <Image Source="/Resources/logo3.png" Width="230" HorizontalAlignment="Left"/>
+                    <Image Source="/Resources/logo4.png" Width="230" HorizontalAlignment="Left"/>
 
                     <TextBlock Text="Gestão imobiliária&#x0A;simples e completa." FontSize="32" FontWeight="Bold"
                                Foreground="White" Margin="0,34,0,0" LineHeight="40"/>
