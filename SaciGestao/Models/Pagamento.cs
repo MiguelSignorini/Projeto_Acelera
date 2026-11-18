@@ -16,10 +16,6 @@ namespace SaciGestao.Models
         public decimal ValorRecebido { get; set; }
         public DateTime DataPagamento { get; set; } = DateTime.Today;
 
-        // Locação: o valor só "cai" na conta (e entra nos totais) quando este check está marcado.
-        // Venda: confirmar o pagamento já conta como valor na conta.
-        public bool CaiuNaConta { get; set; }
-
         // Percentual da empresa no momento do registro (vem do imóvel; guardado para o histórico não mudar)
         public decimal PercentualEmpresa { get; set; }
 

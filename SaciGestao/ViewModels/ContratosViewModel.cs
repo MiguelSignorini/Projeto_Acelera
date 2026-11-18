@@ -142,9 +142,16 @@ namespace SaciGestao.ViewModels
         public string ErroForm { get => _erroForm; private set => SetProperty(ref _erroForm, value); }
 
         public int TotalAtivos => ContratoService.Instancia.ObterAtivos().Count(c => c.Status == StatusContrato.Ativo);
-        public decimal ReceitaMensal => ContratoService.Instancia.ObterAtivos()
-            .Where(c => c.Status == StatusContrato.Ativo && c.Tipo == TipoContrato.Locacao)
-            .Sum(c => c.ValorMensal);
+        // Receita do mês: mesma conta do Dashboard (aluguéis + parcelas de venda que vencem no mês)
+        public decimal ReceitaMensal => FinanceiroService.Instancia.ReceitaDoMes(DateTime.Today).Total;
+        public string ReceitaDetalhe
+        {
+            get
+            {
+                var r = FinanceiroService.Instancia.ReceitaDoMes(DateTime.Today);
+                return DashboardViewModel.TextoReceitaDoMes(r.Alugueis, r.ParcelasVenda);
+            }
+        }
         public int TotalTodos => ContratoService.Instancia.ObterAtivos().Count;
 
         public int TotalLocacao => ContratoService.Instancia.ObterAtivos().Count(c => c.Tipo == TipoContrato.Locacao);
@@ -293,6 +300,7 @@ namespace SaciGestao.ViewModels
             OnPropertyChanged(nameof(TotalAtivos));
             OnPropertyChanged(nameof(TotalTodos));
             OnPropertyChanged(nameof(ReceitaMensal));
+            OnPropertyChanged(nameof(ReceitaDetalhe));
         }
 
         private void Novo()
@@ -404,6 +412,15 @@ namespace SaciGestao.ViewModels
             if (ContratoForm.Tipo == TipoContrato.Venda && ContratoForm.QuantidadeParcelas < 1)
             {
                 ErroForm = "Informe a quantidade de parcelas (mínimo 1) para o contrato de venda.";
+                return;
+            }
+
+            // Proprietário/locador do contrato tem de ser o dono cadastrado do imóvel
+            var imovelDoContrato = ImovelService.Instancia.ObterPorId(ContratoForm.ImovelId);
+            if (imovelDoContrato != null && imovelDoContrato.ProprietarioId > 0 && ContratoForm.LocadorId != imovelDoContrato.ProprietarioId)
+            {
+                ErroForm = $"O proprietário/locador deve ser o dono cadastrado do imóvel ({imovelDoContrato.ProprietarioNome}). " +
+                           "Se o imóvel mudou de dono, altere primeiro o cadastro do imóvel.";
                 return;
             }
 

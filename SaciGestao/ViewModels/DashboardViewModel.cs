@@ -94,9 +94,12 @@ namespace SaciGestao.ViewModels
             var ativos = contratos.Where(c => c.Status == StatusContrato.Ativo).ToList();
             var locacoesAtivas = ativos.Where(c => c.Tipo == TipoContrato.Locacao).ToList();
 
-            // 1) Receita recorrente
-            ReceitaMensal = locacoesAtivas.Sum(c => c.ValorMensal);
-            ReceitaDetalhe = locacoesAtivas.Count + (locacoesAtivas.Count == 1 ? " contrato de locação ativo" : " contratos de locação ativos");
+            // 1) Receita do mês: tudo o que os contratos ativos têm para receber no mês atual —
+            //    o aluguel das locações + as parcelas de venda que vencem neste mês
+            //    (mesma conta da tela de Contratos: FinanceiroService.ReceitaDoMes)
+            var (receitaMes, alugueisMes, parcelasVendaMes) = FinanceiroService.Instancia.ReceitaDoMes(hoje);
+            ReceitaMensal = receitaMes;
+            ReceitaDetalhe = TextoReceitaDoMes(alugueisMes, parcelasVendaMes);
 
             // 2) Taxa de ocupação: imóveis de aluguel que já estão alugados
             var paraAlugar = imoveis.Where(i => i.Finalidade == FinalidadeImovel.Aluguel).ToList();
@@ -110,10 +113,12 @@ namespace SaciGestao.ViewModels
             ValorEmCarteira = aVenda.Sum(i => i.Valor);
             CarteiraDetalhe = aVenda.Count + (aVenda.Count == 1 ? " imóvel à venda" : " imóveis à venda");
 
-            // 4) Vendas concluídas
+            // 4) Vendas fechadas: valor dos contratos de venda (não cancelados) e quanto já foi recebido deles
             var vendas = contratos.Where(c => c.Tipo == TipoContrato.Venda && c.Status != StatusContrato.Cancelado).ToList();
             VendasFechadas = vendas.Sum(c => c.ValorMensal);
-            VendasDetalhe = vendas.Count + (vendas.Count == 1 ? " venda fechada" : " vendas fechadas");
+            decimal recebidoVendas = vendas.Sum(c => FinanceiroService.Instancia.TotalRecebido(c.Id));
+            VendasDetalhe = vendas.Count + (vendas.Count == 1 ? " venda" : " vendas") + " • "
+                            + recebidoVendas.ToString("C0", PtBr) + " já recebido";
 
             // --- Contratos a vencer (próximos 120 dias, mais urgentes primeiro) ---
             ContratosAVencer = locacoesAtivas
@@ -207,6 +212,13 @@ namespace SaciGestao.ViewModels
         }
 
         private static string Moeda(decimal valor) => valor.ToString("C0", PtBr);
+
+        // "2 aluguéis + 1 parcela de venda no mês" (usado no Dashboard e na tela de Contratos)
+        public static string TextoReceitaDoMes(int alugueis, int parcelasVenda) =>
+            alugueis + parcelasVenda == 0
+                ? "Nenhum aluguel ou parcela de venda neste mês"
+                : alugueis + (alugueis == 1 ? " aluguel" : " aluguéis") + " + " +
+                  parcelasVenda + (parcelasVenda == 1 ? " parcela de venda" : " parcelas de venda") + " no mês";
 
         private static AvisoResumo Aviso(int icone, string texto, string cor, string corFundo)
         {

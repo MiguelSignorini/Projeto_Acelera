@@ -38,9 +38,6 @@ namespace SaciGestao.ViewModels
         private decimal _aReceber;
         public decimal AReceber { get => _aReceber; private set => SetProperty(ref _aReceber, value); }
 
-        private decimal _aguardandoConta;
-        public decimal AguardandoConta { get => _aguardandoConta; private set => SetProperty(ref _aguardandoConta, value); }
-
         private decimal _ganhoEmpresa;
         public decimal GanhoEmpresa { get => _ganhoEmpresa; private set => SetProperty(ref _ganhoEmpresa, value); }
 
@@ -85,7 +82,7 @@ namespace SaciGestao.ViewModels
         // FILTROS
         // ============================================================
         public string[] Tipos { get; } = { Todos, "Locação", "Venda" };
-        public string[] SituacoesPagamento { get; } = { Todos, "Pendente", "Pago", "Aguardando cair na conta" };
+        public string[] SituacoesPagamento { get; } = { Todos, "Pendente", "Pago" };
 
         private DateTime? _dataInicial;
         public DateTime? DataInicial { get => _dataInicial; set { if (SetProperty(ref _dataInicial, value)) AoAlterarFiltro(); } }
@@ -157,16 +154,12 @@ namespace SaciGestao.ViewModels
         private bool _confirmadoForm;
         public bool ConfirmadoForm { get => _confirmadoForm; set => SetProperty(ref _confirmadoForm, value); }
 
-        private bool _caiuNaContaForm;
-        public bool CaiuNaContaForm { get => _caiuNaContaForm; set => SetProperty(ref _caiuNaContaForm, value); }
-
         private string _observacaoForm = string.Empty;
         public string ObservacaoForm { get => _observacaoForm; set => SetProperty(ref _observacaoForm, value); }
 
         private string _erroForm = string.Empty;
         public string ErroForm { get => _erroForm; private set => SetProperty(ref _erroForm, value); }
 
-        // O check "caiu na conta" só existe para locação
         public bool ContratoEhLocacao => ContratoSelecionado?.Tipo == TipoContrato.Locacao;
 
         // Quanto fica para a empresa e quanto é repassado ao proprietário com o valor digitado
@@ -189,7 +182,6 @@ namespace SaciGestao.ViewModels
         public ICommand AbrirRegistrarCommand { get; }
         public ICommand FecharDialogoCommand { get; }
         public ICommand ConfirmarRegistroCommand { get; }
-        public ICommand AlternarNaContaCommand { get; }
         public ICommand DesfazerCommand { get; }
         public ICommand LimparFiltrosCommand { get; }
         public ICommand PeriodoCommand { get; }
@@ -202,7 +194,6 @@ namespace SaciGestao.ViewModels
             AbrirRegistrarCommand = new RelayCommand(p => AbrirDialogo(p as MovimentacaoFinanceira));
             FecharDialogoCommand = new RelayCommand(_ => DialogoAberto = false);
             ConfirmarRegistroCommand = new RelayCommand(_ => ConfirmarRegistro());
-            AlternarNaContaCommand = new RelayCommand(p => AlternarNaConta(p as MovimentacaoFinanceira));
             DesfazerCommand = new RelayCommand(p => Desfazer(p as MovimentacaoFinanceira));
             LimparFiltrosCommand = new RelayCommand(_ => LimparFiltros());
             PeriodoCommand = new RelayCommand(p => AplicarPeriodo(p as string ?? "tudo"));
@@ -272,7 +263,6 @@ namespace SaciGestao.ViewModels
             {
                 "Pendente" => q.Where(m => !m.Pago),
                 "Pago" => q.Where(m => m.Pago),
-                "Aguardando cair na conta" => q.Where(m => m.AguardandoConta),
                 _ => q
             };
 
@@ -294,7 +284,6 @@ namespace SaciGestao.ViewModels
             TotalLocacao = naConta.Where(m => m.EhLocacao).Sum(m => m.Valor);
             TotalVenda = naConta.Where(m => !m.EhLocacao).Sum(m => m.Valor);
             AReceber = lista.Where(m => !m.Pago).Sum(m => m.ValorPrevisto);
-            AguardandoConta = lista.Where(m => m.AguardandoConta).Sum(m => m.Valor);
             QuantidadePendentes = lista.Count(m => !m.Pago);
             QuantidadeAtrasados = lista.Count(m => m.Atrasado);
 
@@ -384,7 +373,6 @@ namespace SaciGestao.ViewModels
 
             ErroForm = string.Empty;
             ConfirmadoForm = false;
-            CaiuNaContaForm = false;
             ObservacaoForm = string.Empty;
             DataPagamentoForm = DateTime.Today;
             ValorForm = string.Empty;
@@ -410,10 +398,9 @@ namespace SaciGestao.ViewModels
                 foreach (var p in FinanceiroService.Instancia.ParcelasPendentes(ContratoSelecionado.Id))
                     ParcelasDisponiveis.Add(p);
 
-                // Sem escolha: a parcela pendente mais antiga
-                _parcelaSelecionada = preferida == null
-                    ? ParcelasDisponiveis.FirstOrDefault()
-                    : ParcelasDisponiveis.FirstOrDefault(p => p.Competencia == preferida.Competencia);
+                // A parcela pedida (botão "Registrar" da linha); se não houver, a pendente mais antiga
+                _parcelaSelecionada = (preferida == null ? null : ParcelasDisponiveis.FirstOrDefault(p => p.Competencia == preferida.Competencia))
+                                      ?? ParcelasDisponiveis.FirstOrDefault();
             }
 
             OnPropertyChanged(nameof(ParcelaSelecionada));
@@ -458,21 +445,12 @@ namespace SaciGestao.ViewModels
                 Competencia = ParcelaSelecionada.Competencia,
                 ValorRecebido = valor,
                 DataPagamento = DataPagamentoForm.Date,
-                // Venda confirmada já conta na conta; locação só quando o check estiver marcado
-                CaiuNaConta = ContratoEhLocacao ? CaiuNaContaForm : true,
+                // Registrar = valor recebido na conta (locação e venda entram nos totais na hora)
                 PercentualEmpresa = FinanceiroService.Instancia.PercentualDoImovel(ContratoSelecionado.ImovelId),
                 Observacao = ObservacaoForm.Trim()
             });
 
             DialogoAberto = false;
-            Recarregar();
-        }
-
-        // Check da tabela: o valor da locação "cai" na conta e passa a contar nos totais
-        private void AlternarNaConta(MovimentacaoFinanceira? linha)
-        {
-            if (linha == null || !linha.Pago || !linha.EhLocacao) return;
-            FinanceiroService.Instancia.DefinirNaConta(linha.PagamentoId, !linha.CaiuNaConta);
             Recarregar();
         }
 

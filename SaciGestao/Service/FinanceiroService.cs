@@ -5,11 +5,21 @@ using SaciGestao.Models;
 
 namespace SaciGestao.Service
 {
+    // Uma parcela prevista no contrato (paga ou não). Montada pelo Cronograma a partir do contrato.
+    //   Competencia = chave que liga a parcela ao pagamento gravado (1º dia do mês na locação;
+    //                 data de início + N meses na venda — mantido assim para os pagamentos já gravados)
+    //   Vencimento  = data em que a parcela vence (usa o "Dia de vencimento" do contrato nos dois tipos)
+    public record ParcelaPrevista(int Numero, int Total, DateTime Competencia, DateTime Vencimento, decimal Valor, bool EhLocacao);
+
     // Regras do financeiro:
-    //  * Cada contrato ativo gera parcelas "Pendente": uma por mês (locação, do início até o mês atual,
-    //    no máximo 12 meses para trás) ou, na venda, uma por parcela (valor total dividido em QuantidadeParcelas).
-    //  * A parcela só deixa de ser pendente quando o admin registra o pagamento (vira um Pagamento gravado).
-    //  * Locação: o valor só conta como "na conta" quando o check "caiu na conta" está marcado.
+    //  * O Cronograma é a fonte única das parcelas: a tabela, o "A receber", a lista de contratos ativos,
+    //    o pop-up de detalhes, o "Registrar pagamento" e a receita do Dashboard usam todos a mesma lista.
+    //  * Locação: uma parcela por mês durante o prazo (PrazoMeses). Venda: o valor total dividido em
+    //    QuantidadeParcelas mensais. Nos dois, a parcela vence no "Dia de vencimento" do contrato.
+    //  * Tabela e "A receber": parcelas não pagas que vencem até o fim do mês atual (sem limite para trás,
+    //    então um atraso antigo nunca some). Parcelas futuras aparecem no pop-up do contrato.
+    //  * "Registrar pagamento" aceita qualquer parcela ainda não paga (inclusive adiantar a próxima).
+    //  * Registrar o pagamento já significa que o valor caiu na conta (locação e venda entram nos totais na hora).
     //  * A parte da empresa vem do percentual cadastrado no imóvel (comissão na venda, taxa no aluguel).
     public class FinanceiroService
     {
@@ -17,7 +27,6 @@ namespace SaciGestao.Service
         public static FinanceiroService Instancia => _instancia ??= new FinanceiroService();
 
         private const string Arquivo = "pagamentos.json";
-        private const int MesesParaTras = 12;
 
         private readonly List<Pagamento> _pagamentos = new();
         private int _proximoId = 1;
@@ -33,8 +42,58 @@ namespace SaciGestao.Service
 
         public void Salvar() => Persistencia.Salvar(Arquivo, _pagamentos);
 
-        // ---------- Consulta ----------
-        // Todas as linhas: pagamentos registrados + parcelas pendentes
+        // ============================================================
+        // CRONOGRAMA (fonte única das parcelas)
+        // ============================================================
+        public static List<ParcelaPrevista> Cronograma(Contrato contrato)
+        {
+            var lista = new List<ParcelaPrevista>();
+            var inicio = contrato.DataInicio.Date;
+            var primeiroMes = new DateTime(inicio.Year, inicio.Month, 1);
+
+            if (contrato.Tipo == TipoContrato.Venda)
+            {
+                int quantidade = Math.Max(1, contrato.QuantidadeParcelas);
+                decimal valorParcela = Math.Round(contrato.ValorMensal / quantidade, 2);
+                for (int i = 0; i < quantidade; i++)
+                {
+                    // a última parcela absorve a diferença dos centavos
+                    decimal valor = i == quantidade - 1 ? contrato.ValorMensal - valorParcela * (quantidade - 1) : valorParcela;
+                    lista.Add(new ParcelaPrevista(i + 1, quantidade, inicio.AddMonths(i),
+                        Vencimento(contrato, primeiroMes.AddMonths(i)), valor, false));
+                }
+            }
+            else
+            {
+                int prazo = Math.Max(1, contrato.PrazoMeses);
+                for (int i = 0; i < prazo; i++)
+                {
+                    var mes = primeiroMes.AddMonths(i);
+                    lista.Add(new ParcelaPrevista(i + 1, prazo, mes, Vencimento(contrato, mes), contrato.ValorMensal, true));
+                }
+            }
+
+            return lista;
+        }
+
+        // "Dia de vencimento" no mês da parcela (dia 31 vira o último dia do mês); a 1ª parcela nunca vence antes do início
+        private static DateTime Vencimento(Contrato contrato, DateTime mes)
+        {
+            int dia = Math.Min(Math.Max(contrato.DiaVencimento, 1), DateTime.DaysInMonth(mes.Year, mes.Month));
+            var vencimento = new DateTime(mes.Year, mes.Month, dia);
+            return vencimento < contrato.DataInicio.Date ? contrato.DataInicio.Date : vencimento;
+        }
+
+        // Último dia do mês atual: parcelas que vencem até aqui entram na tabela e no "A receber"
+        private static DateTime FimDoMesAtual => new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).AddMonths(1).AddDays(-1);
+
+        private HashSet<DateTime> CompetenciasPagas(int contratoId) =>
+            _pagamentos.Where(p => p.ContratoId == contratoId).Select(p => p.Competencia.Date).ToHashSet();
+
+        // ============================================================
+        // CONSULTAS
+        // ============================================================
+        // Tabela: pagamentos registrados + parcelas não pagas que vencem até o fim do mês atual
         public List<MovimentacaoFinanceira> ObterMovimentacoes()
         {
             var contratos = ContratoService.Instancia.ObterAtivos();
@@ -46,8 +105,9 @@ namespace SaciGestao.Service
                 linhas.Add(MontarPago(p, contrato));
             }
 
+            var limite = FimDoMesAtual;
             foreach (var contrato in contratos.Where(c => c.Status == StatusContrato.Ativo))
-                linhas.AddRange(GerarPendentes(contrato));
+                linhas.AddRange(Pendentes(contrato).Where(m => m.Vencimento.Date <= limite));
 
             return linhas.OrderByDescending(l => l.Data).ThenBy(l => l.ContratoCodigo).ToList();
         }
@@ -60,12 +120,14 @@ namespace SaciGestao.Service
                 .ToList();
         }
 
+        // Diálogo "Registrar pagamento": todas as parcelas ainda não pagas do contrato (atrasadas, do mês e futuras),
+        // da mais antiga para a mais nova
         public List<MovimentacaoFinanceira> ParcelasPendentes(int contratoId)
         {
             var contrato = ContratoService.Instancia.ObterAtivos().FirstOrDefault(c => c.Id == contratoId);
             return contrato == null
                 ? new List<MovimentacaoFinanceira>()
-                : GerarPendentes(contrato).OrderBy(p => p.Competencia).ToList();
+                : Pendentes(contrato).OrderBy(p => p.Vencimento).ThenBy(p => p.Competencia).ToList();
         }
 
         // Contratos ativos com o resumo financeiro (quanto já foi pago, quanto falta, parcelas...).
@@ -85,40 +147,46 @@ namespace SaciGestao.Service
             return contrato == null ? null : MontarContratoFinanceiro(contrato);
         }
 
-        // Todas as parcelas do contrato, do início ao fim do prazo, cada uma marcada como paga ou não
+        // Receita prevista no mês: aluguéis + parcelas de venda dos contratos ativos que vencem no mês
+        public (decimal Total, int Alugueis, int ParcelasVenda) ReceitaDoMes(DateTime referencia)
+        {
+            var inicio = new DateTime(referencia.Year, referencia.Month, 1);
+            var fim = inicio.AddMonths(1);
+            var parcelas = ContratosParaPagamento()
+                .SelectMany(Cronograma)
+                .Where(p => p.Vencimento >= inicio && p.Vencimento < fim)
+                .ToList();
+            return (parcelas.Sum(p => p.Valor), parcelas.Count(p => p.EhLocacao), parcelas.Count(p => !p.EhLocacao));
+        }
+
+        // Valor já recebido de um contrato (usado no Dashboard)
+        public decimal TotalRecebido(int contratoId) => _pagamentos.Where(p => p.ContratoId == contratoId).Sum(p => p.ValorRecebido);
+
+        // Todas as parcelas do contrato, do início ao fim, cada uma marcada como paga ou não
         private ContratoFinanceiro MontarContratoFinanceiro(Contrato contrato)
         {
             var pagos = _pagamentos.Where(p => p.ContratoId == contrato.Id)
                 .GroupBy(p => p.Competencia.Date)
                 .ToDictionary(g => g.Key, g => g.First());
 
-            var parcelas = new List<ParcelaContrato>();
-
-            if (contrato.Tipo == TipoContrato.Venda)
+            var parcelas = Cronograma(contrato).Select(p =>
             {
-                var venda = ParcelasVenda(contrato);
-                foreach (var v in venda)
+                pagos.TryGetValue(p.Competencia, out var pg);
+                string referencia = p.EhLocacao ? p.Competencia.ToString("MM/yyyy")
+                    : p.Total > 1 ? "Parcela " + p.Numero + "/" + p.Total : "Valor da venda";
+                return new ParcelaContrato
                 {
-                    pagos.TryGetValue(v.Competencia, out var pg);
-                    parcelas.Add(NovaParcela(v.Numero, venda.Count > 1 ? "Parcela " + v.Numero + "/" + venda.Count : "Valor da venda",
-                        v.Competencia, v.Competencia, v.Valor, false, pg));
-                }
-            }
-            else
-            {
-                int prazo = Math.Max(1, contrato.PrazoMeses);
-                var primeiro = new DateTime(contrato.DataInicio.Year, contrato.DataInicio.Month, 1);
-                for (int i = 0; i < prazo; i++)
-                {
-                    var mes = primeiro.AddMonths(i);
-                    int dia = Math.Min(Math.Max(contrato.DiaVencimento, 1), DateTime.DaysInMonth(mes.Year, mes.Month));
-                    var vencimento = new DateTime(mes.Year, mes.Month, dia);
-                    if (vencimento < contrato.DataInicio.Date) vencimento = contrato.DataInicio.Date;
-
-                    pagos.TryGetValue(mes, out var pg);
-                    parcelas.Add(NovaParcela(i + 1, mes.ToString("MM/yyyy"), mes, vencimento, contrato.ValorMensal, true, pg));
-                }
-            }
+                    Numero = p.Numero,
+                    Referencia = referencia,
+                    Competencia = p.Competencia,
+                    Vencimento = p.Vencimento,
+                    ValorPrevisto = p.Valor,
+                    EhLocacao = p.EhLocacao,
+                    Pago = pg != null,
+                    ValorPago = pg?.ValorRecebido ?? 0m,
+                    DataPagamento = pg?.DataPagamento
+                };
+            }).ToList();
 
             return new ContratoFinanceiro
             {
@@ -128,35 +196,13 @@ namespace SaciGestao.Service
             };
         }
 
-        private static ParcelaContrato NovaParcela(int numero, string referencia, DateTime competencia, DateTime vencimento,
-            decimal valor, bool locacao, Pagamento? pagamento)
-        {
-            return new ParcelaContrato
-            {
-                Numero = numero,
-                Referencia = referencia,
-                Competencia = competencia,
-                Vencimento = vencimento,
-                ValorPrevisto = valor,
-                EhLocacao = locacao,
-                Pago = pagamento != null,
-                ValorPago = pagamento?.ValorRecebido ?? 0m,
-                DataPagamento = pagamento?.DataPagamento,
-                CaiuNaConta = pagamento?.CaiuNaConta ?? false
-            };
-        }
-
-        // ---------- Ações ----------
+        // ============================================================
+        // AÇÕES
+        // ============================================================
         public void Registrar(Pagamento pagamento)
         {
             pagamento.Id = _proximoId++;
             _pagamentos.Add(pagamento);
-        }
-
-        public void DefinirNaConta(int pagamentoId, bool caiu)
-        {
-            var p = _pagamentos.FirstOrDefault(x => x.Id == pagamentoId);
-            if (p != null) p.CaiuNaConta = caiu;
         }
 
         // Desfaz o registro: a parcela volta a aparecer como Pendente
@@ -178,23 +224,25 @@ namespace SaciGestao.Service
             return ImovelService.Instancia.ObterPorId(imovelId)?.PercentualEmpresa ?? 0m;
         }
 
-        // ---------- Montagem das linhas ----------
+        // ============================================================
+        // MONTAGEM DAS LINHAS
+        // ============================================================
         private MovimentacaoFinanceira MontarPago(Pagamento p, Contrato? contrato)
         {
             bool locacao = contrato == null || contrato.Tipo == TipoContrato.Locacao;
 
-            // Venda parcelada: descobre qual parcela este pagamento quita (pela competência)
+            // Descobre qual parcela do cronograma este pagamento quita (pela competência)
             int numero = 1, total = 1;
             decimal previsto = contrato?.ValorMensal ?? p.ValorRecebido;
-            if (contrato != null && !locacao)
+            DateTime vencimento = p.Competencia;
+            if (contrato != null)
             {
-                var parcelas = ParcelasVenda(contrato);
-                total = parcelas.Count;
-                var parcela = parcelas.FirstOrDefault(x => x.Competencia == p.Competencia.Date);
-                if (parcela.Numero > 0)
+                var parcela = Cronograma(contrato).FirstOrDefault(x => x.Competencia == p.Competencia.Date);
+                if (parcela != null)
                 {
-                    numero = parcela.Numero;
                     previsto = parcela.Valor;
+                    vencimento = parcela.Vencimento;
+                    if (!locacao) { numero = parcela.Numero; total = parcela.Total; }
                 }
             }
 
@@ -207,10 +255,9 @@ namespace SaciGestao.Service
                 Descricao = Descricao(contrato, p.Competencia, locacao, numero, total),
                 EhLocacao = locacao,
                 Competencia = p.Competencia,
-                Vencimento = p.Competencia,
+                Vencimento = vencimento,
                 DataPagamento = p.DataPagamento,
                 Pago = true,
-                CaiuNaConta = p.CaiuNaConta,
                 ValorPrevisto = previsto,
                 ValorRecebido = p.ValorRecebido,
                 Percentual = p.PercentualEmpresa,
@@ -219,80 +266,31 @@ namespace SaciGestao.Service
             };
         }
 
-        // Parcelas de uma venda: o valor total (ValorMensal) dividido em QuantidadeParcelas,
-        // uma por mês a partir da data de início. A última parcela absorve a diferença dos centavos.
-        private static List<(int Numero, DateTime Competencia, decimal Valor)> ParcelasVenda(Contrato contrato)
-        {
-            int quantidade = Math.Max(1, contrato.QuantidadeParcelas);
-            decimal valorParcela = Math.Round(contrato.ValorMensal / quantidade, 2);
-            var lista = new List<(int Numero, DateTime Competencia, decimal Valor)>();
-
-            for (int i = 0; i < quantidade; i++)
-            {
-                decimal valor = i == quantidade - 1
-                    ? contrato.ValorMensal - valorParcela * (quantidade - 1)
-                    : valorParcela;
-                lista.Add((i + 1, contrato.DataInicio.Date.AddMonths(i), valor));
-            }
-
-            return lista;
-        }
-
-        private IEnumerable<MovimentacaoFinanceira> GerarPendentes(Contrato contrato)
+        // Parcelas do cronograma que ainda não têm pagamento registrado
+        private IEnumerable<MovimentacaoFinanceira> Pendentes(Contrato contrato)
         {
             decimal percentual = PercentualDoImovel(contrato.ImovelId);
-            var registrados = _pagamentos.Where(p => p.ContratoId == contrato.Id).Select(p => p.Competencia.Date).ToHashSet();
+            var pagas = CompetenciasPagas(contrato.Id);
 
-            if (contrato.Tipo == TipoContrato.Venda)
+            foreach (var p in Cronograma(contrato))
             {
-                var parcelas = ParcelasVenda(contrato);
-                foreach (var parcela in parcelas)
+                if (pagas.Contains(p.Competencia)) continue;
+                yield return new MovimentacaoFinanceira
                 {
-                    if (registrados.Contains(parcela.Competencia)) continue;
-                    yield return Pendente(contrato, parcela.Competencia, parcela.Competencia, false, percentual,
-                        parcela.Valor, parcela.Numero, parcelas.Count);
-                }
-                yield break;
+                    ContratoId = contrato.Id,
+                    ContratoCodigo = contrato.Codigo,
+                    Inquilino = contrato.LocatarioNome,
+                    Descricao = Descricao(contrato, p.Competencia, p.EhLocacao, p.EhLocacao ? 1 : p.Numero, p.EhLocacao ? 1 : p.Total),
+                    EhLocacao = p.EhLocacao,
+                    Competencia = p.Competencia,
+                    Vencimento = p.Vencimento,
+                    Pago = false,
+                    ValorPrevisto = p.Valor,
+                    Percentual = percentual,
+                    Parcela = p.EhLocacao ? 1 : p.Numero,
+                    TotalParcelas = p.EhLocacao ? 1 : p.Total
+                };
             }
-
-            var primeiro = new DateTime(contrato.DataInicio.Year, contrato.DataInicio.Month, 1);
-            var atual = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
-            var fim = new DateTime(contrato.DataFim.Year, contrato.DataFim.Month, 1);
-            if (fim < atual) atual = fim;
-
-            var inicio = atual.AddMonths(-(MesesParaTras - 1));
-            if (primeiro > inicio) inicio = primeiro;
-
-            for (var mes = inicio; mes <= atual; mes = mes.AddMonths(1))
-            {
-                if (registrados.Contains(mes)) continue;
-
-                int dia = Math.Min(Math.Max(contrato.DiaVencimento, 1), DateTime.DaysInMonth(mes.Year, mes.Month));
-                var vencimento = new DateTime(mes.Year, mes.Month, dia);
-                if (vencimento < contrato.DataInicio.Date) vencimento = contrato.DataInicio.Date; // 1ª parcela não vence antes do início
-
-                yield return Pendente(contrato, mes, vencimento, true, percentual, contrato.ValorMensal, 1, 1);
-            }
-        }
-
-        private static MovimentacaoFinanceira Pendente(Contrato c, DateTime competencia, DateTime vencimento, bool locacao,
-            decimal percentual, decimal valor, int parcela, int totalParcelas)
-        {
-            return new MovimentacaoFinanceira
-            {
-                ContratoId = c.Id,
-                ContratoCodigo = c.Codigo,
-                Inquilino = c.LocatarioNome,
-                Descricao = Descricao(c, competencia, locacao, parcela, totalParcelas),
-                EhLocacao = locacao,
-                Competencia = competencia,
-                Vencimento = vencimento,
-                Pago = false,
-                ValorPrevisto = valor,
-                Percentual = percentual,
-                Parcela = parcela,
-                TotalParcelas = totalParcelas
-            };
         }
 
         private static string Descricao(Contrato? c, DateTime competencia, bool locacao, int parcela = 1, int totalParcelas = 1)

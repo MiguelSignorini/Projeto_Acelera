@@ -349,9 +349,12 @@
                 </Border>
                 <Border Style="{StaticResource CartaoIndicador}" Margin="0">
                     <StackPanel>
-                        <TextBlock Text="Receita mensal (locações)" Style="{StaticResource RotuloDetalhe}"/>
+                        <TextBlock Text="Receita do mês" Style="{StaticResource RotuloDetalhe}"
+                                   ToolTip="Aluguéis + parcelas de venda que vencem neste mês (mesmo valor do Dashboard)"/>
                         <TextBlock Text="{Binding ReceitaMensal, StringFormat=C0}" Style="{StaticResource NumeroIndicador}"
                                    Foreground="{StaticResource Primaria}"/>
+                        <TextBlock Text="{Binding ReceitaDetalhe}" FontSize="11.5" Foreground="{StaticResource TextoSuave}"
+                                   TextWrapping="Wrap" Margin="0,2,0,0"/>
                     </StackPanel>
                 </Border>
             </h:PainelAdaptavel>

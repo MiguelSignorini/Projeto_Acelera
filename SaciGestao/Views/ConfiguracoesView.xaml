@@ -134,13 +134,13 @@
                             <TextBox x:Name="txtUsuario" Style="{StaticResource CampoForm}"/>
 
                             <TextBlock Text="Cargo" Style="{StaticResource Rotulo}"/>
-                            <TextBox x:Name="txtCargo" Style="{StaticResource CampoForm}"/>
+                            <TextBox x:Name="txtCargo" Style="{StaticResource CampoForm}" MaxLength="60"/>
 
                             <TextBlock Text="E-mail" Style="{StaticResource Rotulo}"/>
-                            <TextBox x:Name="txtEmail" Style="{StaticResource CampoForm}"/>
+                            <TextBox x:Name="txtEmail" Style="{StaticResource CampoForm}" MaxLength="100"/>
 
                             <TextBlock Text="Telefone" Style="{StaticResource Rotulo}"/>
-                            <TextBox x:Name="txtTelefone" Style="{StaticResource CampoForm}"/>
+                            <TextBox x:Name="txtTelefone" Style="{StaticResource CampoForm}" h:Mascara.Tipo="Telefone"/>
 
                             <TextBlock x:Name="txtMsgPerfil" Style="{StaticResource TextoMensagem}"/>
 

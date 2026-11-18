@@ -2,37 +2,37 @@
   {
     "Id": 1,
     "NomeUsuario": "admin",
-    "Senha": "123",
+    "Senha": "sha256$ot5qXotMH2MSIA1oTvLxmA==$4CD2B53CA97D41E0578E66C7E1FF88FD740726676CF20E1A01594B6029519E46",
     "NomeCompleto": "Administrador",
     "Email": "admin@sacilotti.com.br",
     "Telefone": "(12) 3105-4500",
     "Cargo": "Administrador do sistema",
     "FotoCaminho": "usuarios/admin.png",
     "PerguntaSecreta": "Qual o nome do seu primeiro animal de estimação?",
-    "RespostaSecreta": "rex"
+    "RespostaSecreta": "sha256$zfh59khYk+x43IddsWQMrg==$E943A24420163596743E17A93F9197748F282AA15ADD0B38C4CB027DEB3C9FCA"
   },
   {
     "Id": 2,
     "NomeUsuario": "carolina",
-    "Senha": "123",
+    "Senha": "sha256$IipwD1qdcG1nLjPxkwj4lg==$B64DCCEE6FBBD5981D0C2D8BA6937CB1C08716E76DEB34FAAC97CC9A62588D0C",
     "NomeCompleto": "Carolina Ribeiro",
     "Email": "carolina.ribeiro@sacilotti.com.br",
     "Telefone": "(12) 99781-2034",
     "Cargo": "Corretora de imóveis",
     "FotoCaminho": "usuarios/carolina_ribeiro.png",
     "PerguntaSecreta": "Qual o nome da cidade onde você nasceu?",
-    "RespostaSecreta": "lorena"
+    "RespostaSecreta": "sha256$/rJhaKw29qk3UMm7061Fjw==$FCE125408E90BAD02CC8162370C8A71243E3CE15A225D5DF5E8059DA767947BB"
   },
   {
     "Id": 3,
     "NomeUsuario": "enari",
-    "Senha": "123",
+    "Senha": "sha256$br/AThUd9jcvlyGf+Rh+gQ==$24053667D6B654773E072C7FB491A2DA8DEA5782FBD2DE63B5357311DFDAA3B3",
     "NomeCompleto": "Enari Santos",
     "Email": "enari.santos@sacilotti.com.br",
     "Telefone": "(12) 99655-7712",
     "Cargo": "Gerente administrativo",
     "FotoCaminho": "usuarios/enari_santos.png",
     "PerguntaSecreta": "Qual o nome da sua primeira escola?",
-    "RespostaSecreta": "objetivo"
+    "RespostaSecreta": "sha256$GQEJrl36NujERoJsHDKs2Q==$EA4CA5156BE13EBB46EA0AA342335E2DD118B3D1AAEB388836E069AB6DFA1AAD"
   }
 ]

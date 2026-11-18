@@ -3,6 +3,26 @@
   "WorkspaceRootPath": "C:\\Users\\T-GAMER\\Documents\\GitHub\\Projeto_Acelera\\SaciGestao\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|c:\\users\\t-gamer\\documents\\github\\projeto_acelera\\sacigestao\\json\\comparacao\\contratos.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|solutionrelative:json\\comparacao\\contratos.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|c:\\users\\t-gamer\\documents\\github\\projeto_acelera\\sacigestao\\json\\comparacao\\clientes.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|solutionrelative:json\\comparacao\\clientes.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|c:\\users\\t-gamer\\documents\\github\\projeto_acelera\\sacigestao\\json\\comparacao\\usuarios.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|solutionrelative:json\\comparacao\\usuarios.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|c:\\users\\t-gamer\\documents\\github\\projeto_acelera\\sacigestao\\json\\usuarios.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|solutionrelative:json\\usuarios.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|c:\\users\\t-gamer\\documents\\github\\projeto_acelera\\sacigestao\\service\\pdfcontratoservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|solutionrelative:service\\pdfcontratoservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|c:\\users\\t-gamer\\documents\\github\\projeto_acelera\\sacigestao\\views\\loginview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{9DB3B060-9507-5423-4149-7F2AD30955CF}|SaciGestao.csproj|solutionrelative:views\\loginview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
@@ -39,6 +59,71 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "contratos.json",
+              "DocumentMoniker": "C:\\Users\\T-GAMER\\Documents\\GitHub\\Projeto_Acelera\\SaciGestao\\Json\\Comparacao\\contratos.json",
+              "RelativeDocumentMoniker": "Json\\Comparacao\\contratos.json",
+              "ToolTip": "C:\\Users\\T-GAMER\\Documents\\GitHub\\Projeto_Acelera\\SaciGestao\\Json\\Comparacao\\contratos.json",
+              "RelativeToolTip": "Json\\Comparacao\\contratos.json",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-11-18T17:45:01.92Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "clientes.json",
+              "DocumentMoniker": "C:\\Users\\T-GAMER\\Documents\\GitHub\\Projeto_Acelera\\SaciGestao\\Json\\Comparacao\\clientes.json",
+              "RelativeDocumentMoniker": "Json\\Comparacao\\clientes.json",
+              "ToolTip": "C:\\Users\\T-GAMER\\Documents\\GitHub\\Projeto_Acelera\\SaciGestao\\Json\\Comparacao\\clientes.json",
+              "RelativeToolTip": "Json\\Comparacao\\clientes.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-11-18T17:44:58.584Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "usuarios.json",
+              "DocumentMoniker": "C:\\Users\\T-GAMER\\Documents\\GitHub\\Projeto_Acelera\\SaciGestao\\Json\\Comparacao\\usuarios.json",
+              "RelativeDocumentMoniker": "Json\\Comparacao\\usuarios.json",
+              "ToolTip": "C:\\Users\\T-GAMER\\Documents\\GitHub\\Projeto_Acelera\\SaciGestao\\Json\\Comparacao\\usuarios.json",
+              "RelativeToolTip": "Json\\Comparacao\\usuarios.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAAEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-11-18T17:43:46.475Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "usuarios.json",
+              "DocumentMoniker": "C:\\Users\\T-GAMER\\Documents\\GitHub\\Projeto_Acelera\\SaciGestao\\Json\\usuarios.json",
+              "RelativeDocumentMoniker": "Json\\usuarios.json",
+              "ToolTip": "C:\\Users\\T-GAMER\\Documents\\GitHub\\Projeto_Acelera\\SaciGestao\\Json\\usuarios.json",
+              "RelativeToolTip": "Json\\usuarios.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-11-18T17:42:45.403Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "PdfContratoService.cs",
+              "DocumentMoniker": "C:\\Users\\T-GAMER\\Documents\\GitHub\\Projeto_Acelera\\SaciGestao\\Service\\PdfContratoService.cs",
+              "RelativeDocumentMoniker": "Service\\PdfContratoService.cs",
+              "ToolTip": "C:\\Users\\T-GAMER\\Documents\\GitHub\\Projeto_Acelera\\SaciGestao\\Service\\PdfContratoService.cs",
+              "RelativeToolTip": "Service\\PdfContratoService.cs",
+              "ViewState": "AgIAAHUAAAAAAAAAAAAowIoAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-11-18T17:36:18.107Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
               "Title": "LoginView.xaml",
               "DocumentMoniker": "C:\\Users\\T-GAMER\\Documents\\GitHub\\Projeto_Acelera\\SaciGestao\\Views\\LoginView.xaml",
               "RelativeDocumentMoniker": "Views\\LoginView.xaml",
@@ -50,28 +135,26 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "SaciGestao",
+              "DocumentIndex": 6,
+              "Title": "SaciGestao.csproj",
               "DocumentMoniker": "C:\\Users\\T-GAMER\\Documents\\GitHub\\Projeto_Acelera\\SaciGestao\\SaciGestao.csproj",
               "RelativeDocumentMoniker": "SaciGestao.csproj",
               "ToolTip": "C:\\Users\\T-GAMER\\Documents\\GitHub\\Projeto_Acelera\\SaciGestao\\SaciGestao.csproj",
               "RelativeToolTip": "SaciGestao.csproj",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAAiAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2026-11-17T17:01:29.322Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-11-17T17:01:29.322Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 7,
               "Title": "MainWindow.xaml",
               "DocumentMoniker": "C:\\Users\\T-GAMER\\Documents\\GitHub\\Projeto_Acelera\\SaciGestao\\MainWindow.xaml",
               "RelativeDocumentMoniker": "MainWindow.xaml",
               "ToolTip": "C:\\Users\\T-GAMER\\Documents\\GitHub\\Projeto_Acelera\\SaciGestao\\MainWindow.xaml",
               "RelativeToolTip": "MainWindow.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2026-11-17T16:56:18.175Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-11-17T16:56:18.175Z"
             }
           ]
         },

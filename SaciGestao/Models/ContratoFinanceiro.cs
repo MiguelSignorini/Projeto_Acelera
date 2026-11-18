@@ -19,7 +19,6 @@ namespace SaciGestao.Models
         public decimal ValorPago { get; set; }
         public DateTime? DataPagamento { get; set; }
         public bool Pago { get; set; }
-        public bool CaiuNaConta { get; set; }
         public bool EhLocacao { get; set; }
 
         // Nomes iguais aos da MovimentacaoFinanceira para reaproveitar os estilos das etiquetas de pagamento
@@ -31,7 +30,6 @@ namespace SaciGestao.Models
         public string ValorPrevistoTexto => ValorPrevisto.ToString("C2", PtBr);
         public string ValorPagoTexto => Pago ? ValorPago.ToString("C2", PtBr) : "—";
         public string DataPagamentoTexto => Pago && DataPagamento.HasValue ? DataPagamento.Value.ToString("dd/MM/yyyy") : "—";
-        public string NaContaTexto => !Pago ? "—" : (!EhLocacao || CaiuNaConta ? "Na conta" : "Aguardando");
     }
 
     // Resumo financeiro de um contrato ativo: usado na lista "Contratos ativos" e no pop-up de detalhes.
@@ -98,10 +96,13 @@ namespace SaciGestao.Models
 
         public string ValorParcelaTexto => (Parcelas.Count > 0 ? Parcelas[0].ValorPrevisto : Contrato.ValorMensal).ToString("C2", PtBr);
 
+        // Venda e locação vencem no "Dia de vencimento" do contrato (a 1ª parcela nunca antes do início)
         public string VencimentoRegraTexto => EhLocacao
             ? "Todo dia " + Contrato.DiaVencimento + " de cada mês"
-            : (Contrato.QuantidadeParcelas <= 1 ? "Em " + Contrato.DataInicio.ToString("dd/MM/yyyy")
-                : "Mensal, a partir de " + Contrato.DataInicio.ToString("dd/MM/yyyy"));
+            : (Parcelas.Count <= 1
+                ? "Em " + (Parcelas.Count == 1 ? Parcelas[0].Vencimento : Contrato.DataInicio).ToString("dd/MM/yyyy")
+                : "Todo dia " + Contrato.DiaVencimento + ", de " + Parcelas[0].Vencimento.ToString("MM/yyyy")
+                  + " a " + Parcelas[^1].Vencimento.ToString("MM/yyyy"));
 
         public string ReajusteTexto => EhLocacao ? Contrato.IndiceReajuste + " (anual)" : "Sem reajuste";
         public string MultaTexto => Contrato.PercentualMultaAtraso.ToString("0.##", PtBr) + "% sobre o valor em atraso";

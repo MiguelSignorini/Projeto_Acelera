@@ -138,8 +138,8 @@ namespace SaciGestao.Service
         private static void MontarCabecalhoRodape(Section sec)
         {
             var tab = sec.Headers.Primary.AddTable();
-            tab.AddColumn(Unit.FromPoint(40));
-            tab.AddColumn(Unit.FromPoint(300));
+            tab.AddColumn(Unit.FromPoint(120));
+            tab.AddColumn(Unit.FromPoint(230));
             tab.AddColumn(Unit.FromPoint(99));
             var linha = tab.AddRow();
             linha.VerticalAlignment = MigraDoc.DocumentObjectModel.Tables.VerticalAlignment.Top;
@@ -149,7 +149,7 @@ namespace SaciGestao.Service
             {
                 var img = linha.Cells[0].AddParagraph().AddImage(logo);
                 img.LockAspectRatio = true;
-                img.Width = Unit.FromPoint(32);
+                img.Width = Unit.FromPoint(110);
             }
 
             var pNome = linha.Cells[1].AddParagraph();
@@ -241,7 +241,9 @@ namespace SaciGestao.Service
         {
             try
             {
-                var recurso = Application.GetResourceStream(new Uri("pack://application:,,,/Resources/logo.png", UriKind.Absolute));
+                // Logo escura (fundo branco do PDF). O nome do assembly no endereço garante que a imagem
+                // é lida de dentro do SaciGestao mesmo quando outro programa usa este serviço.
+                var recurso = Application.GetResourceStream(new Uri("pack://application:,,,/SaciGestao;component/Resources/logo.png", UriKind.Absolute));
                 if (recurso == null) return null;
                 using var ms = new MemoryStream();
                 recurso.Stream.CopyTo(ms);

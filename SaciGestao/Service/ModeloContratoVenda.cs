@@ -52,10 +52,12 @@ namespace SaciGestao.Service
             // Forma de pagamento: à vista ou em parcelas mensais iguais (a última ajusta os centavos)
             int parcelas = Math.Max(1, c.QuantidadeParcelas);
             decimal valorParcela = Math.Round(c.ValorMensal / parcelas, 2);
+            // Mesmas datas do Financeiro (cronograma único): vencem no "Dia de vencimento" do contrato
+            var primeiroVencimento = FinanceiroService.Cronograma(c).First().Vencimento;
             string formaPagamento = parcelas == 1
-                ? $"3.2 - O pagamento será feito à vista, em parcela única, com vencimento em {c.DataInicio:dd/MM/yyyy}."
+                ? $"3.2 - O pagamento será feito à vista, em parcela única, com vencimento em {primeiroVencimento:dd/MM/yyyy}."
                 : $"3.2 - O pagamento será feito em {parcelas} ({Extenso.Inteiro(parcelas)}) parcelas mensais de R$ {Dinheiro(valorParcela)} " +
-                  $"({Extenso.Reais(valorParcela)}), vencendo a primeira em {c.DataInicio:dd/MM/yyyy} e as demais no mesmo dia dos meses seguintes" +
+                  $"({Extenso.Reais(valorParcela)}), vencendo a primeira em {primeiroVencimento:dd/MM/yyyy} e as demais todo dia {c.DiaVencimento} dos meses seguintes" +
                   (valorParcela * parcelas != c.ValorMensal ? ", sendo a última ajustada para fechar o valor total." : ".");
 
             var b = new List<BlocoContrato>();

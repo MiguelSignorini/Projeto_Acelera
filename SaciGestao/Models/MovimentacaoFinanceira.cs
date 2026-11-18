@@ -21,7 +21,6 @@ namespace SaciGestao.Models
         public DateTime? DataPagamento { get; set; }
 
         public bool Pago { get; set; }
-        public bool CaiuNaConta { get; set; }
 
         public decimal ValorPrevisto { get; set; }
         public decimal ValorRecebido { get; set; }
@@ -41,9 +40,8 @@ namespace SaciGestao.Models
         public decimal ValorEmpresa => Math.Round(Valor * Percentual / 100m, 2);
         public decimal ValorRepasse => Valor - ValorEmpresa;
 
-        // Entra nos totais "na conta": venda paga, ou locação paga com o check "caiu na conta"
-        public bool NaConta => Pago && (!EhLocacao || CaiuNaConta);
-        public bool AguardandoConta => Pago && EhLocacao && !CaiuNaConta;
+        // Pagamento registrado = valor já recebido na conta (entra nos totais)
+        public bool NaConta => Pago;
         public bool Atrasado => !Pago && Vencimento.Date < DateTime.Today;
 
         // ---------- Textos para a tela ----------
@@ -71,6 +69,5 @@ namespace SaciGestao.Models
         // Visibilidade de controles na linha
         public bool MostrarRegistrar => !Pago;
         public bool MostrarDesfazer => Pago;
-        public bool MostrarCheckNaConta => Pago && EhLocacao;
     }
 }

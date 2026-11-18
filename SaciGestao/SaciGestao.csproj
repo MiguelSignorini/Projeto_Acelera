@@ -21,7 +21,10 @@
     </ItemGroup>
 
 	<ItemGroup>
+		<!-- Logo4: versão clara (menu lateral e login, fundo escuro) -->
 		<Resource Include="Resources\Logo4.png" />
+		<!-- logo: versão escura (cabeçalho do contrato em PDF, fundo branco) -->
+		<Resource Include="Resources\logo.png" />
 	</ItemGroup>
 
 </Project>

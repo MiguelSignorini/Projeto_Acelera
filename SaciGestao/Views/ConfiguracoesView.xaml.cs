@@ -104,6 +104,20 @@ namespace SaciGestao.Views
                 return false;
             }
 
+            // E-mail e telefone são opcionais, mas se preenchidos precisam estar completos
+            string email = txtEmail.Text.Trim();
+            if (email.Length > 0 && !System.Text.RegularExpressions.Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+            {
+                Mostrar(txtMsgPerfil, "E-mail inválido. Exemplo: nome@email.com", false);
+                return false;
+            }
+            int digitosTelefone = txtTelefone.Text.Count(char.IsDigit);
+            if (digitosTelefone > 0 && digitosTelefone < 10)
+            {
+                Mostrar(txtMsgPerfil, "Telefone incompleto: informe DDD + número.", false);
+                return false;
+            }
+
             // Não deixa dois usuários com o mesmo nome de login (ignorando maiúsculas)
             var outro = UsuarioService.Instancia.ObterPorNomeUsuario(nomeUsuario);
             if (outro != null && outro != _usuario)
@@ -151,7 +165,7 @@ namespace SaciGestao.Views
         // ============================================================
         private void SalvarSenha_Click(object sender, RoutedEventArgs e)
         {
-            if (pwSenhaAtual.Password != _usuario.Senha)
+            if (!UsuarioService.ConferirSenha(_usuario, pwSenhaAtual.Password))
             {
                 Mostrar(txtMsgSenha, "A senha atual está incorreta.", false);
                 return;
@@ -192,7 +206,7 @@ namespace SaciGestao.Views
             }
 
             _usuario.PerguntaSecreta = pergunta;
-            _usuario.RespostaSecreta = resposta;
+            _usuario.RespostaSecreta = UsuarioService.ProtegerResposta(resposta); // guardada só como hash
             txtResposta.Clear();
 
             Mostrar(txtMsgRecuperacao, "Recuperação de senha atualizada.", true);

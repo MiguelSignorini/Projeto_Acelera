@@ -351,7 +351,7 @@
                                     <TextBlock Text="{Binding GanhoEmpresa, StringFormat=C2}" Style="{StaticResource ValorIndicador}"
                                                Foreground="{StaticResource Primaria}"/>
                                 </Viewbox>
-                                <TextBlock Text="Percentual de cada imóvel, sobre o que já caiu na conta" Style="{StaticResource DetalheIndicador}"/>
+                                <TextBlock Text="Percentual de cada imóvel sobre os pagamentos recebidos" Style="{StaticResource DetalheIndicador}"/>
                             </StackPanel>
                         </Grid>
                     </Border>
@@ -370,9 +370,7 @@
                                 <Viewbox Stretch="Uniform" StretchDirection="DownOnly" HorizontalAlignment="Left">
                                     <TextBlock Text="{Binding Repasse, StringFormat=C2}" Style="{StaticResource ValorIndicador}"/>
                                 </Viewbox>
-                                <TextBlock Style="{StaticResource DetalheIndicador}">
-                                    <Run Text="Aguardando cair na conta: "/><Run Text="{Binding AguardandoConta, StringFormat=C2, Mode=OneWay}"/>
-                                </TextBlock>
+                                <TextBlock Text="Valor recebido menos a parte da empresa" Style="{StaticResource DetalheIndicador}"/>
                             </StackPanel>
                         </Grid>
                     </Border>
@@ -431,7 +429,7 @@
                 <Border Style="{StaticResource Cartao}" Padding="22,18" Margin="0,0,0,18">
                     <StackPanel>
                         <TextBlock Text="Recebido por mês" FontSize="17" FontWeight="Bold" Foreground="{StaticResource Texto}"/>
-                        <TextBlock Text="Valores que já caíram na conta, dentro dos filtros." FontSize="13"
+                        <TextBlock Text="Pagamentos registrados (recebidos na conta), dentro dos filtros." FontSize="13"
                                    Foreground="{StaticResource TextoSuave}" Margin="0,2,0,10"/>
 
                         <TextBlock Text="Nenhum valor na conta neste período." FontSize="13" Foreground="{StaticResource TextoSuave}"
@@ -584,12 +582,6 @@
                                                 </Border>
                                                 <TextBlock Text="{Binding PagamentoDetalhe}" FontSize="11" Margin="2,3,0,0"
                                                            Foreground="{StaticResource TextoSuave}"/>
-                                                <!-- Locação: só quando este check é marcado o valor cai na conta e conta nos totais -->
-                                                <CheckBox Content="Caiu na conta" FontSize="12" Margin="2,2,0,0"
-                                                          IsChecked="{Binding CaiuNaConta, Mode=OneWay}"
-                                                          Visibility="{Binding MostrarCheckNaConta, Converter={StaticResource BoolVis}}"
-                                                          Command="{Binding DataContext.AlternarNaContaCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                                          CommandParameter="{Binding}"/>
                                             </StackPanel>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
@@ -859,11 +851,7 @@
                         <Border BorderBrush="#E6E9EE" BorderThickness="1" CornerRadius="8" Padding="14,12" Margin="0,16,0,0">
                             <StackPanel>
                                 <CheckBox IsChecked="{Binding ConfirmadoForm, Mode=TwoWay}" FontSize="14" FontWeight="SemiBold">
-                                    <TextBlock Text="Confirmo que o pagamento foi recebido" TextWrapping="Wrap"/>
-                                </CheckBox>
-                                <CheckBox IsChecked="{Binding CaiuNaContaForm, Mode=TwoWay}" FontSize="14" Margin="0,10,0,0"
-                                          Visibility="{Binding ContratoEhLocacao, Converter={StaticResource BoolVis}}">
-                                    <TextBlock Text="O valor já caiu na conta (só então entra nos totais)" TextWrapping="Wrap"/>
+                                    <TextBlock Text="Confirmo que o pagamento foi recebido na conta" TextWrapping="Wrap"/>
                                 </CheckBox>
                             </StackPanel>
                         </Border>
