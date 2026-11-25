@@ -67,7 +67,6 @@ namespace SaciGestao.Models
             : (Quitado ? "Comissão recebida" : "Comissão ainda não recebida");
 
         public decimal GanhoEmpresa => Math.Round(TotalPago * PercentualEmpresa / 100m, 2);
-        public decimal RepasseProprietario => TotalPago - GanhoEmpresa;
 
         // ---------- Próximo pagamento ----------
         public ParcelaContrato? Proxima => Parcelas.Where(p => !p.Pago).OrderBy(p => p.Vencimento).FirstOrDefault();
@@ -93,7 +92,7 @@ namespace SaciGestao.Models
 
         // ---------- Modelo de pagamento ----------
         public string ModeloPagamentoTexto => EhLocacao
-            ? "Aluguel mensal recebido pela imobiliária, com repasse ao proprietário"
+            ? "Aluguel mensal"
             : "Comissão da imobiliária sobre a venda (pagamento único)";
 
         public string ValorParcelaTexto => (Parcelas.Count > 0 ? Parcelas[0].ValorPrevisto : Contrato.ValorMensal).ToString("C2", PtBr);
@@ -114,7 +113,7 @@ namespace SaciGestao.Models
             ? Contrato.ValorMensal.ToString("C2", PtBr) + " /mês"
             : Contrato.ValorMensal.ToString("C2", PtBr);
         public string RotuloValorParcela => EhLocacao ? "Valor de cada parcela" : "Valor da comissão";
-        public string RotuloParticipacao => EhLocacao ? "Taxa da imobiliária e repasse" : "Comissão da imobiliária";
+        public string RotuloParticipacao => EhLocacao ? "Taxa da imobiliária" : "Comissão da imobiliária";
         public string ValorContratoDetalhe => EhLocacao ? Contrato.PeriodoTexto
             : "Comissão da imobiliária: " + Contrato.PercentualImobiliariaTexto + " = " + Contrato.GanhoImobiliaria.ToString("C2", PtBr);
         public string FaltaDetalhe => EhLocacao
@@ -123,7 +122,7 @@ namespace SaciGestao.Models
 
         // Linha única do pop-up: o que fica com a imobiliária e (na locação) o que vai para o proprietário
         public string ParticipacaoTexto => EhLocacao
-            ? Contrato.PercentualImobiliariaTexto + " de taxa • recebida: " + GanhoEmpresaTexto + " • repasse ao proprietário: " + RepasseTexto
+            ? Contrato.PercentualImobiliariaTexto + " de taxa • recebida: " + GanhoEmpresaTexto
             : Contrato.PercentualImobiliariaTexto + " • recebida: " + GanhoEmpresaTexto;
         public string PeriodoTexto => Contrato.PeriodoTexto;
         public string PercentualEmpresaTexto => PercentualEmpresa.ToString("0.##", PtBr) + "%";
@@ -134,6 +133,5 @@ namespace SaciGestao.Models
         public string FaltaTexto => Falta.ToString("C2", PtBr);
         public string AtrasadoTexto => Atrasado.ToString("C2", PtBr);
         public string GanhoEmpresaTexto => GanhoEmpresa.ToString("C2", PtBr);
-        public string RepasseTexto => RepasseProprietario.ToString("C2", PtBr);
     }
 }

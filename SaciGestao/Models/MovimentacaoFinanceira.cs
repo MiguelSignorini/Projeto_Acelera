@@ -42,7 +42,6 @@ namespace SaciGestao.Models
         public decimal Valor => Pago ? ValorRecebido : ValorPrevisto;
 
         public decimal ValorEmpresa => Math.Round(Valor * Percentual / 100m, 2);
-        public decimal ValorRepasse => Valor - ValorEmpresa;
 
         // Pagamento registrado = valor já recebido na conta (entra nos totais)
         public bool NaConta => Pago;

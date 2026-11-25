@@ -41,9 +41,6 @@ namespace SaciGestao.ViewModels
         private decimal _ganhoEmpresa;
         public decimal GanhoEmpresa { get => _ganhoEmpresa; private set => SetProperty(ref _ganhoEmpresa, value); }
 
-        private decimal _repasse;
-        public decimal Repasse { get => _repasse; private set => SetProperty(ref _repasse, value); }
-
         private decimal _totalLocacao;
         public decimal TotalLocacao { get => _totalLocacao; private set => SetProperty(ref _totalLocacao, value); }
 
@@ -198,7 +195,7 @@ namespace SaciGestao.ViewModels
 
                 decimal pct = FinanceiroService.Instancia.PercentualDoContrato(ContratoSelecionado);
                 decimal empresa = Math.Round(valor * pct / 100m, 2);
-                return $"Taxa da imobiliária ({pct.ToString("0.##", PtBr)}%): {empresa.ToString("C2", PtBr)}   •   Repasse ao proprietário: {(valor - empresa).ToString("C2", PtBr)}";
+                return $"Taxa da imobiliária ({pct.ToString("0.##", PtBr)}%): {empresa.ToString("C2", PtBr)}";
             }
         }
 
@@ -318,7 +315,6 @@ namespace SaciGestao.ViewModels
             var naConta = lista.Where(m => m.NaConta).ToList();
             ReceitaNaConta = naConta.Sum(m => m.Valor);
             GanhoEmpresa = naConta.Sum(m => m.ValorEmpresa);
-            Repasse = naConta.Sum(m => m.ValorRepasse);
             TotalLocacao = naConta.Where(m => m.EhLocacao).Sum(m => m.Valor);
             TotalVenda = naConta.Where(m => !m.EhLocacao).Sum(m => m.Valor);
             AReceber = lista.Where(m => !m.Pago).Sum(m => m.ValorPrevisto);

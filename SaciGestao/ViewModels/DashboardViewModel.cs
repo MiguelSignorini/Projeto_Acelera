@@ -154,6 +154,18 @@ namespace SaciGestao.ViewModels
 
             // --- Avisos (só o que exige ação da imobiliária) ---
             Avisos = new List<AvisoResumo>();
+
+            // Financeiro: pagamentos atrasados (vencimento já passou) e pendentes que vencem até o fim do mês.
+            // Os atrasados vêm primeiro, por serem os mais urgentes.
+            var emAberto = FinanceiroService.Instancia.ObterMovimentacoes().Where(m => !m.Pago).ToList();
+            var atrasados = emAberto.Where(m => m.Atrasado).ToList();
+            var pendentes = emAberto.Where(m => !m.Atrasado).ToList();
+            if (atrasados.Count > 0)
+                Avisos.Add(Aviso(0xE7BA, atrasados.Count + (atrasados.Count == 1 ? " pagamento atrasado" : " pagamentos atrasados")
+                                 + " (" + Moeda(atrasados.Sum(m => m.ValorPrevisto)) + ") — veja no Financeiro", "#690303", "#F8DEDD"));
+            if (pendentes.Count > 0)
+                Avisos.Add(Aviso(0xE825, pendentes.Count + (pendentes.Count == 1 ? " pagamento pendente" : " pagamentos pendentes")
+                                 + " neste mês (" + Moeda(pendentes.Sum(m => m.ValorPrevisto)) + " a receber)", "#7A4B00", "#FFF0C2"));
             int vencendo = ContratosAVencer.Count(v => v.CorFundo != "#E4E7EC");
             if (vencendo > 0)
                 Avisos.Add(Aviso(0xE787, vencendo + (vencendo == 1 ? " contrato precisa de renovação em até 60 dias" : " contratos precisam de renovação em até 60 dias"), "#7A4B00", "#FFF0C2"));

@@ -360,24 +360,6 @@
                         </Grid>
                     </Border>
 
-                    <Border Style="{StaticResource CartaoIndicador}">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <Border Width="44" Height="44" CornerRadius="22" Background="{StaticResource SucessoClaro}" VerticalAlignment="Center">
-                                <TextBlock Text="&#xE716;" Style="{StaticResource IconeIndicador}" Foreground="{StaticResource Sucesso}"/>
-                            </Border>
-                            <StackPanel Grid.Column="1" Margin="14,0,0,0" VerticalAlignment="Center">
-                                <TextBlock Text="Repasse aos proprietários" Style="{StaticResource RotuloIndicador}"/>
-                                <Viewbox Stretch="Uniform" StretchDirection="DownOnly" HorizontalAlignment="Left">
-                                    <TextBlock Text="{Binding Repasse, StringFormat=C2}" Style="{StaticResource ValorIndicador}"/>
-                                </Viewbox>
-                                <TextBlock Text="Valor recebido menos a parte da empresa" Style="{StaticResource DetalheIndicador}"/>
-                            </StackPanel>
-                        </Grid>
-                    </Border>
                 </h:PainelAdaptavel>
 
                 <!-- ============ FILTROS ============ -->
