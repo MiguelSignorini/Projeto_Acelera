@@ -1,4 +1,4 @@
-<UserControl x:Class="SaciGestao.Views.FinanceiroView"
+﻿<UserControl x:Class="SaciGestao.Views.FinanceiroView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:h="clr-namespace:SaciGestao.Helpers"
@@ -59,14 +59,14 @@
             <Setter Property="Height" Value="32"/>
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="Padding" Value="12,0"/>
-            <Setter Property="Margin" Value="8,0"/>
+            <Setter Property="Margin" Value="12,0"/>
             <Setter Property="HorizontalAlignment" Value="Left"/>
         </Style>
         <Style x:Key="BotaoLinhaContorno" TargetType="Button" BasedOn="{StaticResource BotaoContorno}">
             <Setter Property="Height" Value="32"/>
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="Padding" Value="12,0"/>
-            <Setter Property="Margin" Value="8,0"/>
+            <Setter Property="Margin" Value="12,0"/>
             <Setter Property="HorizontalAlignment" Value="Left"/>
         </Style>
 
@@ -109,12 +109,16 @@
         </Style>
 
 <Style x:Key="TextoValor" TargetType="TextBlock" BasedOn="{StaticResource TextoCelula}">
+            <Setter Property="TextTrimming" Value="None"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
             <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="TextAlignment" Value="Right"/>
             <Setter Property="Foreground" Value="{StaticResource Sucesso}"/>
         </Style>
 
         <Style x:Key="TextoValorEmpresa" TargetType="TextBlock" BasedOn="{StaticResource TextoCelula}">
+            <Setter Property="TextTrimming" Value="None"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="TextAlignment" Value="Right"/>
             <Setter Property="Foreground" Value="{StaticResource Primaria}"/>
@@ -128,7 +132,7 @@
             <Setter Property="Background" Value="{StaticResource PrimariaClara}"/>
         </Style>
         <Style x:Key="PilulaTipo" TargetType="Border" BasedOn="{StaticResource Pilula}">
-            <Setter Property="Margin" Value="8,0"/>
+            <Setter Property="Margin" Value="12,0"/>
             <Style.Triggers>
                 <DataTrigger Binding="{Binding EhLocacao}" Value="False">
                     <Setter Property="Background" Value="{StaticResource AtencaoClara}"/>
@@ -311,7 +315,7 @@
                                     <TextBlock Text="{Binding ReceitaNaConta, StringFormat=C2}" Style="{StaticResource ValorIndicador}" Foreground="White"/>
                                 </Viewbox>
                                 <TextBlock Style="{StaticResource DetalheIndicador}" Foreground="#F3D5D4">
-                                    <Run Text="Locação "/><Run Text="{Binding TotalLocacao, StringFormat=C0, Mode=OneWay}"/><Run Text=" • Venda "/><Run Text="{Binding TotalVenda, StringFormat=C0, Mode=OneWay}"/>
+                                    <Run Text="Locação "/><Run Text="{Binding TotalLocacao, StringFormat=C0, Mode=OneWay}"/><Run Text=" • Comissões de venda "/><Run Text="{Binding TotalVenda, StringFormat=C0, Mode=OneWay}"/>
                                 </TextBlock>
                             </StackPanel>
                         </Grid>
@@ -351,7 +355,7 @@
                                     <TextBlock Text="{Binding GanhoEmpresa, StringFormat=C2}" Style="{StaticResource ValorIndicador}"
                                                Foreground="{StaticResource Primaria}"/>
                                 </Viewbox>
-                                <TextBlock Text="Percentual de cada imóvel sobre os pagamentos recebidos" Style="{StaticResource DetalheIndicador}"/>
+                                <TextBlock Text="Taxa dos aluguéis + comissões das vendas, só o que já foi recebido" Style="{StaticResource DetalheIndicador}"/>
                             </StackPanel>
                         </Grid>
                     </Border>
@@ -474,6 +478,28 @@
                                    Foreground="{StaticResource TextoSuave}" FontSize="14"
                                    Visibility="{Binding SemContratosAtivos, Converter={StaticResource BoolVis}}"/>
 
+                        <!-- Cabeçalho da lista: mesmas colunas das linhas, para tudo ficar alinhado como uma tabela -->
+                        <Border Background="{StaticResource FundoSuave}" BorderBrush="{StaticResource BordaSuave}"
+                                BorderThickness="0,1,0,1" Padding="22,10">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2.2*" MinWidth="170"/>
+                                <ColumnDefinition Width="1.3*" MinWidth="135"/>
+                                <ColumnDefinition Width="1.3*" MinWidth="130"/>
+                                <ColumnDefinition Width="1.6*" MinWidth="140"/>
+                                <ColumnDefinition Width="1.1*" MinWidth="115"/>
+                                <ColumnDefinition Width="125"/>
+                                <ColumnDefinition Width="24"/>
+                            </Grid.ColumnDefinitions>
+                                <TextBlock Text="CONTRATO / IMÓVEL" Style="{StaticResource CabecalhoParcela}"/>
+                                <TextBlock Grid.Column="1" Text="VALOR" Style="{StaticResource CabecalhoParcela}"/>
+                                <TextBlock Grid.Column="2" Text="FALTA RECEBER" Style="{StaticResource CabecalhoParcela}"/>
+                                <TextBlock Grid.Column="3" Text="ANDAMENTO" Style="{StaticResource CabecalhoParcela}"/>
+                                <TextBlock Grid.Column="4" Text="PRÓXIMO VENC." Style="{StaticResource CabecalhoParcela}"/>
+                                <TextBlock Grid.Column="5" Text="SITUAÇÃO" Style="{StaticResource CabecalhoParcela}"/>
+                            </Grid>
+                        </Border>
+
                         <ItemsControl ItemsSource="{Binding ContratosAtivos}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
@@ -482,13 +508,14 @@
                                             CommandParameter="{Binding}">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="2*" MinWidth="150"/>
-                                                <ColumnDefinition Width="1.2*" MinWidth="110"/>
-                                                <ColumnDefinition Width="1.6*" MinWidth="130"/>
-                                                <ColumnDefinition Width="1.3*" MinWidth="120"/>
-                                                <ColumnDefinition Width="Auto" MinWidth="100"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                            </Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2.2*" MinWidth="170"/>
+                                <ColumnDefinition Width="1.3*" MinWidth="135"/>
+                                <ColumnDefinition Width="1.3*" MinWidth="130"/>
+                                <ColumnDefinition Width="1.6*" MinWidth="140"/>
+                                <ColumnDefinition Width="1.1*" MinWidth="115"/>
+                                <ColumnDefinition Width="125"/>
+                                <ColumnDefinition Width="24"/>
+                            </Grid.ColumnDefinitions>
 
                                             <StackPanel VerticalAlignment="Center" Margin="0,0,12,0">
                                                 <TextBlock FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource Texto}" TextTrimming="CharacterEllipsis">
@@ -500,25 +527,27 @@
                                             </StackPanel>
 
                                             <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="0,0,12,0">
-                                                <TextBlock Text="Falta pagar" Style="{StaticResource RotuloDetalhe}"/>
+                                                <TextBlock Text="{Binding ValorContratoTexto}" FontSize="14" FontWeight="Bold" Foreground="{StaticResource Texto}"/>
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Column="2" VerticalAlignment="Center" Margin="0,0,12,0">
                                                 <TextBlock Text="{Binding FaltaTexto}" FontSize="14" FontWeight="Bold" Foreground="{StaticResource Texto}"/>
                                             </StackPanel>
 
-                                            <StackPanel Grid.Column="2" VerticalAlignment="Center" Margin="0,0,16,0">
+                                            <StackPanel Grid.Column="3" VerticalAlignment="Center" Margin="0,0,16,0">
                                                 <ProgressBar Value="{Binding Progresso, Mode=OneWay}" Style="{StaticResource BarraMes}" Height="8"/>
                                                 <TextBlock Text="{Binding ParcelasTexto}" Style="{StaticResource RotuloDetalhe}" Margin="0,5,0,0"/>
                                             </StackPanel>
 
-                                            <StackPanel Grid.Column="3" VerticalAlignment="Center" Margin="0,0,12,0">
-                                                <TextBlock Text="Próximo vencimento" Style="{StaticResource RotuloDetalhe}"/>
+                                            <StackPanel Grid.Column="4" VerticalAlignment="Center" Margin="0,0,12,0">
                                                 <TextBlock Text="{Binding ProximoVencimentoTexto}" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource Texto}"/>
                                             </StackPanel>
 
-                                            <Border Grid.Column="4" Style="{StaticResource PilulaContrato}" VerticalAlignment="Center" Margin="0,0,12,0">
+                                            <Border Grid.Column="5" Style="{StaticResource PilulaContrato}" VerticalAlignment="Center" Margin="0,0,12,0">
                                                 <TextBlock Text="{Binding StatusTexto}" Style="{StaticResource TextoPilulaContrato}"/>
                                             </Border>
 
-                                            <TextBlock Grid.Column="5" Text="&#xE76C;" FontFamily="Segoe MDL2 Assets" FontSize="14"
+                                            <TextBlock Grid.Column="6" Text="&#xE76C;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                                        Foreground="{StaticResource TextoSuave}" VerticalAlignment="Center"/>
                                         </Grid>
                                     </Button>
@@ -537,8 +566,12 @@
                         </Grid.RowDefinitions>
 
                         <Grid Margin="22,16,22,12">
-                            <TextBlock Text="Pagamentos" FontSize="17" FontWeight="Bold" Foreground="{StaticResource Texto}"/>
-                            <TextBlock HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="13"
+                            <StackPanel>
+                                <TextBlock Text="Pagamentos" FontSize="17" FontWeight="Bold" Foreground="{StaticResource Texto}"/>
+                                <TextBlock Text="{Binding DescricaoPeriodo}" FontSize="13" Foreground="{StaticResource TextoSuave}"
+                                           Margin="0,2,60,0" TextWrapping="Wrap"/>
+                            </StackPanel>
+                            <TextBlock HorizontalAlignment="Right" VerticalAlignment="Top" FontSize="13"
                                        Foreground="{StaticResource TextoSuave}"
                                        Text="{Binding QuantidadeMovimentacoes, StringFormat='{}{0} registro(s)'}"/>
                         </Grid>
@@ -556,9 +589,7 @@
                                   RowStyle="{StaticResource LinhaGrid}">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="DATA" Binding="{Binding DataTexto}" Width="100" ElementStyle="{StaticResource TextoCelula}"/>
-                                <DataGridTextColumn Header="CONTRATO / IMÓVEL" Binding="{Binding Descricao}" Width="2*" MinWidth="120"
-                                                    ElementStyle="{StaticResource TextoCelula}"/>
-                                <DataGridTemplateColumn Header="TIPO" Width="110" h:Adaptavel.OcultarAbaixo="1050">
+                                <DataGridTemplateColumn Header="TIPO" Width="120" h:Adaptavel.OcultarAbaixo="1050">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <Border Style="{StaticResource PilulaTipo}">
@@ -567,26 +598,40 @@
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
-                                <DataGridTextColumn Header="VALOR" Binding="{Binding ValorTexto}" Width="115"
+                                <DataGridTemplateColumn Header="CONTRATO / IMÓVEL" Width="2*" MinWidth="170">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel VerticalAlignment="Center" Margin="12,0">
+                                                <TextBlock Text="{Binding ContratoResumo}" FontSize="14" FontWeight="SemiBold"
+                                                           Foreground="{StaticResource Texto}" TextTrimming="CharacterEllipsis"/>
+                                                <TextBlock Text="{Binding Inquilino}" FontSize="12" Foreground="{StaticResource TextoSuave}"
+                                                           TextTrimming="CharacterEllipsis" Margin="0,2,0,0"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTextColumn Header="REFERÊNCIA" Binding="{Binding MesReferenciaTexto}" Width="140"
+                                                    h:Adaptavel.OcultarAbaixo="1000" ElementStyle="{StaticResource TextoCelula}"/>
+                                <DataGridTextColumn Header="VALOR" Binding="{Binding ValorContratoTexto}" Width="155"
                                                     HeaderStyle="{StaticResource CabecalhoColunaDireita}"
                                                     ElementStyle="{StaticResource TextoValor}"/>
-                                <DataGridTextColumn Header="EMPRESA" h:Adaptavel.OcultarAbaixo="900" Binding="{Binding EmpresaTexto}" Width="115"
+                                <DataGridTextColumn Header="EMPRESA" h:Adaptavel.OcultarAbaixo="900" Binding="{Binding EmpresaTexto}" Width="140"
                                                     HeaderStyle="{StaticResource CabecalhoColunaDireita}"
                                                     ElementStyle="{StaticResource TextoValorEmpresa}"/>
                                 <DataGridTemplateColumn Header="PAGAMENTO" Width="170">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
-                                            <StackPanel VerticalAlignment="Center" Margin="8,0">
+                                            <StackPanel VerticalAlignment="Center" Margin="12,0">
                                                 <Border Style="{StaticResource PilulaPagamento}">
                                                     <TextBlock Text="{Binding PagamentoTexto}" Style="{StaticResource TextoPilulaPagamento}"/>
                                                 </Border>
-                                                <TextBlock Text="{Binding PagamentoDetalhe}" FontSize="11" Margin="2,3,0,0"
+                                                <TextBlock Text="{Binding PagamentoDetalhe}" FontSize="11" Margin="0,3,0,0"
                                                            Foreground="{StaticResource TextoSuave}"/>
                                             </StackPanel>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
-                                <DataGridTemplateColumn Header="AÇÃO" Width="110">
+                                <DataGridTemplateColumn Header="AÇÃO" Width="125">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <Grid>
@@ -657,25 +702,23 @@
                             <h:PainelAdaptavel LarguraMinima="190" EspacamentoVertical="10">
                                 <Border Background="{StaticResource FundoSuave}" CornerRadius="10" Padding="14,12" Margin="0,0,10,0">
                                     <StackPanel>
-                                        <TextBlock Text="Valor total" Style="{StaticResource RotuloDetalhe}"/>
-                                        <TextBlock Text="{Binding ValorTotalTexto}" FontSize="19" FontWeight="Bold" Foreground="{StaticResource Texto}"/>
-                                        <TextBlock Text="{Binding PeriodoTexto}" Style="{StaticResource RotuloDetalhe}" Margin="0,2,0,0" TextWrapping="Wrap"/>
+                                        <TextBlock Text="{Binding RotuloValorContrato}" Style="{StaticResource RotuloDetalhe}"/>
+                                        <TextBlock Text="{Binding ValorContratoTexto}" FontSize="19" FontWeight="Bold" Foreground="{StaticResource Texto}"/>
+                                        <TextBlock Text="{Binding ValorContratoDetalhe}" Style="{StaticResource RotuloDetalhe}" Margin="0,2,0,0" TextWrapping="Wrap"/>
                                     </StackPanel>
                                 </Border>
                                 <Border Background="{StaticResource SucessoClaro}" CornerRadius="10" Padding="14,12" Margin="0,0,10,0">
                                     <StackPanel>
-                                        <TextBlock Text="Já pago" Style="{StaticResource RotuloDetalhe}"/>
+                                        <TextBlock Text="{Binding RotuloPago}" Style="{StaticResource RotuloDetalhe}"/>
                                         <TextBlock Text="{Binding TotalPagoTexto}" FontSize="19" FontWeight="Bold" Foreground="{StaticResource Sucesso}"/>
                                         <TextBlock Text="{Binding ParcelasTexto}" Style="{StaticResource RotuloDetalhe}" Margin="0,2,0,0" TextWrapping="Wrap"/>
                                     </StackPanel>
                                 </Border>
                                 <Border Background="{StaticResource AtencaoClara}" CornerRadius="10" Padding="14,12" Margin="0,0,10,0">
                                     <StackPanel>
-                                        <TextBlock Text="Ainda falta" Style="{StaticResource RotuloDetalhe}"/>
+                                        <TextBlock Text="{Binding RotuloFalta}" Style="{StaticResource RotuloDetalhe}"/>
                                         <TextBlock Text="{Binding FaltaTexto}" FontSize="19" FontWeight="Bold" Foreground="{StaticResource Atencao}"/>
-                                        <TextBlock Style="{StaticResource RotuloDetalhe}" Margin="0,2,0,0" TextWrapping="Wrap">
-                                            <Run Text="{Binding ParcelasPendentes, Mode=OneWay}"/><Run Text=" parcela(s) • atrasado: "/><Run Text="{Binding AtrasadoTexto, Mode=OneWay}"/>
-                                        </TextBlock>
+                                        <TextBlock Text="{Binding FaltaDetalhe}" Style="{StaticResource RotuloDetalhe}" Margin="0,2,0,0" TextWrapping="Wrap"/>
                                     </StackPanel>
                                 </Border>
                                 <Border Background="{StaticResource PrimariaClara}" CornerRadius="10" Padding="14,12">
@@ -704,7 +747,7 @@
                                         <TextBlock Text="{Binding ModeloPagamentoTexto}" Style="{StaticResource ValorDetalhe}"/>
                                     </StackPanel>
                                     <StackPanel Margin="0,0,14,0">
-                                        <TextBlock Text="Valor de cada parcela" Style="{StaticResource RotuloDetalhe}"/>
+                                        <TextBlock Text="{Binding RotuloValorParcela}" Style="{StaticResource RotuloDetalhe}"/>
                                         <TextBlock Text="{Binding ValorParcelaTexto}" Style="{StaticResource ValorDetalhe}"/>
                                     </StackPanel>
                                     <StackPanel Margin="0,0,14,0">
@@ -720,10 +763,8 @@
                                         <TextBlock Text="{Binding MultaTexto}" Style="{StaticResource ValorDetalhe}"/>
                                     </StackPanel>
                                     <StackPanel>
-                                        <TextBlock Text="Participação da empresa" Style="{StaticResource RotuloDetalhe}"/>
-                                        <TextBlock Style="{StaticResource ValorDetalhe}">
-                                            <Run Text="{Binding PercentualEmpresaTexto, Mode=OneWay}"/><Run Text=" • já recebido: "/><Run Text="{Binding GanhoEmpresaTexto, Mode=OneWay}"/>
-                                        </TextBlock>
+                                        <TextBlock Text="{Binding RotuloParticipacao}" Style="{StaticResource RotuloDetalhe}"/>
+                                        <TextBlock Text="{Binding ParticipacaoTexto}" Style="{StaticResource ValorDetalhe}"/>
                                     </StackPanel>
                                 </h:PainelAdaptavel>
                             </Border>

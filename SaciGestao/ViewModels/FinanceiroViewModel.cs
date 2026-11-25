@@ -100,7 +100,29 @@ namespace SaciGestao.ViewModels
         public string Busca { get => _busca; set { if (SetProperty(ref _busca, value ?? string.Empty)) AoAlterarFiltro(); } }
 
         private string _periodoAtivo = "tudo";
-        public string PeriodoAtivo { get => _periodoAtivo; private set => SetProperty(ref _periodoAtivo, value); }
+        public string PeriodoAtivo
+        {
+            get => _periodoAtivo;
+            private set { if (SetProperty(ref _periodoAtivo, value)) OnPropertyChanged(nameof(DescricaoPeriodo)); }
+        }
+
+        // Frase abaixo do título da tabela: deixa claro o que está sendo mostrado
+        public string DescricaoPeriodo
+        {
+            get
+            {
+                string Mes(DateTime d) { string t = d.ToString("MMMM 'de' yyyy", PtBr); return char.ToUpper(t[0], PtBr) + t.Substring(1); }
+                return PeriodoAtivo switch
+                {
+                    "mes" => Mes(DateTime.Today) + " • inclui pagamentos pendentes de meses anteriores. Para ver o histórico, clique em “Tudo”.",
+                    "mesAnterior" => Mes(DateTime.Today.AddMonths(-1)),
+                    "30dias" => "Últimos 30 dias",
+                    "ano" => "Ano de " + DateTime.Today.Year,
+                    "tudo" => "Todo o histórico de pagamentos",
+                    _ => "Período escolhido nos filtros"
+                };
+            }
+        }
 
         private bool _aplicandoPeriodo;
 
@@ -170,9 +192,13 @@ namespace SaciGestao.ViewModels
                 if (ContratoSelecionado == null) return string.Empty;
                 if (!decimal.TryParse(ValorForm, NumberStyles.Number, PtBr, out decimal valor) || valor <= 0) return string.Empty;
 
-                decimal pct = FinanceiroService.Instancia.PercentualDoImovel(ContratoSelecionado.ImovelId);
+                // Venda: o valor registrado já é a comissão, toda da imobiliária
+                if (ContratoSelecionado.Tipo == TipoContrato.Venda)
+                    return $"Comissão da imobiliária ({ContratoSelecionado.PercentualImobiliariaTexto} sobre a venda de {ContratoSelecionado.ValorMensal.ToString("C2", PtBr)}): {valor.ToString("C2", PtBr)}";
+
+                decimal pct = FinanceiroService.Instancia.PercentualDoContrato(ContratoSelecionado);
                 decimal empresa = Math.Round(valor * pct / 100m, 2);
-                return $"Empresa ({pct.ToString("0.##", PtBr)}%): {empresa.ToString("C2", PtBr)}   •   Repasse ao proprietário: {(valor - empresa).ToString("C2", PtBr)}";
+                return $"Taxa da imobiliária ({pct.ToString("0.##", PtBr)}%): {empresa.ToString("C2", PtBr)}   •   Repasse ao proprietário: {(valor - empresa).ToString("C2", PtBr)}";
             }
         }
 
@@ -197,6 +223,7 @@ namespace SaciGestao.ViewModels
             DesfazerCommand = new RelayCommand(p => Desfazer(p as MovimentacaoFinanceira));
             LimparFiltrosCommand = new RelayCommand(_ => LimparFiltros());
             PeriodoCommand = new RelayCommand(p => AplicarPeriodo(p as string ?? "tudo"));
+            AplicarPeriodo("mes"); // a tabela abre só com o mês atual (e pendências), não com todo o histórico
             AbrirDetalheCommand = new RelayCommand(p => AbrirDetalhe(p as ContratoFinanceiro));
             FecharDetalheCommand = new RelayCommand(_ => DetalheAberto = false);
             RegistrarDoDetalheCommand = new RelayCommand(_ => RegistrarDoDetalhe());
@@ -253,8 +280,19 @@ namespace SaciGestao.ViewModels
         {
             IEnumerable<MovimentacaoFinanceira> q = _todas;
 
-            if (DataInicial.HasValue) q = q.Where(m => m.Data >= DataInicial.Value.Date);
-            if (DataFinal.HasValue) q = q.Where(m => m.Data <= DataFinal.Value.Date);
+            if (PeriodoAtivo == "mes" && DataInicial.HasValue && DataFinal.HasValue)
+            {
+                // "Este mês": o que é do mês + qualquer pagamento ainda pendente de meses anteriores,
+                // para que um atraso nunca fique escondido
+                var ini = DataInicial.Value.Date;
+                var fim = DataFinal.Value.Date;
+                q = q.Where(m => (m.Data >= ini && m.Data <= fim) || (!m.Pago && m.Data < ini));
+            }
+            else
+            {
+                if (DataInicial.HasValue) q = q.Where(m => m.Data >= DataInicial.Value.Date);
+                if (DataFinal.HasValue) q = q.Where(m => m.Data <= DataFinal.Value.Date);
+            }
 
             if (TipoSelecionado == "Locação") q = q.Where(m => m.EhLocacao);
             else if (TipoSelecionado == "Venda") q = q.Where(m => !m.EhLocacao);
@@ -359,7 +397,7 @@ namespace SaciGestao.ViewModels
             _tipoSelecionado = Todos; OnPropertyChanged(nameof(TipoSelecionado));
             _situacaoSelecionada = Todos; OnPropertyChanged(nameof(SituacaoSelecionada));
             _busca = string.Empty; OnPropertyChanged(nameof(Busca));
-            AplicarPeriodo("tudo");
+            AplicarPeriodo("mes"); // volta ao padrão: mês atual + pendências
         }
 
         // ============================================================
@@ -446,7 +484,7 @@ namespace SaciGestao.ViewModels
                 ValorRecebido = valor,
                 DataPagamento = DataPagamentoForm.Date,
                 // Registrar = valor recebido na conta (locação e venda entram nos totais na hora)
-                PercentualEmpresa = FinanceiroService.Instancia.PercentualDoImovel(ContratoSelecionado.ImovelId),
+                PercentualEmpresa = FinanceiroService.Instancia.PercentualDoContrato(ContratoSelecionado),
                 Observacao = ObservacaoForm.Trim()
             });
 

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -62,7 +62,9 @@ namespace SaciGestao.Models
 
         public double Progresso => TotalParcelas == 0 ? 0 : ParcelasPagas * 100.0 / TotalParcelas;
         public string ProgressoTexto => Progresso.ToString("0", PtBr) + "%";
-        public string ParcelasTexto => ParcelasPagas + " de " + TotalParcelas + (TotalParcelas == 1 ? " parcela paga" : " parcelas pagas");
+        public string ParcelasTexto => EhLocacao
+            ? ParcelasPagas + " de " + TotalParcelas + (TotalParcelas == 1 ? " parcela paga" : " parcelas pagas")
+            : (Quitado ? "Comissão recebida" : "Comissão ainda não recebida");
 
         public decimal GanhoEmpresa => Math.Round(TotalPago * PercentualEmpresa / 100m, 2);
         public decimal RepasseProprietario => TotalPago - GanhoEmpresa;
@@ -91,21 +93,38 @@ namespace SaciGestao.Models
 
         // ---------- Modelo de pagamento ----------
         public string ModeloPagamentoTexto => EhLocacao
-            ? "Aluguel mensal"
-            : (Contrato.QuantidadeParcelas <= 1 ? "Venda à vista (parcela única)" : "Venda parcelada em " + Contrato.QuantidadeParcelas + " parcelas mensais");
+            ? "Aluguel mensal recebido pela imobiliária, com repasse ao proprietário"
+            : "Comissão da imobiliária sobre a venda (pagamento único)";
 
         public string ValorParcelaTexto => (Parcelas.Count > 0 ? Parcelas[0].ValorPrevisto : Contrato.ValorMensal).ToString("C2", PtBr);
 
-        // Venda e locação vencem no "Dia de vencimento" do contrato (a 1ª parcela nunca antes do início)
+        // Locação vence no "Dia de vencimento" do contrato; a comissão da venda tem uma data prevista só
         public string VencimentoRegraTexto => EhLocacao
             ? "Todo dia " + Contrato.DiaVencimento + " de cada mês"
-            : (Parcelas.Count <= 1
-                ? "Em " + (Parcelas.Count == 1 ? Parcelas[0].Vencimento : Contrato.DataInicio).ToString("dd/MM/yyyy")
-                : "Todo dia " + Contrato.DiaVencimento + ", de " + Parcelas[0].Vencimento.ToString("MM/yyyy")
-                  + " a " + Parcelas[^1].Vencimento.ToString("MM/yyyy"));
+            : "Previsto para " + (Parcelas.Count > 0 ? Parcelas[0].Vencimento : Contrato.DataInicio).ToString("dd/MM/yyyy");
 
-        public string ReajusteTexto => EhLocacao ? Contrato.IndiceReajuste + " (anual)" : "Sem reajuste";
-        public string MultaTexto => Contrato.PercentualMultaAtraso.ToString("0.##", PtBr) + "% sobre o valor em atraso";
+        public string ReajusteTexto => EhLocacao ? Contrato.IndiceReajuste + " (anual)" : "Não se aplica";
+        public string MultaTexto => EhLocacao ? Contrato.PercentualMultaAtraso.ToString("0.##", PtBr) + "% sobre o valor em atraso" : "Não se aplica";
+
+        // Rótulos que mudam entre locação e venda (na venda tudo aqui é só a comissão da imobiliária)
+        public string RotuloValorContrato => EhLocacao ? "Valor do aluguel" : "Valor da venda";
+        public string RotuloPago => EhLocacao ? "Já pago" : "Comissão recebida";
+        public string RotuloFalta => EhLocacao ? "Ainda falta" : "Comissão a receber";
+        public string ValorContratoTexto => EhLocacao
+            ? Contrato.ValorMensal.ToString("C2", PtBr) + " /mês"
+            : Contrato.ValorMensal.ToString("C2", PtBr);
+        public string RotuloValorParcela => EhLocacao ? "Valor de cada parcela" : "Valor da comissão";
+        public string RotuloParticipacao => EhLocacao ? "Taxa da imobiliária e repasse" : "Comissão da imobiliária";
+        public string ValorContratoDetalhe => EhLocacao ? Contrato.PeriodoTexto
+            : "Comissão da imobiliária: " + Contrato.PercentualImobiliariaTexto + " = " + Contrato.GanhoImobiliaria.ToString("C2", PtBr);
+        public string FaltaDetalhe => EhLocacao
+            ? ParcelasPendentes + " parcela(s) • atrasado: " + Atrasado.ToString("C2", PtBr)
+            : (Quitado ? "Nada pendente" : (ComAtraso ? "Prevista e ainda não recebida" : "Registre quando cair na conta"));
+
+        // Linha única do pop-up: o que fica com a imobiliária e (na locação) o que vai para o proprietário
+        public string ParticipacaoTexto => EhLocacao
+            ? Contrato.PercentualImobiliariaTexto + " de taxa • recebida: " + GanhoEmpresaTexto + " • repasse ao proprietário: " + RepasseTexto
+            : Contrato.PercentualImobiliariaTexto + " • recebida: " + GanhoEmpresaTexto;
         public string PeriodoTexto => Contrato.PeriodoTexto;
         public string PercentualEmpresaTexto => PercentualEmpresa.ToString("0.##", PtBr) + "%";
 

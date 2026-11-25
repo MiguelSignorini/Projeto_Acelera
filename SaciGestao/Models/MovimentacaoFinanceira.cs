@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Globalization;
 
 namespace SaciGestao.Models
@@ -12,6 +12,7 @@ namespace SaciGestao.Models
         public int PagamentoId { get; set; }          // 0 = ainda pendente (nada registrado)
         public int ContratoId { get; set; }
         public string ContratoCodigo { get; set; } = string.Empty;
+        public string ContratoResumo { get; set; } = string.Empty;   // "CTR006 • Sala Comercial Centro" (sem o mês)
         public string Inquilino { get; set; } = string.Empty;
         public string Descricao { get; set; } = string.Empty;
         public bool EhLocacao { get; set; }
@@ -21,6 +22,9 @@ namespace SaciGestao.Models
         public DateTime? DataPagamento { get; set; }
 
         public bool Pago { get; set; }
+
+        // Venda: valor total da venda (só para mostrar). O que entra nos totais é a comissão (ValorPrevisto/ValorRecebido).
+        public decimal ValorVenda { get; set; }
 
         public decimal ValorPrevisto { get; set; }
         public decimal ValorRecebido { get; set; }
@@ -48,6 +52,9 @@ namespace SaciGestao.Models
         public string TipoTexto => EhLocacao ? "Locação" : "Venda";
         public string DataTexto => Data.ToString("dd/MM/yyyy");
         public string ValorTexto => Valor.ToString("C2", PtBr);
+
+        // Coluna "Valor" da tabela: venda mostra o valor total da venda; aluguel mostra o valor do aluguel
+        public string ValorContratoTexto => (!EhLocacao && ValorVenda > 0 ? ValorVenda : Valor).ToString("C2", PtBr);
         public string EmpresaTexto => ValorEmpresa.ToString("C2", PtBr);
         public string PercentualTexto => Percentual.ToString("0.##", PtBr) + "%";
 
@@ -56,13 +63,17 @@ namespace SaciGestao.Models
             ? "Recebido em " + (DataPagamento ?? Vencimento).ToString("dd/MM/yyyy")
             : "Vence em " + Vencimento.ToString("dd/MM/yyyy");
 
+        // Coluna "Referência": o mês do aluguel (ex.: Novembro/2026) ou "Comissão" na venda
+        public string MesReferenciaTexto => EhLocacao
+            ? char.ToUpper(Competencia.ToString("MMMM/yyyy", PtBr)[0], PtBr) + Competencia.ToString("MMMM/yyyy", PtBr).Substring(1)
+            : "Comissão da venda";
+
         public string ReferenciaTexto => EhLocacao
             ? "Ref. " + Competencia.ToString("MM/yyyy")
-            : (TotalParcelas > 1 ? "Parcela " + Parcela + "/" + TotalParcelas : "Venda");
+            : "Comissão da venda";
 
         // Texto usado na lista de parcelas do diálogo "Registrar pagamento"
-        public string ParcelaTexto => (EhLocacao ? Competencia.ToString("MM/yyyy")
-                : TotalParcelas > 1 ? "Parcela " + Parcela + "/" + TotalParcelas : "Valor da venda")
+        public string ParcelaTexto => (EhLocacao ? Competencia.ToString("MM/yyyy") : "Comissão da venda")
             + " • " + ValorPrevisto.ToString("C2", PtBr) + " • vence " + Vencimento.ToString("dd/MM/yyyy")
             + (Atrasado ? " (atrasado)" : "");
 

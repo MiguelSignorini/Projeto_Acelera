@@ -1,1 +1,65 @@
-[]
+[
+  {
+    "Id": 1,
+    "ContratoId": 6,
+    "Competencia": "2026-08-01T00:00:00",
+    "ValorRecebido": 3200,
+    "DataPagamento": "2026-08-28T00:00:00",
+    "PercentualEmpresa": 10,
+    "Observacao": "Aluguel de agosto, pago por transferência."
+  },
+  {
+    "Id": 2,
+    "ContratoId": 6,
+    "Competencia": "2026-09-01T00:00:00",
+    "ValorRecebido": 3200,
+    "DataPagamento": "2026-09-29T00:00:00",
+    "PercentualEmpresa": 10,
+    "Observacao": "Aluguel de setembro, pago por boleto."
+  },
+  {
+    "Id": 3,
+    "ContratoId": 6,
+    "Competencia": "2026-10-01T00:00:00",
+    "ValorRecebido": 3200,
+    "DataPagamento": "2026-10-29T00:00:00",
+    "PercentualEmpresa": 10,
+    "Observacao": "Aluguel de outubro, pago por boleto."
+  },
+  {
+    "Id": 4,
+    "ContratoId": 7,
+    "Competencia": "2026-09-01T00:00:00",
+    "ValorRecebido": 2100,
+    "DataPagamento": "2026-09-10T00:00:00",
+    "PercentualEmpresa": 10,
+    "Observacao": "Aluguel de setembro, pago por PIX."
+  },
+  {
+    "Id": 5,
+    "ContratoId": 7,
+    "Competencia": "2026-10-01T00:00:00",
+    "ValorRecebido": 2100,
+    "DataPagamento": "2026-10-09T00:00:00",
+    "PercentualEmpresa": 10,
+    "Observacao": "Aluguel de outubro, pago por PIX."
+  },
+  {
+    "Id": 6,
+    "ContratoId": 7,
+    "Competencia": "2026-11-01T00:00:00",
+    "ValorRecebido": 2100,
+    "DataPagamento": "2026-11-10T00:00:00",
+    "PercentualEmpresa": 10,
+    "Observacao": "Aluguel de novembro, pago por PIX."
+  },
+  {
+    "Id": 7,
+    "ContratoId": 8,
+    "Competencia": "2026-11-01T00:00:00",
+    "ValorRecebido": 21000,
+    "DataPagamento": "2026-11-12T00:00:00",
+    "PercentualEmpresa": 100,
+    "Observacao": "Comissão de 6% sobre a venda, recebida por transferência."
+  }
+]

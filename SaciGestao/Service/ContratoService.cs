@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using SaciGestao.Models;
@@ -27,10 +27,21 @@ namespace SaciGestao.Service
             {
                 _contratos.AddRange(lista);
                 _proximoId = _contratos.Select(c => c.Id).DefaultIfEmpty(0).Max() + 1;
+                AplicarPercentualPadrao();
                 return;
             }
 
             CarregarExemplos();
+        }
+
+        // Contratos gravados antes do campo existir vêm com 0%: usa o percentual do imóvel (ou o padrão do tipo)
+        private void AplicarPercentualPadrao()
+        {
+            foreach (var c in _contratos.Where(c => c.PercentualImobiliaria <= 0))
+            {
+                decimal doImovel = ImovelService.Instancia.ObterPorId(c.ImovelId)?.PercentualEmpresa ?? 0m;
+                c.PercentualImobiliaria = doImovel > 0 ? doImovel : Contrato.PercentualPadrao(c.Tipo);
+            }
         }
 
         public void Salvar()
@@ -84,6 +95,7 @@ namespace SaciGestao.Service
             existente.UC_Agua = editado.UC_Agua;
             existente.IndiceReajuste = editado.IndiceReajuste;
             existente.QuantidadeParcelas = editado.QuantidadeParcelas;
+            existente.PercentualImobiliaria = editado.PercentualImobiliaria;
             existente.PercentualMultaAtraso = editado.PercentualMultaAtraso;
             existente.MesesIsencaoMultaRescisao = editado.MesesIsencaoMultaRescisao;
             existente.Observacoes = editado.Observacoes;
@@ -183,7 +195,8 @@ namespace SaciGestao.Service
                 DiaVencimento = 20,
                 DataInicio = new DateTime(2026, 8, 10),
                 DataFim = new DateTime(2029, 8, 10),
-                DataAssinatura = new DateTime(2026, 9, 15)
+                DataAssinatura = new DateTime(2026, 9, 15),
+                PercentualImobiliaria = 10m
             });
         }
     }

@@ -28,8 +28,50 @@ namespace SaciGestao.ViewModels
                     OnPropertyChanged(nameof(TipoSelecionadoForm));
                     OnPropertyChanged(nameof(MostrarIndiceReajuste));
                     OnPropertyChanged(nameof(MostrarParcelas));
+                    NotificarComissao();
                 }
             }
+        }
+
+        // ---------- Porcentagem da imobiliária (comissão na venda / taxa de administração na locação) ----------
+        // Último percentual preenchido automaticamente (do imóvel ou do padrão do tipo): se o usuário já
+        // mexeu no campo, trocar o imóvel ou o tipo não sobrescreve o que ele digitou.
+        private decimal _percentualSugerido;
+
+        public decimal PercentualImobiliariaForm
+        {
+            get => ContratoForm?.PercentualImobiliaria ?? 0m;
+            set
+            {
+                if (ContratoForm == null || ContratoForm.PercentualImobiliaria == value) return;
+                ContratoForm.PercentualImobiliaria = value;
+                NotificarComissao();
+            }
+        }
+
+        // Valor do contrato (aluguel mensal ou preço da venda): passa por aqui para atualizar o resumo da imobiliária
+        public decimal ValorContratoForm
+        {
+            get => ContratoForm?.ValorMensal ?? 0m;
+            set
+            {
+                if (ContratoForm == null || ContratoForm.ValorMensal == value) return;
+                ContratoForm.ValorMensal = value;
+                NotificarComissao();
+            }
+        }
+
+        public string RotuloPercentualImobiliaria => ContratoForm?.RotuloPercentualImobiliaria ?? "Taxa de administração (%)";
+        public string ResumoImobiliaria => ContratoForm?.ResumoImobiliariaTexto ?? string.Empty;
+        public string RotuloValorContrato => ContratoForm?.Tipo == TipoContrato.Venda ? "Valor da venda (R$)" : "Valor do aluguel (R$)";
+
+        private void NotificarComissao()
+        {
+            OnPropertyChanged(nameof(PercentualImobiliariaForm));
+            OnPropertyChanged(nameof(ValorContratoForm));
+            OnPropertyChanged(nameof(RotuloPercentualImobiliaria));
+            OnPropertyChanged(nameof(RotuloValorContrato));
+            OnPropertyChanged(nameof(ResumoImobiliaria));
         }
 
         // Propriedade para controlar e notificar a mudança entre Locação e Venda na View
@@ -41,9 +83,11 @@ namespace SaciGestao.ViewModels
                 if (ContratoForm != null && ContratoForm.Tipo != value)
                 {
                     ContratoForm.Tipo = value;
+                    AplicarPercentualSugerido(null);
                     OnPropertyChanged(nameof(TipoSelecionadoForm));
                     OnPropertyChanged(nameof(MostrarIndiceReajuste));
                     OnPropertyChanged(nameof(MostrarParcelas));
+                    NotificarComissao();
                 }
             }
         }
@@ -142,14 +186,14 @@ namespace SaciGestao.ViewModels
         public string ErroForm { get => _erroForm; private set => SetProperty(ref _erroForm, value); }
 
         public int TotalAtivos => ContratoService.Instancia.ObterAtivos().Count(c => c.Status == StatusContrato.Ativo);
-        // Receita do mês: mesma conta do Dashboard (aluguéis + parcelas de venda que vencem no mês)
+        // Receita da imobiliária no mês: mesma conta do Dashboard (taxa dos aluguéis + comissões de venda previstas no mês)
         public decimal ReceitaMensal => FinanceiroService.Instancia.ReceitaDoMes(DateTime.Today).Total;
         public string ReceitaDetalhe
         {
             get
             {
                 var r = FinanceiroService.Instancia.ReceitaDoMes(DateTime.Today);
-                return DashboardViewModel.TextoReceitaDoMes(r.Alugueis, r.ParcelasVenda);
+                return DashboardViewModel.TextoReceitaDoMes(r.Alugueis, r.Comissoes);
             }
         }
         public int TotalTodos => ContratoService.Instancia.ObterAtivos().Count;
@@ -221,6 +265,22 @@ namespace SaciGestao.ViewModels
         // Último valor preenchido automaticamente a partir de um imóvel (para saber se o usuário já mudou o valor)
         private decimal _valorSugerido;
 
+        // Preenche a porcentagem com a do imóvel (ou o padrão do tipo), a menos que o usuário já tenha digitado outra
+        private void AplicarPercentualSugerido(Imovel? imovel)
+        {
+            if (ContratoForm == null) return;
+
+            bool aindaAutomatico = ContratoForm.PercentualImobiliaria <= 0 || ContratoForm.PercentualImobiliaria == _percentualSugerido;
+            if (!aindaAutomatico) return;
+
+            decimal sugerido = imovel != null && imovel.PercentualEmpresa > 0
+                ? imovel.PercentualEmpresa
+                : Contrato.PercentualPadrao(ContratoForm.Tipo);
+            ContratoForm.PercentualImobiliaria = sugerido;
+            _percentualSugerido = sugerido;
+            NotificarComissao();
+        }
+
         private void AoSelecionarImovel(int imovelId)
         {
             if (imovelId <= 0) return;
@@ -242,6 +302,9 @@ namespace SaciGestao.ViewModels
                     OnPropertyChanged(nameof(MostrarParcelas));
                 }
             }
+
+            // Porcentagem da imobiliária: começa com a do cadastro do imóvel (editável aqui, vale só para este contrato)
+            if (ContratoForm.Id == 0) AplicarPercentualSugerido(imovel);
 
             // Sugere o valor do imóvel se o campo está vazio ou ainda com o valor sugerido pelo imóvel anterior
             if (ContratoForm.ValorMensal == 0 || ContratoForm.ValorMensal == _valorSugerido)
@@ -305,7 +368,9 @@ namespace SaciGestao.ViewModels
 
         private void Novo()
         {
+            _percentualSugerido = 0;
             ContratoForm = new Contrato();
+            AplicarPercentualSugerido(null); // já começa com o padrão do tipo (locação: 10%)
             _valorSugerido = 0;
             ErroForm = string.Empty;
             TituloFormulario = "Novo contrato";
@@ -328,6 +393,7 @@ namespace SaciGestao.ViewModels
         {
             if (contrato == null) return;
             ContratoForm = contrato.Clonar();
+            _percentualSugerido = -1; // contrato salvo: a porcentagem combinada nunca é trocada sozinha
             _valorSugerido = ImovelService.Instancia.ObterPorId(contrato.ImovelId)?.Valor ?? 0;
             ErroForm = string.Empty;
             TituloFormulario = "Editar contrato";
@@ -409,6 +475,14 @@ namespace SaciGestao.ViewModels
                 return;
             }
 
+            if (ContratoForm.PercentualImobiliaria <= 0 || ContratoForm.PercentualImobiliaria > 100)
+            {
+                ErroForm = ContratoForm.Tipo == TipoContrato.Venda
+                    ? "Informe a comissão da imobiliária (maior que 0% e até 100%)."
+                    : "Informe a taxa de administração da imobiliária (maior que 0% e até 100%).";
+                return;
+            }
+
             if (ContratoForm.Tipo == TipoContrato.Venda && ContratoForm.QuantidadeParcelas < 1)
             {
                 ErroForm = "Informe a quantidade de parcelas (mínimo 1) para o contrato de venda.";
@@ -435,16 +509,15 @@ namespace SaciGestao.ViewModels
                 }
             }
 
-            // Com pagamentos registrados, mudar tipo, início ou parcelas deixaria esses pagamentos sem parcela correspondente
+            // Com pagamentos registrados, mudar tipo ou início deixaria esses pagamentos sem parcela correspondente
             if (ContratoForm.Id != 0 && FinanceiroService.Instancia.QuantidadeDoContrato(ContratoForm.Id) > 0)
             {
                 var original = ContratoService.Instancia.ObterAtivos().FirstOrDefault(c => c.Id == ContratoForm.Id);
                 if (original != null &&
                     (original.Tipo != ContratoForm.Tipo ||
-                     original.DataInicio.Date != ContratoForm.DataInicio.Date ||
-                     (original.Tipo == TipoContrato.Venda && original.QuantidadeParcelas != ContratoForm.QuantidadeParcelas)))
+                     original.DataInicio.Date != ContratoForm.DataInicio.Date))
                 {
-                    ErroForm = "Este contrato já tem pagamentos registrados: o tipo, a data de início e a quantidade de parcelas " +
+                    ErroForm = "Este contrato já tem pagamentos registrados: o tipo e a data de início " +
                                "não podem mudar. Desfaça os pagamentos no Financeiro antes, se precisar alterar.";
                     return;
                 }

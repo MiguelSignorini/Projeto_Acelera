@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using SaciGestao.Models;
@@ -14,13 +14,17 @@ namespace SaciGestao.Service
     // Regras do financeiro:
     //  * O Cronograma é a fonte única das parcelas: a tabela, o "A receber", a lista de contratos ativos,
     //    o pop-up de detalhes, o "Registrar pagamento" e a receita do Dashboard usam todos a mesma lista.
-    //  * Locação: uma parcela por mês durante o prazo (PrazoMeses). Venda: o valor total dividido em
-    //    QuantidadeParcelas mensais. Nos dois, a parcela vence no "Dia de vencimento" do contrato.
+    //  * Locação: uma parcela por mês durante o prazo (PrazoMeses), com o aluguel inteiro (a imobiliária recebe
+    //    tudo e repassa ao proprietário o que sobra depois da taxa de administração do contrato).
+    //  * Venda: UMA única parcela, que é só a COMISSÃO da imobiliária (valor da venda x % do contrato).
+    //    O preço da venda não passa pelo sistema: o comprador paga o proprietário (em geral via banco).
+    //    A comissão só é registrada quando o administrador tem certeza de que ela já caiu na conta.
     //  * Tabela e "A receber": parcelas não pagas que vencem até o fim do mês atual (sem limite para trás,
     //    então um atraso antigo nunca some). Parcelas futuras aparecem no pop-up do contrato.
     //  * "Registrar pagamento" aceita qualquer parcela ainda não paga (inclusive adiantar a próxima).
     //  * Registrar o pagamento já significa que o valor caiu na conta (locação e venda entram nos totais na hora).
-    //  * A parte da empresa vem do percentual cadastrado no imóvel (comissão na venda, taxa no aluguel).
+    //  * A parte da imobiliária vem do percentual do CONTRATO: taxa de administração (locação) ou comissão (venda).
+    //    Na venda o valor registrado já é só da imobiliária, então 100% dele é da empresa.
     public class FinanceiroService
     {
         private static FinanceiroService? _instancia;
@@ -53,15 +57,8 @@ namespace SaciGestao.Service
 
             if (contrato.Tipo == TipoContrato.Venda)
             {
-                int quantidade = Math.Max(1, contrato.QuantidadeParcelas);
-                decimal valorParcela = Math.Round(contrato.ValorMensal / quantidade, 2);
-                for (int i = 0; i < quantidade; i++)
-                {
-                    // a última parcela absorve a diferença dos centavos
-                    decimal valor = i == quantidade - 1 ? contrato.ValorMensal - valorParcela * (quantidade - 1) : valorParcela;
-                    lista.Add(new ParcelaPrevista(i + 1, quantidade, inicio.AddMonths(i),
-                        Vencimento(contrato, primeiroMes.AddMonths(i)), valor, false));
-                }
+                // Venda = um único pagamento: a comissão da imobiliária sobre o valor total da venda
+                lista.Add(new ParcelaPrevista(1, 1, inicio, Vencimento(contrato, primeiroMes), contrato.GanhoImobiliaria, false));
             }
             else
             {
@@ -147,16 +144,33 @@ namespace SaciGestao.Service
             return contrato == null ? null : MontarContratoFinanceiro(contrato);
         }
 
-        // Receita prevista no mês: aluguéis + parcelas de venda dos contratos ativos que vencem no mês
-        public (decimal Total, int Alugueis, int ParcelasVenda) ReceitaDoMes(DateTime referencia)
+        // Receita da IMOBILIÁRIA prevista no mês: taxa de administração dos aluguéis que vencem no mês
+        // + comissões de venda previstas para o mês. O restante do aluguel é do proprietário e não conta aqui.
+        public (decimal Total, int Alugueis, int Comissoes) ReceitaDoMes(DateTime referencia)
         {
             var inicio = new DateTime(referencia.Year, referencia.Month, 1);
             var fim = inicio.AddMonths(1);
-            var parcelas = ContratosParaPagamento()
-                .SelectMany(Cronograma)
-                .Where(p => p.Vencimento >= inicio && p.Vencimento < fim)
-                .ToList();
-            return (parcelas.Sum(p => p.Valor), parcelas.Count(p => p.EhLocacao), parcelas.Count(p => !p.EhLocacao));
+            decimal total = 0m;
+            int alugueis = 0, comissoes = 0;
+
+            foreach (var contrato in ContratosParaPagamento())
+            {
+                decimal percentual = PercentualDoContrato(contrato);
+                foreach (var p in Cronograma(contrato).Where(p => p.Vencimento >= inicio && p.Vencimento < fim))
+                {
+                    total += Math.Round(p.Valor * percentual / 100m, 2);
+                    if (p.EhLocacao) alugueis++; else comissoes++;
+                }
+            }
+
+            return (total, alugueis, comissoes);
+        }
+
+        // Comissão total prevista nas vendas (não canceladas) e quanto dela já foi recebido
+        public (decimal Prevista, decimal Recebida) ComissaoDasVendas(IEnumerable<Contrato> vendas)
+        {
+            var lista = vendas.ToList();
+            return (lista.Sum(c => c.GanhoImobiliaria), lista.Sum(c => TotalRecebido(c.Id)));
         }
 
         // Valor já recebido de um contrato (usado no Dashboard)
@@ -172,8 +186,7 @@ namespace SaciGestao.Service
             var parcelas = Cronograma(contrato).Select(p =>
             {
                 pagos.TryGetValue(p.Competencia, out var pg);
-                string referencia = p.EhLocacao ? p.Competencia.ToString("MM/yyyy")
-                    : p.Total > 1 ? "Parcela " + p.Numero + "/" + p.Total : "Valor da venda";
+                string referencia = p.EhLocacao ? p.Competencia.ToString("MM/yyyy") : "Comissão da venda";
                 return new ParcelaContrato
                 {
                     Numero = p.Numero,
@@ -192,7 +205,7 @@ namespace SaciGestao.Service
             {
                 Contrato = contrato,
                 Parcelas = parcelas,
-                PercentualEmpresa = PercentualDoImovel(contrato.ImovelId)
+                PercentualEmpresa = PercentualDoContrato(contrato)
             };
         }
 
@@ -219,9 +232,14 @@ namespace SaciGestao.Service
             _pagamentos.RemoveAll(p => p.ContratoId == contratoId);
         }
 
-        public decimal PercentualDoImovel(int imovelId)
+        // % da empresa sobre o valor RECEBIDO neste contrato:
+        //   locação = taxa de administração do contrato (o resto é repassado ao proprietário)
+        //   venda   = 100%, porque o valor registrado já é só a comissão da imobiliária
+        public decimal PercentualDoContrato(Contrato contrato)
         {
-            return ImovelService.Instancia.ObterPorId(imovelId)?.PercentualEmpresa ?? 0m;
+            if (contrato.Tipo == TipoContrato.Venda) return 100m;
+            if (contrato.PercentualImobiliaria > 0) return contrato.PercentualImobiliaria;
+            return ImovelService.Instancia.ObterPorId(contrato.ImovelId)?.PercentualEmpresa ?? Contrato.PercentualPadrao(contrato.Tipo);
         }
 
         // ============================================================
@@ -242,7 +260,6 @@ namespace SaciGestao.Service
                 {
                     previsto = parcela.Valor;
                     vencimento = parcela.Vencimento;
-                    if (!locacao) { numero = parcela.Numero; total = parcela.Total; }
                 }
             }
 
@@ -251,13 +268,15 @@ namespace SaciGestao.Service
                 PagamentoId = p.Id,
                 ContratoId = p.ContratoId,
                 ContratoCodigo = contrato?.Codigo ?? "—",
+                ContratoResumo = contrato == null ? "Contrato removido" : contrato.Codigo + " • " + contrato.ImovelTitulo,
                 Inquilino = contrato?.LocatarioNome ?? string.Empty,
-                Descricao = Descricao(contrato, p.Competencia, locacao, numero, total),
+                Descricao = Descricao(contrato, p.Competencia, locacao),
                 EhLocacao = locacao,
                 Competencia = p.Competencia,
                 Vencimento = vencimento,
                 DataPagamento = p.DataPagamento,
                 Pago = true,
+                ValorVenda = contrato != null && !locacao ? contrato.ValorMensal : 0m,
                 ValorPrevisto = previsto,
                 ValorRecebido = p.ValorRecebido,
                 Percentual = p.PercentualEmpresa,
@@ -269,7 +288,7 @@ namespace SaciGestao.Service
         // Parcelas do cronograma que ainda não têm pagamento registrado
         private IEnumerable<MovimentacaoFinanceira> Pendentes(Contrato contrato)
         {
-            decimal percentual = PercentualDoImovel(contrato.ImovelId);
+            decimal percentual = PercentualDoContrato(contrato);
             var pagas = CompetenciasPagas(contrato.Id);
 
             foreach (var p in Cronograma(contrato))
@@ -279,25 +298,26 @@ namespace SaciGestao.Service
                 {
                     ContratoId = contrato.Id,
                     ContratoCodigo = contrato.Codigo,
+                    ContratoResumo = contrato.Codigo + " • " + contrato.ImovelTitulo,
                     Inquilino = contrato.LocatarioNome,
-                    Descricao = Descricao(contrato, p.Competencia, p.EhLocacao, p.EhLocacao ? 1 : p.Numero, p.EhLocacao ? 1 : p.Total),
+                    Descricao = Descricao(contrato, p.Competencia, p.EhLocacao),
                     EhLocacao = p.EhLocacao,
                     Competencia = p.Competencia,
                     Vencimento = p.Vencimento,
                     Pago = false,
+                    ValorVenda = p.EhLocacao ? 0m : contrato.ValorMensal,
                     ValorPrevisto = p.Valor,
                     Percentual = percentual,
-                    Parcela = p.EhLocacao ? 1 : p.Numero,
-                    TotalParcelas = p.EhLocacao ? 1 : p.Total
+                    Parcela = 1,
+                    TotalParcelas = 1
                 };
             }
         }
 
-        private static string Descricao(Contrato? c, DateTime competencia, bool locacao, int parcela = 1, int totalParcelas = 1)
+        private static string Descricao(Contrato? c, DateTime competencia, bool locacao)
         {
             if (c == null) return "Contrato removido";
-            string sufixo = locacao ? $" ({competencia:MM/yyyy})"
-                : totalParcelas > 1 ? $" (parcela {parcela}/{totalParcelas})" : string.Empty;
+            string sufixo = locacao ? $" ({competencia:MM/yyyy})" : " (comissão da venda)";
             return $"{c.Codigo} • {c.ImovelTitulo} — {c.LocatarioNome}" + sufixo;
         }
     }

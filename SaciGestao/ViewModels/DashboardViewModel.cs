@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -94,12 +94,12 @@ namespace SaciGestao.ViewModels
             var ativos = contratos.Where(c => c.Status == StatusContrato.Ativo).ToList();
             var locacoesAtivas = ativos.Where(c => c.Tipo == TipoContrato.Locacao).ToList();
 
-            // 1) Receita do mês: tudo o que os contratos ativos têm para receber no mês atual —
-            //    o aluguel das locações + as parcelas de venda que vencem neste mês
+            // 1) Receita do mês: só o que fica para a imobiliária — a taxa de administração dos aluguéis do mês
+            //    + as comissões de venda previstas para o mês (o resto do aluguel é do proprietário).
             //    (mesma conta da tela de Contratos: FinanceiroService.ReceitaDoMes)
-            var (receitaMes, alugueisMes, parcelasVendaMes) = FinanceiroService.Instancia.ReceitaDoMes(hoje);
+            var (receitaMes, alugueisMes, comissoesMes) = FinanceiroService.Instancia.ReceitaDoMes(hoje);
             ReceitaMensal = receitaMes;
-            ReceitaDetalhe = TextoReceitaDoMes(alugueisMes, parcelasVendaMes);
+            ReceitaDetalhe = TextoReceitaDoMes(alugueisMes, comissoesMes);
 
             // 2) Taxa de ocupação: imóveis de aluguel que já estão alugados
             var paraAlugar = imoveis.Where(i => i.Finalidade == FinalidadeImovel.Aluguel).ToList();
@@ -113,12 +113,12 @@ namespace SaciGestao.ViewModels
             ValorEmCarteira = aVenda.Sum(i => i.Valor);
             CarteiraDetalhe = aVenda.Count + (aVenda.Count == 1 ? " imóvel à venda" : " imóveis à venda");
 
-            // 4) Vendas fechadas: valor dos contratos de venda (não cancelados) e quanto já foi recebido deles
+            // 4) Vendas fechadas: valor das vendas (não canceladas) e a comissão da imobiliária (prevista e já recebida)
             var vendas = contratos.Where(c => c.Tipo == TipoContrato.Venda && c.Status != StatusContrato.Cancelado).ToList();
             VendasFechadas = vendas.Sum(c => c.ValorMensal);
-            decimal recebidoVendas = vendas.Sum(c => FinanceiroService.Instancia.TotalRecebido(c.Id));
-            VendasDetalhe = vendas.Count + (vendas.Count == 1 ? " venda" : " vendas") + " • "
-                            + recebidoVendas.ToString("C0", PtBr) + " já recebido";
+            var (comissaoPrevista, comissaoRecebida) = FinanceiroService.Instancia.ComissaoDasVendas(vendas);
+            VendasDetalhe = vendas.Count + (vendas.Count == 1 ? " venda" : " vendas") + " • comissão "
+                            + comissaoPrevista.ToString("C0", PtBr) + " (" + comissaoRecebida.ToString("C0", PtBr) + " recebida)";
 
             // --- Contratos a vencer (próximos 120 dias, mais urgentes primeiro) ---
             ContratosAVencer = locacoesAtivas
@@ -213,12 +213,12 @@ namespace SaciGestao.ViewModels
 
         private static string Moeda(decimal valor) => valor.ToString("C0", PtBr);
 
-        // "2 aluguéis + 1 parcela de venda no mês" (usado no Dashboard e na tela de Contratos)
-        public static string TextoReceitaDoMes(int alugueis, int parcelasVenda) =>
-            alugueis + parcelasVenda == 0
-                ? "Nenhum aluguel ou parcela de venda neste mês"
-                : alugueis + (alugueis == 1 ? " aluguel" : " aluguéis") + " + " +
-                  parcelasVenda + (parcelasVenda == 1 ? " parcela de venda" : " parcelas de venda") + " no mês";
+        // "taxa de 2 aluguéis + 1 comissão de venda no mês" (usado no Dashboard e na tela de Contratos)
+        public static string TextoReceitaDoMes(int alugueis, int comissoes) =>
+            alugueis + comissoes == 0
+                ? "Nenhuma taxa de aluguel ou comissão neste mês"
+                : "taxa de " + alugueis + (alugueis == 1 ? " aluguel" : " aluguéis") + " + " +
+                  comissoes + (comissoes == 1 ? " comissão de venda" : " comissões de venda") + " no mês";
 
         private static AvisoResumo Aviso(int icone, string texto, string cor, string corFundo)
         {

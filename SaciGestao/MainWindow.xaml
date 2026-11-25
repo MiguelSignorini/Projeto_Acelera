@@ -186,8 +186,10 @@
                 <!-- Salvar (grava nos JSON principais e fecha o sistema) e Sair, fixos no rodapé -->
                 <StackPanel Grid.Row="2" Margin="0,0,0,16">
                     <Border Height="1" Background="#263247" Margin="20,0,20,10"/>
+                    <!-- BOTÃO SALVAR ESCONDIDO: para voltar a mostrar, é só apagar este comentário (o código do Salvar_Click continua no MainWindow.xaml.cs)
                     <Button Content="Salvar" Tag="&#xE74E;" ToolTip="Salvar nos JSON principais e fechar"
                             Style="{StaticResource MenuAcaoStyle}" Click="Salvar_Click"/>
+                    -->
                     <Button Content="Sair" Tag="&#xE7E8;" ToolTip="Sair"
                             Style="{StaticResource MenuAcaoStyle}" Click="Sair_Click"/>
                 </StackPanel>
