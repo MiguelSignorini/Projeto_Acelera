@@ -341,20 +341,10 @@
                         <Viewbox Stretch="Uniform" StretchDirection="DownOnly" HorizontalAlignment="Left"><TextBlock Text="{Binding TotalLocacao}" Style="{StaticResource NumeroIndicador}"/></Viewbox>
                     </StackPanel>
                 </Border>
-                <Border Style="{StaticResource CartaoIndicador}">
+                <Border Style="{StaticResource CartaoIndicador}" Margin="0">
                     <StackPanel>
                         <TextBlock Text="Vendas" Style="{StaticResource RotuloDetalhe}"/>
                         <Viewbox Stretch="Uniform" StretchDirection="DownOnly" HorizontalAlignment="Left"><TextBlock Text="{Binding TotalVenda}" Style="{StaticResource NumeroIndicador}"/></Viewbox>
-                    </StackPanel>
-                </Border>
-                <Border Style="{StaticResource CartaoIndicador}" Margin="0">
-                    <StackPanel>
-                        <TextBlock Text="Receita da imobiliária no mês" Style="{StaticResource RotuloDetalhe}"
-                                   ToolTip="O que fica para a imobiliária neste mês: taxa dos aluguéis + comissões de venda previstas (mesmo valor do Dashboard)"/>
-                        <TextBlock Text="{Binding ReceitaMensal, StringFormat=C0}" Style="{StaticResource NumeroIndicador}"
-                                   Foreground="{StaticResource Primaria}"/>
-                        <TextBlock Text="{Binding ReceitaDetalhe}" FontSize="11.5" Foreground="{StaticResource TextoSuave}"
-                                   TextWrapping="Wrap" Margin="0,2,0,0"/>
                     </StackPanel>
                 </Border>
             </h:PainelAdaptavel>

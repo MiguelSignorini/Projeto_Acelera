@@ -32,20 +32,11 @@ namespace SaciGestao.ViewModels
         public ObservableCollection<MovimentacaoFinanceira> Movimentacoes { get; } = new();
         public ObservableCollection<BarraMes> Meses { get; } = new();
 
-        private decimal _receitaNaConta;
-        public decimal ReceitaNaConta { get => _receitaNaConta; private set => SetProperty(ref _receitaNaConta, value); }
-
         private decimal _aReceber;
         public decimal AReceber { get => _aReceber; private set => SetProperty(ref _aReceber, value); }
 
         private decimal _ganhoEmpresa;
         public decimal GanhoEmpresa { get => _ganhoEmpresa; private set => SetProperty(ref _ganhoEmpresa, value); }
-
-        private decimal _totalLocacao;
-        public decimal TotalLocacao { get => _totalLocacao; private set => SetProperty(ref _totalLocacao, value); }
-
-        private decimal _totalVenda;
-        public decimal TotalVenda { get => _totalVenda; private set => SetProperty(ref _totalVenda, value); }
 
         private int _qtdPendentes;
         public int QuantidadePendentes { get => _qtdPendentes; private set => SetProperty(ref _qtdPendentes, value); }
@@ -313,10 +304,7 @@ namespace SaciGestao.ViewModels
 
             // Indicadores: sempre do que está filtrado na tela
             var naConta = lista.Where(m => m.NaConta).ToList();
-            ReceitaNaConta = naConta.Sum(m => m.Valor);
             GanhoEmpresa = naConta.Sum(m => m.ValorEmpresa);
-            TotalLocacao = naConta.Where(m => m.EhLocacao).Sum(m => m.Valor);
-            TotalVenda = naConta.Where(m => !m.EhLocacao).Sum(m => m.Valor);
             AReceber = lista.Where(m => !m.Pago).Sum(m => m.ValorPrevisto);
             QuantidadePendentes = lista.Count(m => !m.Pago);
             QuantidadeAtrasados = lista.Count(m => m.Atrasado);

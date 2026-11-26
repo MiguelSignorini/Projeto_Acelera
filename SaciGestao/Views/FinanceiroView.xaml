@@ -299,28 +299,6 @@
                 <!-- ============ INDICADORES (do período filtrado) ============ -->
                 <h:PainelAdaptavel LarguraMinima="215" EspacamentoVertical="12" Margin="0,18,0,18">
 
-                    <Border Style="{StaticResource CartaoIndicador}" Background="{StaticResource Primaria}"
-                            BorderBrush="{StaticResource Primaria}">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <Border Width="44" Height="44" CornerRadius="22" Background="#33FFFFFF" VerticalAlignment="Center">
-                                <TextBlock Text="&#xE825;" Style="{StaticResource IconeIndicador}" Foreground="White"/>
-                            </Border>
-                            <StackPanel Grid.Column="1" Margin="14,0,0,0" VerticalAlignment="Center">
-                                <TextBlock Text="Receita na conta" Style="{StaticResource RotuloIndicador}" Foreground="#F3D5D4"/>
-                                <Viewbox Stretch="Uniform" StretchDirection="DownOnly" HorizontalAlignment="Left">
-                                    <TextBlock Text="{Binding ReceitaNaConta, StringFormat=C2}" Style="{StaticResource ValorIndicador}" Foreground="White"/>
-                                </Viewbox>
-                                <TextBlock Style="{StaticResource DetalheIndicador}" Foreground="#F3D5D4">
-                                    <Run Text="Locação "/><Run Text="{Binding TotalLocacao, StringFormat=C0, Mode=OneWay}"/><Run Text=" • Comissões de venda "/><Run Text="{Binding TotalVenda, StringFormat=C0, Mode=OneWay}"/>
-                                </TextBlock>
-                            </StackPanel>
-                        </Grid>
-                    </Border>
-
                     <Border Style="{StaticResource CartaoIndicador}">
                         <Grid>
                             <Grid.ColumnDefinitions>
